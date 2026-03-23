@@ -47,7 +47,7 @@
   "target_label": 3,
   "_comment_target_label": "后门目标标签",
 
-  "poison_rate": 0.1,
+  "poison_rate": 0.3,
   "_comment_poison_rate": "攻击者分支的投毒比例",
 
   "poison_dimensions": 5,
@@ -62,7 +62,7 @@
   "feature_extractor": "",
   "_comment_feature_extractor": "保留字段，当前未使用",
 
-  "select_rate": 0.3,
+  "select_rate": 1.0,
   "_comment_select_rate": "LFBA 选择替换比例",
 
   "random_select": false,
@@ -88,6 +88,9 @@
 
   "force_stage1_retrain": false,
   "_comment_force_stage1_retrain": "第二阶段优先复用第一阶段产物，不强制重跑第一阶段",
+
+  "enable_anchor_loss": false,
+  "_comment_enable_anchor_loss": "是否启用第二阶段的锚点损失",
 
   "lambda_anchor": 1.0,
   "_comment_lambda_anchor": "第二阶段 anchor loss 权重，已调大以增强锚点约束",

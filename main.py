@@ -4,6 +4,7 @@ import json
 import logging
 import math
 import os
+import sys
 from datetime import datetime
 
 import numpy as np
@@ -237,11 +238,36 @@ def normalize_args(args):
         args.anchor_bank_path = os.path.join(args.results_dir, "anchor_bank.pt")
 
 
+def resolve_runtime_device(args):
+    if not torch.cuda.is_available():
+        return torch.device("cpu"), "CUDA is unavailable, falling back to CPU"
+
+    requested_device = args.device
+    available_gpu_count = torch.cuda.device_count()
+    if requested_device < 0 or requested_device >= available_gpu_count:
+        return (
+            torch.device("cuda:0"),
+            "Requested GPU index {} is unavailable, falling back to cuda:0".format(requested_device),
+        )
+
+    gpu_name = torch.cuda.get_device_name(requested_device)
+    return torch.device(f"cuda:{requested_device}"), "Using GPU cuda:{} ({})".format(requested_device, gpu_name)
+
+
 def main(args):
     normalize_args(args)
-    device = torch.device(f"cuda:{args.device}" if torch.cuda.is_available() else "cpu")
+    device, device_message = resolve_runtime_device(args)
     logger = create_logger(args.results_dir)
     logger.info(args)
+    logger.info("=> Python executable: %s", sys.executable)
+    logger.info(
+        "=> Torch version: %s, compiled CUDA: %s, cuda available: %s, visible GPU count: %s",
+        torch.__version__,
+        torch.version.cuda,
+        torch.cuda.is_available(),
+        torch.cuda.device_count(),
+    )
+    logger.info("=> %s", device_message)
 
     train_data, test_data, test_data_asr = build_datasets(args, logger)
     clean_train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=args.batch_size, shuffle=True)
@@ -326,6 +352,12 @@ def build_parser():
         "--force_stage1_retrain",
         action="store_true",
         help="force rerunning stage 1 instead of reusing a saved stage1 artifact",
+    )
+    parser.add_argument(
+        "--enable_anchor_loss",
+        default=True,
+        type=lambda value: str(value).lower() in {"1", "true", "yes", "on"},
+        help="whether to add anchor loss during stage 2 training",
     )
     parser.add_argument("--lambda_anchor", default=0.1, type=float, help="weight of anchor constraint loss")
     parser.add_argument("--anchor_pretrain_epochs", default=5, type=int, help="anchor pretraining epochs")

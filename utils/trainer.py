@@ -38,6 +38,7 @@ class Trainer:
         self.checkpoint = checkpoint
         self.trigger_dimensions = trigger_dimensions
         self.anchor_defense = anchor_defense
+        self.enable_anchor_loss = getattr(args, "enable_anchor_loss", True)
 
     def adjust_learning_rate(self, epoch):
         lr = self.args.lr * (0.1) ** (epoch // 20)
@@ -51,16 +52,6 @@ class Trainer:
         global_output = self.model_list[0](local_output_list)
         return local_output_list, global_output
 
-    def _compute_trade_off(self, metrics):
-        if self.anchor_defense is None:
-            return (metrics['test_acc'] + metrics['test_asr']) / 2
-        return (
-            metrics['test_acc']
-            + metrics['detection_rate']
-            - metrics['test_asr']
-            - metrics['false_positive_rate']
-        )
-
     def train(self):
         start_time_train = time.time()
         if self.args.attack:
@@ -71,10 +62,10 @@ class Trainer:
             self.logger.info(
                 "=> Enter Stage 2: joint VFL training starts from stage1 passive local backbones with frozen anchor heads"
             )
+            self.logger.info("=> Stage 2 anchor loss enabled: %s", self.enable_anchor_loss)
         epoch_loss_list = []
         model_list = self.model_list
         best_acc = 0
-        best_trade_off = float("-inf")
         best_epoch = 0
         best_metrics = {}
         no_change = 0
@@ -189,7 +180,7 @@ class Trainer:
                 # global model backward
                 ce_loss = self.criterion(global_output, y)
                 anchor_loss = torch.zeros(1, device=self.device).squeeze()
-                if self.anchor_defense is not None:
+                if self.anchor_defense is not None and self.enable_anchor_loss:
                     anchor_loss = self.anchor_defense.compute_anchor_loss(local_output_list, y)
                 loss = ce_loss + self.args.lambda_anchor * anchor_loss
                 for opt in self.optimizer_list:
@@ -254,11 +245,9 @@ class Trainer:
             )
             self.adjust_learning_rate(ep + 1)
             metrics = self.test(ep)
-            test_trade_off = self._compute_trade_off(metrics)
-            if test_trade_off > best_trade_off:
-                # best accuracy
+            if metrics['test_acc'] > best_acc:
+                # Save the checkpoint with the best clean main-task accuracy in stage 2.
                 best_acc = metrics['test_acc']
-                best_trade_off = test_trade_off
                 best_metrics = metrics
                 no_change = 0
                 best_epoch = ep
@@ -267,7 +256,6 @@ class Trainer:
                 state = {
                     'epoch': ep + 1,
                     'best_acc': best_acc,
-                    'test_trade_off': test_trade_off,
                     'metrics': metrics,
                     'state_dict': [model_list[i].state_dict() for i in range(len(model_list))],
                     'optimizer': [self.optimizer_list[i].state_dict() for i in range(len(self.optimizer_list))],
@@ -279,17 +267,14 @@ class Trainer:
                 if ep > self.args.pretrain_stage:
                     no_change += 1
             self.logger.info(
-                '=> End Epoch: {}, early stop epochs: {}, best epoch: {}, best trade off accuracy: {:.4f}, main task accuracy: {:.4f}, test target accuracy: {:.4f}, test asr: {:.4f}, anchor loss: {:.4f}, detection rate: {:.4f}, false positive rate: {:.4f}'.format(
+                '=> End Epoch: {}, early stop epochs: {}, best epoch: {}, best main task accuracy: {:.4f}, test target accuracy: {:.4f}, test asr: {:.4f}, anchor loss: {:.4f}'.format(
                     ep + 1,
                     no_change,
                     best_epoch + 1,
-                    best_trade_off,
                     best_acc,
                     best_metrics.get('test_target', 0.0),
                     best_metrics.get('test_asr', 0.0),
                     best_metrics.get('anchor_loss', 0.0),
-                    best_metrics.get('detection_rate', 0.0),
-                    best_metrics.get('false_positive_rate', 0.0),
                 )
             )
             if no_change == self.args.early_stop:
@@ -322,7 +307,7 @@ class Trainer:
 
                 loss = self.criterion(global_output, y)
                 batch_loss_list.append(loss.item())
-                if self.anchor_defense is not None:
+                if self.anchor_defense is not None and self.enable_anchor_loss:
                     batch_anchor_loss_list.append(self.anchor_defense.compute_anchor_loss(local_output_list, y).item())
 
                 _, predicted = global_output.max(1)
@@ -355,39 +340,18 @@ class Trainer:
         test_target = correct_target / max(1, total_target)
         epoch_loss = sum(batch_loss_list) / len(batch_loss_list)
         anchor_loss = sum(batch_anchor_loss_list) / max(1, len(batch_anchor_loss_list))
-        detection_rate = 0.0
-        false_positive_rate = 0.0
-        if self.anchor_defense is not None:
-            self.anchor_defense.calibrate(model_list, self.test_loader)
-            false_positive_rate = self.anchor_defense.evaluate_detection(model_list, self.test_loader)
-            detection_rate = self.anchor_defense.evaluate_detection(
-                model_list,
-                self.test_asr_loader,
-                exclude_target_label=self.args.target_label,
-            )
-        test_trade_off = self._compute_trade_off(
-            {
-                'test_acc': test_acc,
-                'test_asr': test_asr,
-                'detection_rate': detection_rate,
-                'false_positive_rate': false_positive_rate,
-            }
-        )
         # main task accuracy on target set
         self.logger.info(
-            '=> Test Epoch: {}, main task samples: {}, attack samples: {}, test loss: {:.4f}, test trade off: {:.4f}, test main task '
-            'accuracy: {:.4f}, test target accuracy: {:.4f}, test asr: {:.4f}, anchor loss: {:.4f}, detection rate: {:.4f}, false positive rate: {:.4f}'.format(
+            '=> Test Epoch: {}, main task samples: {}, attack samples: {}, test loss: {:.4f}, test main task '
+            'accuracy: {:.4f}, test target accuracy: {:.4f}, test asr: {:.4f}, anchor loss: {:.4f}'.format(
                 ep + 1,
                 len(self.test_loader.dataset),
                 len(self.test_asr_loader.dataset),
                 epoch_loss,
-                test_trade_off,
                 test_acc,
                 test_target,
                 test_asr,
                 anchor_loss,
-                detection_rate,
-                false_positive_rate,
             )
         )
 
@@ -397,8 +361,5 @@ class Trainer:
             'test_target': test_target,
             'test_asr': test_asr,
             'anchor_loss': anchor_loss,
-            'detection_rate': detection_rate,
-            'false_positive_rate': false_positive_rate,
             'epoch_loss': epoch_loss,
-            'test_trade_off': test_trade_off,
         }
