@@ -1,0 +1,115 @@
+{
+  "data_dir": "./dataset/data_raw/",
+  "_comment_data_dir": "数据集根目录",
+
+  "dataset": "UCIHAR",
+  "_comment_dataset": "使用 UCIHAR 数据集",
+
+  "device": 0,
+  "_comment_device": "使用的 GPU 编号，CPU 环境下可忽略",
+
+  "results_dir": "./results/UCIHAR_anchor_defense_stage2",
+  "_comment_results_dir": "第二阶段联合训练的日志与 checkpoint 保存目录",
+
+  "seed": 100,
+  "_comment_seed": "随机种子",
+
+  "epoch": 60,
+  "_comment_epoch": "第二阶段联合训练轮数",
+
+  "batch_size": 256,
+  "_comment_batch_size": "训练批大小",
+
+  "client_num": 3,
+  "_comment_client_num": "客户端总数，当前使用 3 个客户端",
+
+  "pretrained_checkpoint": null,
+  "_comment_pretrained_checkpoint": "第二阶段恢复训练的 checkpoint；首次训练时保持为 null",
+
+  "test_checkpoint": null,
+  "_comment_test_checkpoint": "测试模式下加载的 checkpoint；训练模式下不使用",
+
+  "lr": 0.001,
+  "_comment_lr": "学习率",
+
+  "start_epoch": 0,
+  "_comment_start_epoch": "第二阶段起始 epoch",
+
+  "print_steps": 10,
+  "_comment_print_steps": "第二阶段日志步长",
+
+  "early_stop": 10,
+  "_comment_early_stop": "第二阶段早停轮数",
+
+  "attack": "LFBA",
+  "_comment_attack": "启用攻击者分支的 LFBA 风格后门注入",
+
+  "target_label": 3,
+  "_comment_target_label": "后门目标标签",
+
+  "poison_rate": 0.1,
+  "_comment_poison_rate": "攻击者分支的投毒比例",
+
+  "poison_dimensions": 5,
+  "_comment_poison_dimensions": "触发器污染的特征维度数",
+
+  "trigger_feature_clip": 1.0,
+  "_comment_trigger_feature_clip": "数值型触发器强度",
+
+  "attack_client_num": 2,
+  "_comment_attack_client_num": "最后一个客户端为作恶方，因此索引为 2",
+
+  "feature_extractor": "",
+  "_comment_feature_extractor": "保留字段，当前未使用",
+
+  "select_rate": 0.3,
+  "_comment_select_rate": "LFBA 选择替换比例",
+
+  "random_select": false,
+  "_comment_random_select": "是否随机选择 LFBA 样本",
+
+  "select_replace": true,
+  "_comment_select_replace": "是否启用 LFBA 样本替换策略",
+
+  "poison_all": false,
+  "_comment_poison_all": "是否对所有候选样本投毒",
+
+  "anchor_idx": 1000,
+  "_comment_anchor_idx": "LFBA 的锚点样本索引",
+
+  "pretrain_stage": 0,
+  "_comment_pretrain_stage": "LFBA warmup 设置",
+
+  "mode": "train",
+  "_comment_mode": "运行第二阶段联合训练",
+
+  "defense": "anchor",
+  "_comment_defense": "启用 anchor defense 流程",
+
+  "force_stage1_retrain": false,
+  "_comment_force_stage1_retrain": "第二阶段优先复用第一阶段产物，不强制重跑第一阶段",
+
+  "lambda_anchor": 1.0,
+  "_comment_lambda_anchor": "第二阶段 anchor loss 权重，已调大以增强锚点约束",
+
+  "anchor_pretrain_epochs": 20,
+  "_comment_anchor_pretrain_epochs": "仅当第一阶段产物缺失且程序被迫补跑时才会使用",
+
+  "anchor_scale": 16.0,
+  "_comment_anchor_scale": "ArcFace scale 参数，需要和第一阶段保持一致",
+
+  "anchor_margin": 0.2,
+  "_comment_anchor_margin": "ArcFace margin 参数，需要和第一阶段保持一致",
+
+  "anchor_bank_path": "./results/UCIHAR_anchor_defense_stage1/anchor_artifact.pt",
+  "_comment_anchor_bank_path": "第一阶段导出的完整 anchor artifact 文件，作为 stage1_artifact 的后备加载路径",
+
+  "anchor_stage1_dir": "./results/UCIHAR_anchor_defense_stage1/anchor_stage1",
+  "_comment_anchor_stage1_dir": "第二阶段优先从这里加载第一阶段保存的本地模型与 anchor 状态",
+
+  "detect_threshold": 3.0,
+  "_comment_detect_threshold": "第三阶段检测阈值，同时用于第二阶段验证时的检测统计",
+
+  "majority_ratio": 0.5,
+  "_comment_majority_ratio": "第三阶段多数投票比例，同时用于第二阶段验证时的检测统计"
+}

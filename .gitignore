@@ -1,0 +1,40 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# IDE files
+.idea/
+.vscode/
+
+# Test/cache artifacts
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Project outputs
+results/
+logs/
+
+# Datasets and large local assets
+dataset/data_raw/
+*.tar
+*.tar.gz
+*.zip
+*.7z
+
+# Model artifacts
+*.pt
+*.pth
+*.pth.tar
+*.ckpt
+
+# OS files
+.DS_Store
+Thumbs.db
