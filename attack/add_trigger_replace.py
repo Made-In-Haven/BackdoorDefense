@@ -1,6 +1,6 @@
 import copy
 
-from dataset.utils import get_attacker_feature_slice
+from dataset.utils import get_attacker_feature_slice, get_attacker_image_slice
 from utils.utils import *
 
 
@@ -42,14 +42,25 @@ def add_triangle_pattern_trigger(args, logger, replace_indexes_others, replace_i
                                  replace_label):
     height, width, channels = new_data.shape[1:]
     temp = copy.deepcopy(new_data)
+    attacker_start, attacker_end = get_attacker_image_slice(args, width)
+    patch_height = min(3, height)
+    patch_width = min(3, max(1, attacker_end - attacker_start))
+    row_start = height - patch_height
+    col_start = attacker_end - patch_width
+
     for i, idx in enumerate(replace_indexes_others):
+        # Apply the trigger only inside the malicious client's image slice before sample replacement.
         for c in range(channels):
-            temp[idx, height - 3:, width - 3:, c] = 0
-            temp[idx, height - 3, width - 1, c] = 255
-            temp[idx, height - 1, width - 3, c] = 255
-            temp[idx, height - 2, width - 2, c] = 255
-            temp[idx, height - 1, width - 1, c] = 255
-        new_data[replace_indexes_target[i], :, 16:, :] = temp[idx, :, 16:, :]
+            temp[idx, row_start:height, col_start:attacker_end, c] = 0
+            temp[idx, row_start, attacker_end - 1, c] = 255
+            temp[idx, height - 1, col_start, c] = 255
+            temp[idx, height - 1, attacker_end - 1, c] = 255
+            if patch_height >= 2 and patch_width >= 2:
+                center_row = row_start + patch_height // 2
+                center_col = col_start + patch_width // 2
+                temp[idx, center_row, center_col, c] = 255
+        # Only replace the attacker's image slice so other clients keep their original views.
+        new_data[replace_indexes_target[i], :, attacker_start:attacker_end, :] = temp[idx, :, attacker_start:attacker_end, :]
     logger.info(
         "Add Trigger to %d Poison Samples, %d Clean Samples (%.2f)" % (
             len(poison_indexes), len(new_data) - len(poison_indexes), rate))

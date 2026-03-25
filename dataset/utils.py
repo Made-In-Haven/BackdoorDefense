@@ -71,19 +71,32 @@ def get_attacker_feature_slice(args, total_dim):
     return get_client_feature_slice(args, total_dim, args.attack_client_num)
 
 
+def get_image_slices(total_width, client_num):
+    return get_feature_slices(total_width, client_num)
+
+
+def get_client_image_slice(args, total_width, client_id):
+    return get_image_slices(total_width, args.client_num)[client_id]
+
+
+def get_attacker_image_slice(args, total_width):
+    return get_client_image_slice(args, total_width, args.attack_client_num)
+
+
 def split_vector_vfl(data, client_num):
     feature_slices = get_feature_slices(data.shape[1], client_num)
     return [data[:, start:end] for start, end in feature_slices]
 
 
+def split_image_vfl(data, client_num):
+    image_slices = get_image_slices(data.shape[-1], client_num)
+    return [data[:, :, :, start:end] for start, end in image_slices]
+
+
 def split_vfl(data, args):
     if args.dataset == 'CIFAR10':
-        if args.client_num != 2:
-            raise ValueError("CIFAR10 currently only supports client_num=2 in this project.")
-        # 32*16*3/32*16*3
-        x_a = data[:, :, :, :16]
-        x_b = data[:, :, :, 16:]
-        return [x_a, x_b]
+        # Split the image into contiguous width slices so CIFAR10 can support different client counts.
+        return split_image_vfl(data, args.client_num)
     elif args.dataset == 'UCIHAR':
         # Vector features are split into contiguous client-specific segments.
         return split_vector_vfl(data, args.client_num)

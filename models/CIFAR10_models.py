@@ -6,7 +6,8 @@ from torchvision import models
 class GlobalModelForCifar10(nn.Module):
     def __init__(self, args):
         super(GlobalModelForCifar10, self).__init__()
-        self.linear1 = nn.Linear(256, 256)
+        local_feature_dim = 128
+        self.linear1 = nn.Linear(local_feature_dim * args.client_num, 256)
         self.linear2 = nn.Linear(256, 128)
         self.classifier = nn.Linear(128, 10)
         self.args = args
@@ -29,9 +30,7 @@ class LocalModelForCifar10(nn.Module):
         self.args = args
         self.backbone = models.resnet18(pretrained=False)
         num_ftrs = self.backbone.fc.in_features
-        if self.args.client_num != 2:
-            raise ValueError("CIFAR10 currently only supports client_num=2 in this project.")
-        # CIFAR10 follows the original left-half / right-half two-party split setting.
+        # Keep the local encoder output width fixed so the global model only needs to adapt to client count.
         self.backbone.fc = nn.Linear(num_ftrs, 128)
         self.output_dim = 128
 
