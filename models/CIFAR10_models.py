@@ -13,7 +13,7 @@ class GlobalModelForCifar10(nn.Module):
         self.num_classes = 10
 
     def forward(self, input_list):
-        tensor_t = torch.cat((input_list[0], input_list[1]), dim=1)
+        tensor_t = torch.cat(input_list, dim=1)
 
         # forward
         x = tensor_t
@@ -29,8 +29,10 @@ class LocalModelForCifar10(nn.Module):
         self.args = args
         self.backbone = models.resnet18(pretrained=False)
         num_ftrs = self.backbone.fc.in_features
-        if self.args.client_num == 2:
-            self.backbone.fc = nn.Linear(num_ftrs, 128)
+        if self.args.client_num != 2:
+            raise ValueError("CIFAR10 currently only supports client_num=2 in this project.")
+        # CIFAR10 follows the original left-half / right-half two-party split setting.
+        self.backbone.fc = nn.Linear(num_ftrs, 128)
         self.output_dim = 128
 
     def extract_features(self, x):
