@@ -12,7 +12,7 @@ import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
 
-from attack.attack import attack_lra, attack_rsa
+from attack.attack import attack_lfba_test, attack_lra, attack_rsa
 from dataset.dataset import CIFAR10_VFL, NUSWIDE_VFL, PHISHING_VFL, UCIHAR_VFL
 from defense.anchor_defense import AnchorDefense
 from defense.anchor_trainer import AnchorPretrainer
@@ -159,7 +159,15 @@ def apply_attack(args, logger, train_data, test_data_asr, trigger_dimensions):
             args, logger, test_data_asr.data, trigger_dimensions, test_data_asr.targets, 1, "test"
         )
     elif args.attack == "LFBA":
-        test_data_asr.data = attack_rsa(args, logger, test_data_asr.data, trigger_dimensions, 1, "test")
+        # LFBA test samples are rebuilt inside Trainer.test so they always match the current runtime target label.
+        test_data_asr.data = attack_lfba_test(
+            args,
+            logger,
+            test_data_asr.data_p,
+            test_data_asr.targets,
+            trigger_dimensions,
+            "test",
+        )
     else:
         raise_attack_exception()
 

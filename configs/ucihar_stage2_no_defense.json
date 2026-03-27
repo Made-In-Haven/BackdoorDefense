@@ -15,15 +15,15 @@
   "early_stop": 10, // Early stopping patience
   "attack": "LFBA", // Enable LFBA attack
   "target_label": 3, // Backdoor target label
-  "poison_rate": 0.3, // Poison sample ratio
-  "poison_dimensions": 5, // Number of trigger dimensions
+  "poison_rate": 0.1, // Poison sample ratio
+  "poison_dimensions": 100, // Number of trigger dimensions
   "trigger_feature_clip": 1.0, // Trigger clipping strength
   "attack_client_num": 1, // The last client is the attacker in the two-client setup
   "feature_extractor": "", // Reserved legacy argument
   "select_rate": 1.0, // LFBA replace ratio
   "random_select": false, // Disable random poison sample selection
   "select_replace": true, // Enable LFBA replacement strategy
-  "poison_all": false, // Do not poison all candidate samples
+  "poison_all": true, // Do not poison all candidate samples
   "anchor_idx": 1000, // Anchor sample index for LFBA
   "pretrain_stage": 0, // LFBA warmup setting
   "mode": "train", // Run stage2 training
