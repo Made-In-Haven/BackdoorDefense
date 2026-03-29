@@ -225,6 +225,18 @@ def normalize_args(args):
     else:
         args.target_label = 3 if args.target_label is None else args.target_label
 
+    args.anchor_margin_auto_adjusted = False
+    args.requested_anchor_margin = args.anchor_margin
+    if (
+        args.dataset == "CIFAR10"
+        and args.defense == "anchor"
+        and args.client_num > 2
+        and args.anchor_margin > 0
+    ):
+        # Positive ArcFace margin is unstable for narrow CIFAR10 image slices in multi-client stage 1 pretraining.
+        args.anchor_margin = 0.0
+        args.anchor_margin_auto_adjusted = True
+
     num_classes = get_num_classes(args.dataset)
     if args.target_label >= num_classes:
         args.target_label = num_classes - 1
@@ -259,6 +271,13 @@ def main(args):
     device, device_message = resolve_runtime_device(args)
     logger = create_logger(args.results_dir)
     logger.info(args)
+    if getattr(args, "anchor_margin_auto_adjusted", False):
+        logger.info(
+            "=> Adjusted anchor_margin from %.4f to %.4f for CIFAR10 anchor stage1 with %s clients to avoid ArcFace collapse on narrow image slices",
+            args.requested_anchor_margin,
+            args.anchor_margin,
+            args.client_num,
+        )
     logger.info("=> Python executable: %s", sys.executable)
     logger.info(
         "=> Torch version: %s, compiled CUDA: %s, cuda available: %s, visible GPU count: %s",

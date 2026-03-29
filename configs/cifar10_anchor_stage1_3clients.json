@@ -33,7 +33,7 @@
   "lambda_anchor": 0.0, // Stage2-only weight, kept at zero here
   "anchor_pretrain_epochs": 20, // Number of stage1 epochs
   "anchor_scale": 16.0, // ArcFace scale for the active-side private head
-  "anchor_margin": 0.2, // ArcFace margin for the active-side private head
+  "anchor_margin": 0.0, // Positive ArcFace margin is unstable for 3-way CIFAR10 image slices during stage1
   "anchor_bank_path": "./results/CIFAR10_anchor_stage1_3clients/anchor_bank.pt", // Serialized stage1 anchor artifact
   "anchor_stage1_dir": "./results/CIFAR10_anchor_stage1_3clients/anchor_stage1", // Directory for stage1 local models and anchors
   "detect_threshold": 3.0, // Reserved for stage2 detection
