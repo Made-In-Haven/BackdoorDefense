@@ -89,14 +89,15 @@
   "force_stage1_retrain": false,
   "_comment_force_stage1_retrain": "第二阶段优先复用第一阶段产物，不强制重跑第一阶段",
 
-  "enable_anchor_loss": false,
-  "_comment_enable_anchor_loss": "是否启用第二阶段的锚点损失",
 
   "lambda_anchor": 1.0,
   "_comment_lambda_anchor": "第二阶段 anchor loss 权重，已调大以增强锚点约束",
 
   "anchor_pretrain_epochs": 20,
   "_comment_anchor_pretrain_epochs": "仅当第一阶段产物缺失且程序被迫补跑时才会使用",
+
+  "enable_anchor_loss": false,
+  "_comment_enable_anchor_loss": "是否启用第二阶段的锚点损失",
 
   "anchor_scale": 16.0,
   "_comment_anchor_scale": "ArcFace scale 参数，需要和第一阶段保持一致",

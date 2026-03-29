@@ -6,7 +6,7 @@ from random import sample
 import numpy as np
 import torch
 
-from attack.attack import attack_LFBA, get_near_index
+from attack.attack import attack_LFBA, attack_lfba_test, get_near_index
 from dataset.utils import split_vfl
 
 
@@ -98,9 +98,18 @@ class Trainer:
                     print("The poison set construction time: {}".format((end_time - start_time)))
                     total_time_GPC += (end_time - start_time)
                     self.poison_indexes = self.train_indexes[self.indexes]
+                    self.anchor_label = int(self.train_labels[self.anchor_idx_t])
+                    self.poison_label_count = int((self.train_labels[self.indexes] == self.anchor_label).sum())
                     self.consistent_rate = float(
-                        (self.train_labels[self.indexes] == int(self.train_labels[self.anchor_idx_t])).sum() / len(
-                            self.indexes))
+                        self.poison_label_count / len(self.indexes))
+                    # LFBA poison-set purity matters a lot: a large poison_rate can easily mix in many non-target labels.
+                    self.logger.info(
+                        "=> LFBA poison set summary: anchor label=%s, poison samples=%s, same-label poison samples=%s, consistent rate=%.4f",
+                        self.anchor_label,
+                        len(self.indexes),
+                        self.poison_label_count,
+                        self.consistent_rate,
+                    )
 
                 # For replace poisoning
                 self.indexes = np.isin(self.train_indexes.numpy(), torch.tensor(self.poison_indexes).numpy())
@@ -292,6 +301,17 @@ class Trainer:
         self.logger.info("=> Test ASR...")
         model_list = self.model_list
         model_list = [model.eval() for model in model_list]
+        if self.args.attack == 'LFBA':
+            # Rebuild the poisoned test set each epoch so LFBA evaluation matches the current training-time target label.
+            clean_test_asr_data = copy.deepcopy(self.test_asr_loader.dataset.data_p)
+            self.test_asr_loader.dataset.data = attack_lfba_test(
+                self.args,
+                self.logger,
+                clean_test_asr_data,
+                self.test_asr_loader.dataset.targets,
+                self.trigger_dimensions,
+                'test',
+            )
         # test main task accuracy
         batch_loss_list = []
         batch_anchor_loss_list = []

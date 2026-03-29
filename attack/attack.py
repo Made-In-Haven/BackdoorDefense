@@ -38,6 +38,50 @@ def attack_LFBA(args, logger, replace_indexes_others, replace_indexes_target, tr
     return new_data
 
 
+def attack_lfba_test(args, logger, data, targets, trigger_dimensions, mode="test"):
+    new_data = copy.deepcopy(data)
+    new_targets = copy.deepcopy(targets)
+    target_array = np.asarray(targets)
+    attacked_indexes = np.where(target_array != args.target_label)[0]
+
+    if len(attacked_indexes) == 0:
+        logger.info("=> LFBA test attack skipped because no non-target samples were found for target label %s", args.target_label)
+        return new_data
+
+    # Rebuild the LFBA test set with the same attack family as training instead of falling back to RSA.
+    if args.poison_all:
+        new_data, _ = add_trigger_to_data(
+            args,
+            logger,
+            attacked_indexes,
+            new_data,
+            trigger_dimensions,
+            new_targets,
+            1,
+            mode,
+            replace_label=False,
+        )
+        return new_data
+
+    all_indexes = np.arange(len(new_data))
+    source_indexes = np.resize(np.roll(all_indexes, 1), len(attacked_indexes))
+    new_data, _ = add_trigger_to_data_replace(
+        args,
+        logger,
+        source_indexes,
+        attacked_indexes,
+        all_indexes,
+        attacked_indexes,
+        new_data,
+        trigger_dimensions,
+        new_targets,
+        1,
+        mode,
+        replace_label=False,
+    )
+    return new_data
+
+
 def select_LFBA(train_features, num_poisons):
     anchor_idx = get_anchor_LFBA(
         train_features, num_poisons)

@@ -1,0 +1,26 @@
+{
+  "data_dir": "./dataset/data_raw/", // Root that contains Phishing/CM1.csv
+  "dataset": "PHISHING", // Binary phishing classification dataset
+  "device": 0,
+  "results_dir": "./results/standalone_lfba_vfl/phishing_k2_paper_like",
+  "seed": 100, // Paper does not specify the seed; keep a stable default
+  "epoch": 60, // Practical convergence cap for the standalone runner
+  "batch_size": 256, // Paper setting
+  "client_num": 2, // Use the K=2 setting from the paper tables
+  "lr": 0.003, // Paper setting for Phishing
+  "start_epoch": 0,
+  "print_steps": 10,
+  "early_stop": 10,
+  "target_label": 1, // Paper states the backdoor target is the non-phishing class
+  "poison_rate": 0.1, // Paper uses p in the 0.1-0.3 range
+  "poison_dimensions": 5, // Small fixed trigger on attacker features
+  "trigger_feature_clip": 1.0,
+  "attack_client_num": 1, // Second client acts as the attacker in the two-client setup
+  "select_rate": 0.3, // Use the standard selective-switching setting
+  "random_select": false,
+  "poison_all": false,
+  "anchor_idx": 1000, // Local reproducible default; not fixed in the paper
+  "pretrain_stage": 0,
+  "mode": "train",
+  "test_checkpoint": null
+}
