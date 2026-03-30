@@ -2,24 +2,24 @@
   "data_dir": "./dataset/data_raw/", // UCI-HAR root used by the standalone runner
   "dataset": "UCIHAR", // Paper experiment dataset
   "device": 0, // GPU index; set to -1 to force CPU fallback in this runner
-  "results_dir": "./results/standalone_lfba_vfl/ucihar_k2_paper_like",
+  "results_dir": "./results/standalone_lfba_vfl/ucihar_k3_comparable",
   "seed": 100, // Paper does not specify a random seed; keep a stable local default
   "epoch": 60, // Paper says training runs until convergence; this standalone script still uses an early-stop cap
   "batch_size": 256, // Explicitly stated in the paper
-  "client_num": 2, // Paper reports UCI-HAR results for K=2 and K=4; use the K=2 setting here
+  "client_num": 3, // Comparable setting: use the same 3-client VFL split as PHISHING
   "lr": 0.003, // Explicitly stated for UCI-HAR in the paper
   "start_epoch": 0,
   "print_steps": 10,
   "early_stop": 10, // Practical convergence stop for this standalone script
-  "target_label": 3, // Paper says the backdoor target is the fourth class; this runner uses 0-based labels
-  "poison_rate": 0.1, // Paper states p is set between 0.1 and 0.3; use the common default p=0.1
-  "poison_dimensions": 120, // Paper says several dimensions are fixed as triggers; use a small trigger size
+  "target_label": 1, // Paper says the backdoor target is the fourth class; this runner uses 0-based labels
+  "poison_rate": 0.2, // Paper states p is set between 0.1 and 0.3; use the common default p=0.1
+  "poison_dimensions": 60, // Comparable trigger budget: about 13.4% of one attacker slice, close to PHISHING's 5/37
   "trigger_feature_clip": 1.0, // Fixed trigger value for vector features
-  "attack_client_num": 1, // In K=2, the second client acts as the attacker
-  "select_rate": 0.3, // Paper uses the switching ratio s in [0,1]; use the standard small-switch setting
+  "attack_client_num": 2, // Comparable setting: use the third client as the attacker
+  "select_rate": 0.7, // Comparable poison budget: keep the same LFBA switching ratio as PHISHING
   "random_select": false,
   "poison_all": false, // LFBA includes selective sample switching rather than poisoning all selected samples directly
-  "anchor_idx": 1000, // Paper does not publish a fixed anchor index; keep the local reproducible choice
+  "anchor_idx": 150, // Paper does not publish a fixed anchor index; keep the local reproducible choice
   "pretrain_stage": 0,
   "mode": "train",
   "test_checkpoint": null

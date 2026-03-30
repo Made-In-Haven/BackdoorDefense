@@ -5,6 +5,9 @@ import pandas as pd
 
 from utils.utils import raise_dataset_exception
 
+NUSWIDE_IMAGE_DIM = 634
+NUSWIDE_TEXT_DIM = 1000
+
 
 def get_labeled_data(data_dir, selected_label, n_samples, dtype="Train"):
     # get labels
@@ -58,8 +61,28 @@ def get_feature_slices(total_dim, client_num):
     return feature_slices
 
 
+def get_nuswide_feature_slices(client_num):
+    if client_num == 2:
+        return [(0, NUSWIDE_IMAGE_DIM), (NUSWIDE_IMAGE_DIM, NUSWIDE_IMAGE_DIM + NUSWIDE_TEXT_DIM)]
+
+    # Preserve the full image modality on client 0, then split only the text modality across the remaining clients.
+    text_slices = get_feature_slices(NUSWIDE_TEXT_DIM, client_num - 1)
+    feature_slices = [(0, NUSWIDE_IMAGE_DIM)]
+    for start, end in text_slices:
+        feature_slices.append((NUSWIDE_IMAGE_DIM + start, NUSWIDE_IMAGE_DIM + end))
+    return feature_slices
+
+
+def get_dataset_feature_slices(args, total_dim):
+    if args.dataset in {"NUSWIDE", "NUSWIDET"}:
+        return get_nuswide_feature_slices(args.client_num)
+    if args.dataset == "NUSWIDEI" and args.client_num == 2:
+        return [(NUSWIDE_IMAGE_DIM, total_dim), (0, NUSWIDE_IMAGE_DIM)]
+    return get_feature_slices(total_dim, args.client_num)
+
+
 def get_client_feature_slice(args, total_dim, client_id):
-    return get_feature_slices(total_dim, args.client_num)[client_id]
+    return get_dataset_feature_slices(args, total_dim)[client_id]
 
 
 def get_client_input_dim(args, total_dim, client_id):
@@ -88,6 +111,11 @@ def split_vector_vfl(data, client_num):
     return [data[:, start:end] for start, end in feature_slices]
 
 
+def split_dataset_vector_vfl(data, args):
+    feature_slices = get_dataset_feature_slices(args, data.shape[1])
+    return [data[:, start:end] for start, end in feature_slices]
+
+
 def split_image_vfl(data, client_num):
     image_slices = get_image_slices(data.shape[-1], client_num)
     return [data[:, :, :, start:end] for start, end in image_slices]
@@ -103,18 +131,9 @@ def split_vfl(data, args):
     elif args.dataset == 'PHISHING':
         return split_vector_vfl(data, args.client_num)
     elif args.dataset == 'NUSWIDE' or args.dataset == 'NUSWIDET':
-        if args.client_num != 2:
-            raise ValueError("NUSWIDE currently only supports client_num=2 in this project.")
-        # 634/1000
-        x_a = data[:, :634]
-        x_b = data[:, 634:]
-        return [x_a, x_b]
+        # Preserve the original image/text split for 2 clients; otherwise split the concatenated vector contiguously.
+        return split_dataset_vector_vfl(data, args)
     elif args.dataset == 'NUSWIDEI':
-        if args.client_num != 2:
-            raise ValueError("NUSWIDEI currently only supports client_num=2 in this project.")
-        # 1000/634
-        x_a = data[:, 634:]
-        x_b = data[:, :634]
-        return [x_a, x_b]
+        return split_dataset_vector_vfl(data, args)
     else:
         raise_dataset_exception()

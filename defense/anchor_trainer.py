@@ -1,11 +1,10 @@
-import copy
 import json
 import os
 
 import torch
 import torch.nn.functional as F
 
-from attack.attack import attack_lra, attack_rsa
+from attack.runtime import build_stage1_private_poisoned_loaders
 from dataset.utils import split_vfl
 from defense.anchor_defense import AnchorDefense
 from defense.anchor_utils import build_anchor_heads, get_stage1_dir
@@ -19,42 +18,13 @@ class AnchorPretrainer:
         self.logger = logger
 
     def _build_stage1_attacker_loaders(self, train_loader, test_loader, trigger_dimensions):
-        if self.args.attack is None:
-            return None, None
-
-        poisoned_train_dataset = copy.deepcopy(train_loader.dataset)
-        poisoned_test_dataset = copy.deepcopy(test_loader.dataset)
-
-        # Stage 1 only poisons the attacker's own branch, so we prepare a private poisoned view here.
-        poisoned_train_dataset.data, poisoned_train_dataset.targets = attack_lra(
+        return build_stage1_private_poisoned_loaders(
             self.args,
             self.logger,
-            poisoned_train_dataset.data,
+            train_loader,
+            test_loader,
             trigger_dimensions,
-            poisoned_train_dataset.targets,
-            self.args.poison_rate,
-            "train",
         )
-        poisoned_test_dataset.data = attack_rsa(
-            self.args,
-            self.logger,
-            poisoned_test_dataset.data,
-            trigger_dimensions,
-            1,
-            "test",
-        )
-
-        poisoned_train_loader = torch.utils.data.DataLoader(
-            dataset=poisoned_train_dataset,
-            batch_size=self.args.batch_size,
-            shuffle=True,
-        )
-        poisoned_test_loader = torch.utils.data.DataLoader(
-            dataset=poisoned_test_dataset,
-            batch_size=self.args.batch_size,
-            shuffle=False,
-        )
-        return poisoned_train_loader, poisoned_test_loader
 
     def _evaluate_clean_metrics(self, local_model, head, data_loader, client_id):
         local_model.eval()
@@ -133,6 +103,8 @@ class AnchorPretrainer:
 
             for epoch in range(self.args.anchor_pretrain_epochs):
                 epoch_ce_loss = 0.0
+                epoch_anchor_loss = 0.0
+                epoch_total_loss = 0.0
                 total = 0
                 for x_n, _, y, _ in client_train_loader:
                     x = x_n.to(self.device).float()
@@ -142,12 +114,16 @@ class AnchorPretrainer:
                     logits, _ = head(features, y)
                     # Stage 1 optimizes the local branch using its active-side private head.
                     ce_loss = F.cross_entropy(logits, y)
+                    anchor_loss = compute_single_client_anchor_loss(head, features, y)
+                    total_loss = ce_loss + self.args.lambda_stage1_anchor * anchor_loss
 
                     optimizer.zero_grad()
-                    ce_loss.backward()
+                    total_loss.backward()
                     optimizer.step()
 
                     epoch_ce_loss += ce_loss.item() * y.size(0)
+                    epoch_anchor_loss += anchor_loss.item() * y.size(0)
+                    epoch_total_loss += total_loss.item() * y.size(0)
                     total += y.size(0)
 
                 clean_metrics = self._evaluate_clean_metrics(local_model, head, test_loader, client_id)
@@ -156,11 +132,13 @@ class AnchorPretrainer:
                     backdoor_acc = self._evaluate_backdoor_asr(local_model, head, attacker_test_loader, client_id)
 
                 self.logger.info(
-                    "=> Stage 1 client %s epoch %s/%s, ce loss: %.4f, clean acc: %.4f, anchor loss: %.4f, backdoor acc: %.4f",
+                    "=> Stage 1 client %s epoch %s/%s, ce loss: %.4f, train anchor loss: %.4f, total loss: %.4f, clean acc: %.4f, eval anchor loss: %.4f, backdoor acc: %.4f",
                     client_id,
                     epoch + 1,
                     self.args.anchor_pretrain_epochs,
                     epoch_ce_loss / max(1, total),
+                    epoch_anchor_loss / max(1, total),
+                    epoch_total_loss / max(1, total),
                     clean_metrics["clean_acc"],
                     clean_metrics["anchor_loss"],
                     backdoor_acc,

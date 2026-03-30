@@ -1,7 +1,8 @@
 import copy
-from random import sample
+import os
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import Dataset
 from torchvision.datasets import CIFAR10
@@ -13,6 +14,11 @@ import numpy as np
 import pickle
 import torch
 from typing import Any, Callable, Optional, Tuple
+
+
+PHISHING_FILENAME = "PHISHING_full.csv"
+PHISHING_SPLIT_SEED = 100
+PHISHING_TEST_RATIO = 0.2
 
 
 class CIFAR10_VFL(CIFAR10):
@@ -124,22 +130,59 @@ class NUSWIDE_VFL(Dataset):
         return len(self.data)
 
 
+def _resolve_phishing_csv_path(root):
+    candidate_paths = [
+        os.path.join(root, "Phishing", PHISHING_FILENAME),
+        os.path.join(root, "data_raw", "Phishing", PHISHING_FILENAME),
+        os.path.join(root, PHISHING_FILENAME),
+    ]
+    for candidate_path in candidate_paths:
+        if os.path.isfile(candidate_path):
+            return candidate_path
+    raise FileNotFoundError(
+        "PHISHING dataset file was not found. Expected '{}' under one of: {}".format(
+            PHISHING_FILENAME,
+            ", ".join(candidate_paths),
+        )
+    )
+
+
+def _get_phishing_label_column(dataframe):
+    if "phishing" in dataframe.columns:
+        return "phishing"
+    if "Result" in dataframe.columns:
+        return "Result"
+    raise KeyError("PHISHING dataset must contain either a 'phishing' or 'Result' label column.")
+
+
 class PHISHING_VFL(Dataset):
     def __init__(self, root, train, transforms):
-        data = pd.read_csv(root + 'Phishing/CM1.csv')
-        drop_cols = ['Result']
-        X = data.drop(drop_cols, axis=1)
-        y = data['Result'].to_numpy()
+        self.source_path = _resolve_phishing_csv_path(root)
+        data = pd.read_csv(self.source_path)
+        label_column = _get_phishing_label_column(data)
+        feature_frame = data.drop(columns=[label_column])
+        labels = data[label_column].astype(np.int64).to_numpy()
+
+        train_features_raw, test_features_raw, train_labels, test_labels = train_test_split(
+            feature_frame.to_numpy(dtype=np.float32),
+            labels,
+            test_size=PHISHING_TEST_RATIO,
+            random_state=PHISHING_SPLIT_SEED,
+            stratify=labels,
+            shuffle=True,
+        )
+
         scaler = StandardScaler()
-        X = scaler.fit_transform(X)
-        y = y.reshape((len(y), 1))
-        X = torch.tensor(X)
-        y = torch.tensor(y)
-        indexes_list = np.array(range(len(X)))
-        train_indexes = sample(list(indexes_list), 8844)
-        test_indexes = list(set(list(indexes_list)).difference(set(train_indexes)))
-        train_data, test_data = X[train_indexes], X[test_indexes]
-        train_target, test_target = y[train_indexes].reshape(-1), y[test_indexes].reshape(-1)
+        train_features = scaler.fit_transform(train_features_raw)
+        test_features = scaler.transform(test_features_raw)
+
+        train_data = torch.tensor(train_features, dtype=torch.float32)
+        test_data = torch.tensor(test_features, dtype=torch.float32)
+        train_target = torch.tensor(train_labels, dtype=torch.long)
+        test_target = torch.tensor(test_labels, dtype=torch.long)
+        self.feature_names = list(feature_frame.columns)
+        self.input_dim = len(self.feature_names)
+
         if train:
             self.data = train_data
             self.data_p = copy.deepcopy(train_data)

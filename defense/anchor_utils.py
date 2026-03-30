@@ -52,6 +52,8 @@ def ensure_dir(path):
 
 
 def build_vote_threshold(client_num, majority_ratio):
+    if majority_ratio <= 0.5:
+        return max(1, (client_num // 2) + 1)
     return max(1, math.ceil(client_num * majority_ratio))
 
 

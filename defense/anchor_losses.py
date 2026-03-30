@@ -36,19 +36,29 @@ class ArcFaceClassifier(nn.Module):
         return logits * self.scale, embeddings
 
 
-def compute_anchor_constraint_loss(local_output_list, labels, anchor_bank, projector_dict):
+def compute_anchor_constraint_loss(local_output_list, labels, anchor_bank, projector_dict, return_client_losses=False):
     loss_list = []
     embedding_dict = {}
+    client_loss_dict = {}
 
     for client_id, local_output in enumerate(local_output_list):
         embeddings = F.normalize(projector_dict[str(client_id)](local_output), dim=1)
         anchors = anchor_bank[client_id].index_select(0, labels)
         embedding_dict[client_id] = embeddings
-        loss_list.append(((embeddings - anchors) ** 2).sum(dim=1).mean())
+        client_loss = ((embeddings - anchors) ** 2).sum(dim=1).mean()
+        client_loss_dict[client_id] = client_loss
+        loss_list.append(client_loss)
 
+    total_loss = torch.zeros(1, device=labels.device).squeeze()
     if not loss_list:
-        return torch.zeros(1, device=labels.device).squeeze(), embedding_dict
-    return sum(loss_list) / len(loss_list), embedding_dict
+        if return_client_losses:
+            return total_loss, embedding_dict, client_loss_dict
+        return total_loss, embedding_dict
+
+    total_loss = sum(loss_list) / len(loss_list)
+    if return_client_losses:
+        return total_loss, embedding_dict, client_loss_dict
+    return total_loss, embedding_dict
 
 
 def compute_single_client_anchor_loss(head, features, labels):

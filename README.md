@@ -58,6 +58,8 @@ Hyperparameter explanations:
 
 **--select_rate:** The switch ratio ($s=\frac{N_s}{N}$ in the paper).
 
+For the updated `PHISHING` dataset in this workspace, place the file at `dataset/data_raw/Phishing/PHISHING_full.csv`. The loader will automatically adapt to the new feature dimension.
+
 
 ## Citation
 Please cite our work, thank you!

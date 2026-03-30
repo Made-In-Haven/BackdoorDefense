@@ -11,6 +11,7 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 
 from dataset.dataset import CIFAR10_VFL, NUSWIDE_VFL, PHISHING_VFL, UCIHAR_VFL
+from defense.anchor_utils import get_num_classes
 from models.CIFAR10_models import GlobalModelForCifar10, LocalModelForCifar10
 from models.NUSWIDE_models import GlobalModelForNUSWIDE, LocalModelForNUSWIDE
 from models.PHISHING_models import GlobalModelForPHISHING, LocalModelForPHISHING
@@ -62,10 +63,25 @@ def build_datasets(args, logger):
     elif args.dataset == "PHISHING":
         train_data = PHISHING_VFL(root=args.data_dir, train=True, transforms=None)
         test_data = PHISHING_VFL(root=args.data_dir, train=False, transforms=None)
+        args.phishing_input_dim = train_data.data.shape[1]
+        logger.info("=> PHISHING file: %s", train_data.source_path)
+        logger.info(
+            "=> PHISHING feature dim: %s, train samples: %s, test samples: %s",
+            args.phishing_input_dim,
+            len(train_data),
+            len(test_data),
+        )
     elif args.dataset == "NUSWIDE":
         selected_labels = ["buildings", "grass", "animal", "water", "person"]
         train_data = NUSWIDE_VFL(root=args.data_dir, selected_labels=selected_labels, train=True, transforms=None)
         test_data = NUSWIDE_VFL(root=args.data_dir, selected_labels=selected_labels, train=False, transforms=None)
+        args.nuswide_total_dim = train_data.data.shape[1]
+        args.nuswide_local_output_dim = getattr(args, "nuswide_local_output_dim", 32)
+        logger.info(
+            "=> NUSWIDE total feature dim: %s, client_num: %s",
+            args.nuswide_total_dim,
+            args.client_num,
+        )
     else:
         raise_dataset_exception()
 
@@ -113,8 +129,9 @@ def normalize_args(args):
     else:
         raise_dataset_exception()
 
-    if args.dataset == "NUSWIDE" and args.client_num != 2:
-        raise ValueError("NUSWIDE currently only supports client_num=2 in standalone_lfba_vfl.")
+    num_classes = get_num_classes(args.dataset)
+    if args.target_label >= num_classes:
+        args.target_label = num_classes - 1
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     if not args.results_dir:

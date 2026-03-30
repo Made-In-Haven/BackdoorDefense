@@ -12,10 +12,9 @@ import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
 
-from attack.attack import attack_lfba_test, attack_lra, attack_rsa
+from attack.runtime import create_attack_runtime
 from dataset.dataset import CIFAR10_VFL, NUSWIDE_VFL, PHISHING_VFL, UCIHAR_VFL
-from defense.anchor_defense import AnchorDefense
-from defense.anchor_trainer import AnchorPretrainer
+from defense.factory import load_defense_runtime_stats, normalize_defense_args, prepare_defense
 from defense.anchor_utils import get_num_classes, get_stage1_dir
 from dataset.utils import get_attacker_feature_slice
 from models.CIFAR10_models import GlobalModelForCifar10, LocalModelForCifar10
@@ -23,7 +22,7 @@ from models.NUSWIDE_models import GlobalModelForNUSWIDE, LocalModelForNUSWIDE
 from models.PHISHING_models import GlobalModelForPHISHING, LocalModelForPHISHING
 from models.UCIHAR_models import GlobalModelForUCIHAR, LocalModelForUCIHAR
 from utils.trainer import Trainer
-from utils.utils import raise_attack_exception, raise_dataset_exception, set_seed
+from utils.utils import raise_dataset_exception, set_seed
 
 
 def create_logger(results_dir):
@@ -68,10 +67,25 @@ def build_datasets(args, logger):
     elif args.dataset == "PHISHING":
         train_data = PHISHING_VFL(root=args.data_dir, train=True, transforms=None)
         test_data = PHISHING_VFL(root=args.data_dir, train=False, transforms=None)
+        args.phishing_input_dim = train_data.data.shape[1]
+        logger.info("=> PHISHING file: %s", train_data.source_path)
+        logger.info(
+            "=> PHISHING feature dim: %s, train samples: %s, test samples: %s",
+            args.phishing_input_dim,
+            len(train_data),
+            len(test_data),
+        )
     elif args.dataset == "NUSWIDE":
         selected_labels = ["buildings", "grass", "animal", "water", "person"]
         train_data = NUSWIDE_VFL(root=args.data_dir, selected_labels=selected_labels, train=True, transforms=None)
         test_data = NUSWIDE_VFL(root=args.data_dir, selected_labels=selected_labels, train=False, transforms=None)
+        args.nuswide_total_dim = train_data.data.shape[1]
+        args.nuswide_local_output_dim = getattr(args, "nuswide_local_output_dim", 32)
+        logger.info(
+            "=> NUSWIDE total feature dim: %s, client_num: %s",
+            args.nuswide_total_dim,
+            args.client_num,
+        )
     else:
         raise_dataset_exception()
 
@@ -126,7 +140,32 @@ def load_checkpoint_if_available(args, device, logger, model_list, optimizer_lis
         checkpoint.get("epoch", "n/a"),
         checkpoint.get("best_acc", 0.0),
     )
+    checkpoint_target_label = checkpoint.get("target_label")
+    if checkpoint_target_label is not None:
+        args.target_label = int(checkpoint_target_label)
+        logger.info("=> Restored target_label=%s from checkpoint", args.target_label)
     return checkpoint
+
+
+def maybe_resolve_lfba_target_label(args, logger, checkpoint, train_data):
+    if args.attack != "LFBA":
+        return
+
+    if checkpoint and checkpoint.get("target_label") is not None:
+        return
+
+    if args.anchor_idx < 0 or args.anchor_idx >= len(train_data):
+        logger.info(
+            "=> Unable to infer LFBA target label from anchor_idx=%s because it is outside the training split",
+            args.anchor_idx,
+        )
+        return
+
+    inferred_target_label = train_data.targets[args.anchor_idx]
+    if torch.is_tensor(inferred_target_label):
+        inferred_target_label = inferred_target_label.item()
+    args.target_label = int(inferred_target_label)
+    logger.info("=> Inferred LFBA target_label=%s from training anchor_idx=%s", args.target_label, args.anchor_idx)
 
 
 def select_trigger_dimensions(args, train_data):
@@ -139,84 +178,14 @@ def select_trigger_dimensions(args, train_data):
         attacker_start, attacker_end = get_attacker_feature_slice(args, train_data.data.shape[1])
         ranges = range(attacker_start, attacker_end)
     elif args.dataset == "NUSWIDE":
-        ranges = range(634, 1634)
+        if args.client_num == 2:
+            ranges = range(634, 1634)
+        else:
+            attacker_start, attacker_end = get_attacker_feature_slice(args, train_data.data.shape[1])
+            ranges = range(attacker_start, attacker_end)
     else:
         raise_dataset_exception()
     return np.random.choice(ranges, args.poison_dimensions, replace=False)
-
-
-def apply_attack(args, logger, train_data, test_data_asr, trigger_dimensions):
-    if args.attack is None:
-        test_data_asr.data = attack_rsa(args, logger, test_data_asr.data, trigger_dimensions, 1, "test")
-    elif args.attack == "rsa":
-        train_data.data = attack_rsa(args, logger, train_data.data, trigger_dimensions, args.poison_rate, "train")
-        test_data_asr.data = attack_rsa(args, logger, test_data_asr.data, trigger_dimensions, 1, "test")
-    elif args.attack == "lra":
-        train_data.data, train_data.targets = attack_lra(
-            args, logger, train_data.data, trigger_dimensions, train_data.targets, args.poison_rate, "train"
-        )
-        test_data_asr.data, _ = attack_lra(
-            args, logger, test_data_asr.data, trigger_dimensions, test_data_asr.targets, 1, "test"
-        )
-    elif args.attack == "LFBA":
-        # LFBA test samples are rebuilt inside Trainer.test so they always match the current runtime target label.
-        test_data_asr.data = attack_lfba_test(
-            args,
-            logger,
-            test_data_asr.data_p,
-            test_data_asr.targets,
-            trigger_dimensions,
-            "test",
-        )
-    else:
-        raise_attack_exception()
-
-
-def maybe_prepare_anchor_defense(args, device, logger, model_list, checkpoint, clean_train_loader, test_loader, trigger_dimensions):
-    if args.defense != "anchor":
-        return None
-
-    # When stage 1 only mode is requested, rerun stage 1 so metrics are freshly printed.
-    if args.mode == "pretrain_anchor" and args.force_stage1_retrain:
-        pretrainer = AnchorPretrainer(device=device, args=args, logger=logger)
-        anchor_defense = pretrainer.pretrain(
-            model_list=model_list,
-            train_loader=clean_train_loader,
-            test_loader=test_loader,
-            trigger_dimensions=trigger_dimensions,
-        )
-        if args.anchor_bank_path:
-            anchor_defense.save(args.anchor_bank_path)
-            logger.info("=> Saved anchor artifact to '%s'", args.anchor_bank_path)
-        return anchor_defense
-
-    if checkpoint and checkpoint.get("anchor_state"):
-        logger.info("=> Loading anchor defense state from checkpoint")
-        return AnchorDefense.load_from_checkpoint_state(checkpoint["anchor_state"], model_list, device, args, logger)
-
-    stage1_anchor_defense = AnchorDefense.load_stage1_artifacts(model_list, device, args, logger)
-    if stage1_anchor_defense is not None:
-        return stage1_anchor_defense
-
-    if args.anchor_bank_path and os.path.isfile(args.anchor_bank_path):
-        logger.info("=> Loading anchor artifact from '%s'", args.anchor_bank_path)
-        return AnchorDefense.load_from_artifact(args.anchor_bank_path, model_list, device, args, logger)
-
-    if args.mode == "test":
-        logger.info("=> Anchor defense is enabled but no anchor artifact was found")
-        return None
-
-    pretrainer = AnchorPretrainer(device=device, args=args, logger=logger)
-    anchor_defense = pretrainer.pretrain(
-        model_list=model_list,
-        train_loader=clean_train_loader,
-        test_loader=test_loader,
-        trigger_dimensions=trigger_dimensions,
-    )
-    if args.anchor_bank_path:
-        anchor_defense.save(args.anchor_bank_path)
-        logger.info("=> Saved anchor artifact to '%s'", args.anchor_bank_path)
-    return anchor_defense
 
 
 def build_loaders(args, train_data, test_data, test_data_asr):
@@ -228,6 +197,7 @@ def build_loaders(args, train_data, test_data, test_data_asr):
 
 def normalize_args(args):
     args.dataset = args.dataset.upper()
+    normalize_defense_args(args)
     if args.dataset == "PHISHING":
         args.target_label = 1 if args.target_label is None else args.target_label
     else:
@@ -279,6 +249,7 @@ def main(args):
     device, device_message = resolve_runtime_device(args)
     logger = create_logger(args.results_dir)
     logger.info(args)
+    logger.info("=> Defense scheme: %s", getattr(args, "defense_scheme", "none"))
     if getattr(args, "anchor_margin_auto_adjusted", False):
         logger.info(
             "=> Adjusted anchor_margin from %.4f to %.4f for CIFAR10 anchor stage1 with %s clients to avoid ArcFace collapse on narrow image slices",
@@ -303,7 +274,8 @@ def main(args):
 
     model_list, optimizer_list, criterion = build_models(args, device)
     checkpoint = load_checkpoint_if_available(args, device, logger, model_list, optimizer_list)
-    anchor_defense = maybe_prepare_anchor_defense(
+    maybe_resolve_lfba_target_label(args, logger, checkpoint, train_data)
+    defense_runtime = prepare_defense(
         args,
         device,
         logger,
@@ -313,12 +285,15 @@ def main(args):
         clean_test_loader,
         trigger_dimensions,
     )
+    load_defense_runtime_stats(args, logger, defense_runtime)
 
     if args.mode == "pretrain_anchor":
         return
 
-    apply_attack(args, logger, train_data, test_data_asr, trigger_dimensions)
+    attack_runtime = create_attack_runtime(args=args, logger=logger, trigger_dimensions=trigger_dimensions, device=device)
+    attack_runtime.apply_initial_dataset_poisoning(train_data, test_data_asr)
     train_loader, test_loader, test_asr_loader = build_loaders(args, train_data, test_data, test_data_asr)
+    attack_runtime.attach_loaders(train_loader, test_asr_loader)
 
     trainer = Trainer(
         device=device,
@@ -332,11 +307,12 @@ def main(args):
         logger=logger,
         args=args,
         checkpoint=checkpoint,
-        anchor_defense=anchor_defense,
+        anchor_defense=defense_runtime,
+        attack_runtime=attack_runtime,
     )
 
     if args.mode == "test":
-        trainer.test(checkpoint.get("epoch", 0) if checkpoint else 0)
+        trainer.test((checkpoint.get("epoch", 1) - 1) if checkpoint else 0)
         return
 
     trainer.train()
@@ -376,6 +352,11 @@ def build_parser():
     parser.add_argument("--mode", default="train", choices=["train", "test", "pretrain_anchor"])
     parser.add_argument("--defense", default="none", choices=["none", "anchor"])
     parser.add_argument(
+        "--defense_scheme",
+        default="",
+        help="named defense scheme used for experiment tracking, e.g. AVGuard",
+    )
+    parser.add_argument(
         "--force_stage1_retrain",
         action="store_true",
         help="force rerunning stage 1 instead of reusing a saved stage1 artifact",
@@ -387,6 +368,12 @@ def build_parser():
         help="whether to add anchor loss during stage 2 training",
     )
     parser.add_argument("--lambda_anchor", default=0.1, type=float, help="weight of anchor constraint loss")
+    parser.add_argument(
+        "--lambda_stage1_anchor",
+        default=0.3,
+        type=float,
+        help="weight of anchor loss during stage1 anchor pretraining",
+    )
     parser.add_argument("--anchor_pretrain_epochs", default=5, type=int, help="anchor pretraining epochs")
     parser.add_argument("--anchor_scale", default=16.0, type=float, help="ArcFace scale")
     parser.add_argument("--anchor_margin", default=0.2, type=float, help="ArcFace angular margin")
@@ -402,15 +389,21 @@ def build_parser():
     )
     parser.add_argument(
         "--detect_threshold",
-        default=3.0,
+        default=2.0,
         type=float,
-        help="detector threshold multiplier based on clean mean and std",
+        help="stage3 multiplicative threshold gamma",
+    )
+    parser.add_argument(
+        "--detect_threshold_cap",
+        default=1.5,
+        type=float,
+        help="stage3 distance-threshold upper cap; final threshold is min(gamma * client_anchor_loss, cap)",
     )
     parser.add_argument(
         "--majority_ratio",
         default=0.5,
         type=float,
-        help="minimum abnormal-client ratio required to flag a sample",
+        help="minimum inconsistent-client ratio required to flag a sample",
     )
     return parser
 

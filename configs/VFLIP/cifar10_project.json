@@ -1,0 +1,21 @@
+{
+  "dataset": "CIFAR10", // Dataset name
+  "runtime": "project", // Use the project-compatible VFLIP runtime
+  "path_dataset": "./dataset/data_raw/", // Dataset root
+  "checkpoint_path": "./results/standalone_lfba_vfl/cifar10/best_checkpoint.pth.tar", // Project checkpoint
+  "load_dir": "./toy_data", // Reserved for legacy VFLIP runtime
+  "k": 4, // Top-k metric
+  "n_labeled": 200, // Reserved for legacy runtime
+  "party_num": 2, // Number of VFL parties
+  "attack_type": "LFBA", // Project backdoor attack
+  "active": false, // Reserved for legacy runtime
+  "bkd_adversary": [1], // Attacker client indices
+  "target_label": 3, // Backdoor target label
+  "poison_dimensions": 5, // Trigger dimensions for LFBA test poisoning
+  "attack_client_num": 1, // Attacker client index
+  "poison_all": false, // Use LFBA replace-style test poisoning
+  "seed": 1234, // Random seed
+  "defense_type": "NONE", // Use NONE unless you have a checkpoint with MAE weights
+  "batch_size": 128, // Evaluation batch size
+  "gpu": 0 // GPU index
+}

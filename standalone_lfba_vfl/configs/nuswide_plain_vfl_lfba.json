@@ -2,11 +2,11 @@
   "data_dir": "./dataset/data_raw/", // Root that contains NUS_WIDE/
   "dataset": "NUSWIDE", // Dataset used in the original README example
   "device": 0,
-  "results_dir": "./results/standalone_lfba_vfl/nuswide_k2",
+  "results_dir": "./results/standalone_lfba_vfl/nuswide_k3",
   "seed": 100,
   "epoch": 100, // Matches the original README example
   "batch_size": 256, // Paper setting
-  "client_num": 2, // NUSWIDE uses the image/text two-client split
+  "client_num": 3, // Multi-client setting: split the 1634-d concatenated feature vector into 3 contiguous slices
   "lr": 0.001, // Paper setting for NUS-WIDE
   "start_epoch": 0,
   "print_steps": 10,
@@ -15,7 +15,7 @@
   "poison_rate": 0.1, // README example and common paper setting
   "poison_dimensions": 10, // Matches the original README example
   "trigger_feature_clip": 1.0,
-  "attack_client_num": 1, // Use the text-feature client as attacker, matching the original project setup
+  "attack_client_num": 2, // Use the third client as attacker in the 3-client split
   "select_rate": 0.3, // Matches the original README example
   "random_select": false,
   "poison_all": false,
