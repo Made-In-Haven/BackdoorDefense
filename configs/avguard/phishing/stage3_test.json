@@ -1,0 +1,29 @@
+{
+  "data_dir": "./dataset/data_raw/", // 数据集根目录
+  "dataset": "PHISHING", // 数据集名称
+  "device": 0, // GPU 编号
+  "results_dir": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage3", // 结果输出目录
+  "seed": 100, // 随机种子
+  "batch_size": 256, // 批大小
+  "client_num": 3, // 客户端数量
+  "test_checkpoint": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage2/best_checkpoint.pth.tar", // 测试使用的检查点路径
+  "attack": "LFBA", // 后门攻击类型
+  "poison_rate": 0.1, // 投毒比例
+  "poison_dimensions": 30, // 触发器维度数
+  "trigger_feature_clip": 1.0, // 触发器取值或裁剪值
+  "attack_client_num": 2, // 攻击客户端编号
+  "select_rate": 0.3, // LFBA 样本切换比例
+  "random_select": false, // 是否随机选择投毒样本
+  "poison_all": false, // 是否对全部候选样本投毒
+  "anchor_idx": 1000, // 锚样本索引
+  "mode": "test", // 运行模式
+  "defense": "anchor", // 防御类型
+  "defense_scheme": "AVGuard", // 防御方案名称
+  "enable_anchor_loss": true, // 是否启用 anchor 损失
+  "anchor_scale": 16.0, // ArcFace 缩放系数
+  "anchor_margin": 0.2, // ArcFace 间隔参数
+  "anchor_bank_path": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_artifact.pt", // 第一阶段 anchor 工件路径
+  "anchor_stage1_dir": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_stage1", // 第一阶段工件目录
+  "gamma": 2.0, // 第三阶段联合投票温度系数
+  "theta_supp": 0.15 // 第三阶段有效支持阈值
+}
