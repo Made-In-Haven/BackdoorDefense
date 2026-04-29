@@ -598,6 +598,16 @@ class Trainer:
             "attack_success_correction_applied": 0,
             "attack_success_prediction_changed": 0,
         }
+        stage3_support_stats = {
+            "clean_sum": 0.0,
+            "clean_suspicious_sum": 0.0,
+            "clean_correction_applied_sum": 0.0,
+            "poison_valid_sum": 0.0,
+            "poison_valid_suspicious_sum": 0.0,
+            "poison_valid_correction_applied_sum": 0.0,
+            "attack_success_sum": 0.0,
+            "attack_success_suspicious_sum": 0.0,
+        }
         with torch.no_grad():
             for batch_index, (x, _x_p, y, _index) in enumerate(self.test_loader):
                 x = x.to(self.device).float()
@@ -623,6 +633,7 @@ class Trainer:
                     prediction_changed_mask = final_predictions.ne(predicted)
                     correction_tie_mask = stage3_output.get("correction_tie_mask", stage3_output["weighted_tie_mask"])
                     correction_margin_rejected_mask = stage3_output["correction_margin_rejected_mask"]
+                    valid_support_counts = stage3_output["valid_support_counts"].float()
                     skipped_tied_vote_mask = suspicious_mask & ~correction_applied_mask & correction_tie_mask
                     skipped_low_margin_mask = correction_margin_rejected_mask
                     skipped_other_mask = (
@@ -641,6 +652,13 @@ class Trainer:
                     stage3_debug_stats["clean_skipped_tied_vote"] += skipped_tied_vote_mask.float().sum().item()
                     stage3_debug_stats["clean_skipped_low_margin"] += skipped_low_margin_mask.float().sum().item()
                     stage3_debug_stats["clean_skipped_other"] += skipped_other_mask.float().sum().item()
+                    stage3_support_stats["clean_sum"] += valid_support_counts.sum().item()
+                    stage3_support_stats["clean_suspicious_sum"] += (
+                        valid_support_counts[suspicious_mask].sum().item()
+                    )
+                    stage3_support_stats["clean_correction_applied_sum"] += (
+                        valid_support_counts[correction_applied_mask].sum().item()
+                    )
                     if remaining_stage3_debug_batches > 0:
                         clean_debug_mask = suspicious_mask
                         if self._log_stage3_batch_debug(
@@ -694,6 +712,7 @@ class Trainer:
                     prediction_changed_mask = final_predictions.ne(predicted)
                     correction_tie_mask = stage3_output.get("correction_tie_mask", stage3_output["weighted_tie_mask"])
                     correction_margin_rejected_mask = stage3_output["correction_margin_rejected_mask"]
+                    valid_support_counts = stage3_output["valid_support_counts"].float()
                     skipped_tied_vote_mask = suspicious_mask & ~correction_applied_mask & correction_tie_mask
                     skipped_low_margin_mask = correction_margin_rejected_mask
                     skipped_other_mask = (
@@ -737,6 +756,19 @@ class Trainer:
                     stage3_debug_stats["attack_success_prediction_changed"] += (
                         prediction_changed_mask[original_attack_success_mask].float().sum().item()
                     )
+                    stage3_support_stats["poison_valid_sum"] += valid_support_counts[valid_mask].sum().item()
+                    stage3_support_stats["poison_valid_suspicious_sum"] += (
+                        valid_support_counts[valid_mask & suspicious_mask].sum().item()
+                    )
+                    stage3_support_stats["poison_valid_correction_applied_sum"] += (
+                        valid_support_counts[valid_mask & correction_applied_mask].sum().item()
+                    )
+                    stage3_support_stats["attack_success_sum"] += (
+                        valid_support_counts[original_attack_success_mask].sum().item()
+                    )
+                    stage3_support_stats["attack_success_suspicious_sum"] += (
+                        valid_support_counts[original_attack_success_mask & suspicious_mask].sum().item()
+                    )
                     if remaining_stage3_debug_batches > 0:
                         attack_success_debug_mask = original_attack_success_mask & suspicious_mask
                         if self._log_stage3_batch_debug(
@@ -776,6 +808,32 @@ class Trainer:
         # CR is defined over successfully detected attack-success samples.
         correction_rate = (
             stage3_corrected_attack_success / max(1, stage3_detected_attack_success) if detection_enabled else 0.0
+        )
+        clean_support_avg = stage3_support_stats["clean_sum"] / max(1.0, total)
+        clean_suspicious_support_avg = stage3_support_stats["clean_suspicious_sum"] / max(
+            1.0,
+            stage3_debug_stats["clean_suspicious"],
+        )
+        clean_correction_support_avg = stage3_support_stats["clean_correction_applied_sum"] / max(
+            1.0,
+            stage3_debug_stats["clean_correction_applied"],
+        )
+        poison_valid_support_avg = stage3_support_stats["poison_valid_sum"] / max(1.0, total_asr)
+        poison_valid_suspicious_support_avg = stage3_support_stats["poison_valid_suspicious_sum"] / max(
+            1.0,
+            stage3_debug_stats["poison_valid_suspicious"],
+        )
+        poison_valid_correction_support_avg = stage3_support_stats["poison_valid_correction_applied_sum"] / max(
+            1.0,
+            stage3_debug_stats["poison_valid_correction_applied"],
+        )
+        attack_success_support_avg = stage3_support_stats["attack_success_sum"] / max(
+            1.0,
+            stage3_debug_stats["attack_success_total"],
+        )
+        attack_success_suspicious_support_avg = stage3_support_stats["attack_success_suspicious_sum"] / max(
+            1.0,
+            stage3_debug_stats["attack_success_suspicious"],
         )
         epoch_loss = sum(batch_loss_list) / len(batch_loss_list)
         anchor_loss = sum(batch_anchor_loss_list) / max(1, len(batch_anchor_loss_list))
@@ -838,6 +896,17 @@ class Trainer:
                 int(stage3_debug_stats["attack_success_prediction_changed"]),
                 int(stage3_corrected_attack_success),
             )
+            self.logger.info(
+                "=> Stage 3 Effective Support Avg: clean(all)=%.4f, clean_suspicious(false_positive)=%.4f, clean_correction_applied=%.4f, poison_valid(all)=%.4f, poison_valid_suspicious=%.4f, poison_valid_correction_applied=%.4f, attack_success(all)=%.4f, attack_success_suspicious=%.4f",
+                clean_support_avg,
+                clean_suspicious_support_avg,
+                clean_correction_support_avg,
+                poison_valid_support_avg,
+                poison_valid_suspicious_support_avg,
+                poison_valid_correction_support_avg,
+                attack_success_support_avg,
+                attack_success_suspicious_support_avg,
+            )
 
         return {
             "pre_stage3_acc": pre_stage3_acc,
@@ -859,6 +928,14 @@ class Trainer:
             "detection_f1": detection_f1,
             "false_positive_rate": false_positive_rate,
             "correction_rate": correction_rate,
+            "clean_support_avg": clean_support_avg,
+            "clean_suspicious_support_avg": clean_suspicious_support_avg,
+            "clean_correction_support_avg": clean_correction_support_avg,
+            "poison_valid_support_avg": poison_valid_support_avg,
+            "poison_valid_suspicious_support_avg": poison_valid_suspicious_support_avg,
+            "poison_valid_correction_support_avg": poison_valid_correction_support_avg,
+            "attack_success_support_avg": attack_success_support_avg,
+            "attack_success_suspicious_support_avg": attack_success_suspicious_support_avg,
             "anchor_loss": anchor_loss,
             "epoch_loss": epoch_loss,
         }

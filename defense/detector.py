@@ -7,6 +7,7 @@ class MultiClientDetector:
         client_num,
         gamma=2.0,
         theta_supp=0.15,
+        required_support_count=2,
         enable_joint_weighted_voting=True,
         enable_static_reliability=True,
         enable_conservative_correction=False,
@@ -16,6 +17,7 @@ class MultiClientDetector:
         self.client_num = client_num
         self.gamma = float(gamma)
         self.theta_supp = float(theta_supp)
+        self.required_support_count = self._normalize_required_support_count(required_support_count)
         self.enable_joint_weighted_voting = bool(enable_joint_weighted_voting)
         self.enable_static_reliability = bool(enable_static_reliability)
         self.enable_conservative_correction = bool(enable_conservative_correction)
@@ -30,6 +32,7 @@ class MultiClientDetector:
             "client_num": self.client_num,
             "gamma": self.gamma,
             "theta_supp": self.theta_supp,
+            "required_support_count": self.required_support_count,
             "enable_joint_weighted_voting": self.enable_joint_weighted_voting,
             "enable_static_reliability": self.enable_static_reliability,
             "enable_conservative_correction": self.enable_conservative_correction,
@@ -44,6 +47,9 @@ class MultiClientDetector:
             return
         self.gamma = float(state_dict.get("gamma", state_dict.get("vote_temperature", self.gamma)))
         self.theta_supp = float(state_dict.get("theta_supp", state_dict.get("support_threshold", self.theta_supp)))
+        self.required_support_count = self._normalize_required_support_count(
+            state_dict.get("required_support_count", state_dict.get("strict_majority_votes", self.required_support_count))
+        )
         self.enable_joint_weighted_voting = bool(
             state_dict.get("enable_joint_weighted_voting", self.enable_joint_weighted_voting)
         )
@@ -59,6 +65,9 @@ class MultiClientDetector:
         self.set_client_reliability(
             state_dict.get("client_reliability", state_dict.get("static_client_weights"))
         )
+
+    def _normalize_required_support_count(self, required_support_count):
+        return max(1, min(self.client_num, int(required_support_count)))
 
     def set_client_reliability(self, client_reliability):
         if client_reliability is None:
@@ -182,7 +191,7 @@ class MultiClientDetector:
 
         stacked_predictions = torch.stack(stacked_predictions, dim=1)
         majority_labels, max_votes = self._select_majority_labels(vote_counts, aggregate_distances)
-        strict_majority_votes = (self.client_num // 2) + 1
+        strict_majority_votes = self.required_support_count
         global_support_counts = stacked_predictions.eq(global_predictions.unsqueeze(1)).sum(dim=1)
 
         remaining_mask = stacked_predictions.ne(global_predictions.unsqueeze(1))

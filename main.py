@@ -350,6 +350,7 @@ def normalize_args(args):
     args.enable_stage1 = bool(getattr(args, "enable_stage1", True))
     args.gamma = max(float(getattr(args, "gamma", 2.0)), 1e-8)
     args.theta_supp = max(float(getattr(args, "theta_supp", 0.15)), 0.0)
+    args.stage3_required_support_count = max(1, int(getattr(args, "stage3_required_support_count", 2)))
     args.stage3_enable_joint_weighted_voting = bool(
         getattr(args, "stage3_enable_joint_weighted_voting", True)
     )
@@ -644,6 +645,12 @@ def build_parser():
         default=0.15,
         type=float,
         help="minimum local anchor confidence required for a client to count as valid support of the global prediction",
+    )
+    parser.add_argument(
+        "--stage3_required_support_count",
+        default=2,
+        type=int,
+        help="minimum number of valid supporting clients required to keep the global prediction non-suspicious",
     )
     parser.add_argument(
         "--enable_conservative_correction",

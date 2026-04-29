@@ -34,16 +34,27 @@ NUSWIDE_CLIENT_VIEW_GROUPS = {
     2: [("CH", "CM55", "CORR", "EDH", "WT")],
     3: [("CH", "CM55", "EDH"), ("CORR", "WT")],
     4: [("CH", "CM55"), ("CORR",), ("EDH", "WT")],
-    5: [("CH", "CM55"), ("CORR",), ("EDH",), ("WT",)],
+    5: [("CH", "CM55"), ("CORR",), ("WT",), ("EDH",)],
+}
+NUSWIDE_CLIENT_VIEW_OUTPUT_DIMS = {
+    5: (24, 16, 16, 16),
 }
 NUSWIDE_SUPPORTED_CLIENT_NUMS = tuple(sorted(NUSWIDE_CLIENT_VIEW_GROUPS))
+
+
+def _get_nuswide_image_client_output_dim(client_num, image_client_index, view_group):
+    output_dims = NUSWIDE_CLIENT_VIEW_OUTPUT_DIMS.get(client_num)
+    if output_dims is not None:
+        return output_dims[image_client_index]
+    return len(view_group) * NUSWIDE_IMAGE_VIEW_OUTPUT_DIM
 
 
 def _build_nuswide_local_output_dims():
     local_output_dims = {}
     for client_num, view_groups in NUSWIDE_CLIENT_VIEW_GROUPS.items():
         local_output_dims[client_num] = [NUSWIDE_TEXT_OUTPUT_DIM] + [
-            len(view_group) * NUSWIDE_IMAGE_VIEW_OUTPUT_DIM for view_group in view_groups
+            _get_nuswide_image_client_output_dim(client_num, index, view_group)
+            for index, view_group in enumerate(view_groups)
         ]
     return local_output_dims
 
@@ -131,7 +142,7 @@ def get_nuswide_client_layout(client_num):
                 "slice": feature_ranges[0] if len(feature_ranges) == 1 else None,
                 "feature_ranges": feature_ranges,
                 "input_dim": input_dim,
-                "output_dim": len(view_group) * NUSWIDE_IMAGE_VIEW_OUTPUT_DIM,
+                "output_dim": _get_nuswide_image_client_output_dim(client_num, offset - 1, view_group),
                 "description": "client{} = {} [{}]".format(offset, " + ".join(view_group), input_dim),
             }
         )

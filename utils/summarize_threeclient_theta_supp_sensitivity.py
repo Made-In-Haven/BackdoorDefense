@@ -1,0 +1,236 @@
+import argparse
+import csv
+import json
+import math
+import re
+from pathlib import Path
+
+
+NUMBER_RE = r"[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?"
+TEST_EPOCH_RE = re.compile(
+    rf"=> Test Epoch: (?P<epoch>\d+), .*? clean acc: (?P<clean_accuracy>{NUMBER_RE}), "
+    rf"Top-(?P<top_k>\d+): (?P<topk_accuracy>{NUMBER_RE}), ASR: (?P<attack_success_rate>{NUMBER_RE}), "
+    rf"RAC: (?P<rac>{NUMBER_RE}), test target accuracy: (?P<test_target_accuracy>{NUMBER_RE}), "
+    rf"stage3 final accuracy: (?P<stage3_final_accuracy>{NUMBER_RE}), "
+    rf"stage3 final target accuracy: (?P<stage3_final_target_accuracy>{NUMBER_RE}), "
+    rf"stage3 final asr: (?P<defense_asr>{NUMBER_RE}), anchor loss: (?P<anchor_loss>{NUMBER_RE})"
+)
+DETECTION_RE = re.compile(
+    rf"=> Stage 3 Detection Summary: recall: (?P<detection_recall>{NUMBER_RE}), "
+    rf"precision: (?P<detection_precision>{NUMBER_RE}), f1: (?P<detection_f1>{NUMBER_RE}), "
+    rf"false positive rate: (?P<false_positive_rate>{NUMBER_RE}), correction rate: (?P<correction_rate>{NUMBER_RE})"
+)
+CLEAN_DEBUG_RE = re.compile(
+    r"=> Stage 3 Debug \(clean\): suspicious=(?P<clean_suspicious>\d+)/(?P<clean_total>\d+), "
+    r"correction_applied=(?P<clean_correction_applied>\d+), "
+    r"prediction_changed=(?P<clean_prediction_changed>\d+), "
+    r"skipped_tied_vote=(?P<clean_skipped_tied_vote>\d+), "
+    r"skipped_low_margin=(?P<clean_skipped_low_margin>\d+), "
+    r"skipped_other=(?P<clean_skipped_other>\d+)"
+)
+POISON_DEBUG_RE = re.compile(
+    r"=> Stage 3 Debug \(poison-valid\): suspicious=(?P<poison_valid_suspicious>\d+)/(?P<poison_valid_total>\d+), "
+    r"correction_applied=(?P<poison_valid_correction_applied>\d+), "
+    r"prediction_changed=(?P<poison_valid_prediction_changed>\d+), "
+    r"skipped_tied_vote=(?P<poison_valid_skipped_tied_vote>\d+), "
+    r"skipped_low_margin=(?P<poison_valid_skipped_low_margin>\d+), "
+    r"skipped_other=(?P<poison_valid_skipped_other>\d+)"
+)
+ATTACK_DEBUG_RE = re.compile(
+    r"=> Stage 3 Debug \(attack-success\): suspicious=(?P<attack_success_suspicious>\d+)/(?P<attack_success_total>\d+), "
+    r"correction_applied=(?P<attack_success_correction_applied>\d+), "
+    r"prediction_changed=(?P<attack_success_prediction_changed>\d+), "
+    r"corrected_to_true=(?P<attack_success_corrected_to_true>\d+)"
+)
+
+# 仅保留变化参数 theta_supp 和数据集，其余全为指标
+FIELDNAMES = [
+    "theta_supp",
+    "dataset",
+    "clean_accuracy",
+    "attack_success_rate",
+    "defense_asr",
+    "corrected_asr",
+    "detection_recall",
+    "detection_precision",
+    "detection_f1",
+    "false_positive_rate",
+    "correction_rate",
+    "valid_support_rate",
+    "support_detection_rate",
+    "avg_valid_support_count",
+    "clean_suspicious",
+    "clean_total",
+    "poison_valid_suspicious",
+    "poison_valid_total",
+    "attack_success_suspicious",
+    "attack_success_total",
+    "attack_success_corrected_to_true",
+    "stage3_result_directory",
+]
+
+
+def strip_json_line_comments(raw_text):
+    result = []
+    in_string = False
+    escape = False
+    i = 0
+    while i < len(raw_text):
+        c = raw_text[i]
+        nxt = raw_text[i + 1] if i + 1 < len(raw_text) else ""
+        if c == '"' and not escape:
+            in_string = not in_string
+        if not in_string and c == '/' and nxt == '/':
+            while i < len(raw_text) and raw_text[i] != "\n":
+                i += 1
+            continue
+        result.append(c)
+        escape = c == "\\" and not escape
+        if c != "\\":
+            escape = False
+        i += 1
+    return "".join(result)
+
+
+def load_json(path):
+    return json.loads(strip_json_line_comments(path.read_text(encoding="utf-8-sig")))
+
+
+def flatten_json(prefix, value, output):
+    if isinstance(value, dict):
+        for key, child in value.items():
+            child_prefix = f"{prefix}.{key}" if prefix else str(key)
+            flatten_json(child_prefix, child, output)
+    else:
+        output[prefix] = value
+
+
+def first_present(flat, candidates):
+    for key in candidates:
+        if key in flat and flat[key] not in ("", None):
+            return flat[key]
+    return ""
+
+
+def parse_metric_files(stage3_dir):
+    merged = {}
+    metric_names = {"metrics.json", "stage3_metrics.json", "test_metrics.json", "result.json", "results.json"}
+    mappings = {
+        "clean_accuracy": ["clean_accuracy", "clean_acc", "accuracy", "metrics.clean_acc"],
+        "attack_success_rate": ["attack_success_rate", "asr", "test_asr", "metrics.asr"],
+        "defense_asr": ["defense_asr", "stage3_final_asr", "metrics.stage3_final_asr"],
+        "corrected_asr": ["corrected_asr", "stage3_final_asr", "metrics.stage3_final_asr"],
+        "detection_recall": ["detection_recall", "detection_rate", "metrics.detection_recall"],
+        "detection_precision": ["detection_precision", "metrics.detection_precision"],
+        "detection_f1": ["detection_f1", "metrics.detection_f1"],
+        "false_positive_rate": ["false_positive_rate", "metrics.false_positive_rate"],
+        "correction_rate": ["correction_rate", "metrics.correction_rate"],
+        "valid_support_rate": ["valid_support_rate", "metrics.valid_support_rate"],
+        "support_detection_rate": ["support_detection_rate", "metrics.support_detection_rate"],
+        "avg_valid_support_count": ["avg_valid_support_count", "metrics.avg_valid_support_count"],
+    }
+    for metric_file in sorted(path for path in stage3_dir.rglob("*.json") if path.name in metric_names):
+        try:
+            flat = {}
+            flatten_json("", load_json(metric_file), flat)
+        except (OSError, json.JSONDecodeError):
+            continue
+        for output_key, candidates in mappings.items():
+            if output_key not in merged or merged[output_key] == "":
+                merged[output_key] = first_present(flat, candidates)
+    return merged
+
+
+def parse_log(log_path):
+    row = {}
+    if not log_path.exists():
+        return row
+    for line in log_path.read_text(encoding="utf-8", errors="replace").splitlines():
+        test_match = TEST_EPOCH_RE.search(line)
+        if test_match:
+            row.update(test_match.groupdict())
+            row["corrected_asr"] = row.get("defense_asr", "")
+            continue
+        detection_match = DETECTION_RE.search(line)
+        if detection_match:
+            row.update(detection_match.groupdict())
+            continue
+        clean_match = CLEAN_DEBUG_RE.search(line)
+        if clean_match:
+            row.update(clean_match.groupdict())
+            continue
+        poison_match = POISON_DEBUG_RE.search(line)
+        if poison_match:
+            row.update(poison_match.groupdict())
+            continue
+        attack_match = ATTACK_DEBUG_RE.search(line)
+        if attack_match:
+            row.update(attack_match.groupdict())
+    return row
+
+
+def parse_config(stage3_dir):
+    """仅从目录层级提取 theta_supp 和数据集名"""
+    theta_supp_dir = stage3_dir.parent.parent  # e.g., theta_supp_0.10
+    theta_supp_raw = theta_supp_dir.name
+    theta_supp_value = ""
+    match = re.search(r"theta_supp_([\d.]+)", theta_supp_raw)
+    if match:
+        theta_supp_value = match.group(1)
+    return {
+        "theta_supp": theta_supp_value,
+        "dataset": stage3_dir.parent.name,
+        "stage3_result_directory": stage3_dir.as_posix(),
+    }
+
+
+def as_number_string(value):
+    if value in ("", None):
+        return ""
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    if math.isnan(numeric):
+        return ""
+    return f"{numeric:.6g}"
+
+
+def build_rows(root):
+    rows = []
+    if not root.exists():
+        return rows
+    # 扫描: <root>/theta_supp_*/Dataset/stage3
+    for stage3_dir in sorted(root.glob("*/*/stage3")):
+        if not stage3_dir.is_dir():
+            continue
+        row = parse_config(stage3_dir)
+        row.update(parse_metric_files(stage3_dir))
+        row.update(parse_log(stage3_dir / "experiment.log"))
+        rows.append(row)
+    # 按 theta_supp数值排序
+    return sorted(rows, key=lambda r: (float(r.get("theta_supp") or 0), str(r.get("dataset", ""))))
+
+
+def write_csv(rows, output):
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({k: as_number_string(row.get(k, "")) for k in FIELDNAMES})
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Summarize theta_supp sensitivity results (only theta_supp recorded).")
+    parser.add_argument("--root", required=True, help="Root result directory to scan")
+    parser.add_argument("--output", required=True, help="CSV output path")
+    args = parser.parse_args()
+
+    rows = build_rows(Path(args.root))
+    write_csv(rows, Path(args.output))
+    print(f"Wrote {args.output} with {len(rows)} rows")
+
+
+if __name__ == "__main__":
+    main()

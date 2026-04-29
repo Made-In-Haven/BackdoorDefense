@@ -54,6 +54,7 @@ class AnchorDefense(nn.Module):
             client_num=len(model_list) - 1,
             gamma=getattr(args, "gamma", 2.0),
             theta_supp=getattr(args, "theta_supp", 0.15),
+            required_support_count=getattr(args, "stage3_required_support_count", 2),
             enable_joint_weighted_voting=getattr(args, "stage3_enable_joint_weighted_voting", True),
             enable_static_reliability=getattr(args, "stage3_enable_static_reliability", True),
             enable_conservative_correction=getattr(args, "enable_conservative_correction", False),
@@ -63,6 +64,9 @@ class AnchorDefense(nn.Module):
         self.detector.load_state_dict(detector_state)
         self.detector.gamma = float(getattr(args, "gamma", 2.0))
         self.detector.theta_supp = float(getattr(args, "theta_supp", 0.15))
+        self.detector.required_support_count = self.detector._normalize_required_support_count(
+            getattr(args, "stage3_required_support_count", 2)
+        )
         self.detector.enable_joint_weighted_voting = bool(
             getattr(args, "stage3_enable_joint_weighted_voting", True)
         )
