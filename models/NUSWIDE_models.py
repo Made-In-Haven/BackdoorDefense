@@ -1,13 +1,19 @@
 import torch
 import torch.nn as nn
 
-from dataset.utils import get_client_input_dim
+from dataset.utils import (
+    NUSWIDE_TOTAL_DIM,
+    get_nuswide_client_layout,
+    validate_nuswide_total_dim,
+)
 
 
 class GlobalModelForNUSWIDE(nn.Module):
     def __init__(self, args):
         super(GlobalModelForNUSWIDE, self).__init__()
-        total_feature_dim = 40 + 60 * (args.client_num - 1)
+        total_feature_dim = sum(
+            client_layout["output_dim"] for client_layout in get_nuswide_client_layout(args.client_num)
+        )
         self.linear1 = nn.Linear(total_feature_dim, 100)
         self.linear2 = nn.Linear(100, 50)
         self.classifier = nn.Linear(50, 5)
@@ -26,24 +32,26 @@ class LocalModelForNUSWIDE(nn.Module):
     def __init__(self, args, client_number):
         super(LocalModelForNUSWIDE, self).__init__()
         self.args = args
+        total_dim = getattr(args, "nuswide_total_dim", NUSWIDE_TOTAL_DIM)
+        validate_nuswide_total_dim(total_dim)
+        client_layout = get_nuswide_client_layout(args.client_num)[client_number]
+        input_dim = client_layout["input_dim"]
+        self.output_dim = client_layout["output_dim"]
+
         if client_number == 0:
             self.backbone = nn.Sequential(
-                nn.Linear(634, 320),
+                nn.Linear(input_dim, 512),
                 nn.ReLU(),
-                nn.Linear(320, 160),
+                nn.Linear(512, 256),
                 nn.ReLU(),
-                nn.Linear(160, 80),
+                nn.Linear(256, 128),
                 nn.ReLU(),
-                nn.Linear(80, 40),
+                nn.Linear(128, self.output_dim),
                 nn.ReLU(),
             )
-            self.output_dim = 40
         else:
-            total_dim = getattr(args, "nuswide_total_dim", 1634)
-            input_dim = get_client_input_dim(args, total_dim=total_dim, client_id=client_number)
-            hidden_dim = max(125, min(500, input_dim))
-            middle_dim = max(64, hidden_dim // 2)
-            self.output_dim = 60
+            hidden_dim = max(64, min(256, max(input_dim // 2, self.output_dim * 4)))
+            middle_dim = max(32, max(hidden_dim // 2, self.output_dim * 2))
             self.backbone = nn.Sequential(
                 nn.Linear(input_dim, hidden_dim),
                 nn.ReLU(),

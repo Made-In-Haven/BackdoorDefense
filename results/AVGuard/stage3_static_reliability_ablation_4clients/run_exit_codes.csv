@@ -1,0 +1,9 @@
+﻿config,exit_code,start_time,end_time
+"configs/avguard/stage3_static_reliability_ablation_4clients/PHISHING_4clients_static_reliability_on.json",0,"2026-04-15 09:27:00","2026-04-15 09:40:59"
+"configs/avguard/stage3_static_reliability_ablation_4clients/PHISHING_4clients_static_reliability_off.json",0,"2026-04-15 09:40:59","2026-04-15 09:53:01"
+"configs/avguard/stage3_static_reliability_ablation_4clients/IEEE_CIS_FRAUD_4clients_static_reliability_on.json",0,"2026-04-15 09:53:01","2026-04-15 10:01:20"
+"configs/avguard/stage3_static_reliability_ablation_4clients/IEEE_CIS_FRAUD_4clients_static_reliability_off.json",0,"2026-04-15 10:01:20","2026-04-15 10:10:05"
+"configs/avguard/stage3_static_reliability_ablation_4clients/NUSWIDE_4clients_static_reliability_on.json",0,"2026-04-15 10:10:05","2026-04-15 10:36:31"
+"configs/avguard/stage3_static_reliability_ablation_4clients/NUSWIDE_4clients_static_reliability_off.json",0,"2026-04-15 10:36:31","2026-04-15 11:04:05"
+"configs/avguard/stage3_static_reliability_ablation_4clients/CIFAR10_4clients_static_reliability_on.json",0,"2026-04-15 11:04:05","2026-04-15 14:09:39"
+"configs/avguard/stage3_static_reliability_ablation_4clients/CIFAR10_4clients_static_reliability_off.json",0,"2026-04-15 14:09:39","2026-04-15 17:33:46"

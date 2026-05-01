@@ -1,44 +1,36 @@
 {
-  "data_dir": "./dataset/data_raw/", // Root directory that contains Phishing/PHISHING_full.csv
-  "dataset": "PHISHING", // Use the phishing dataset
-  "device": 0, // GPU index
-  "results_dir": "./results/AVGuard/PHISHING_anchor_defense_stage1", // Output directory for the standalone stage1 run
-  "seed": 100, // Random seed
-  "epoch": 25, // Reserved for stage2; stage1 uses anchor_pretrain_epochs below
-  "batch_size": 256, // Batch size
-  "client_num": 3, // Comparable setting: split PHISHING across three clients
-  "pretrained_checkpoint": null, // Do not resume stage2 training
-  "test_checkpoint": null, // Not used in pretrain mode
-  "lr": 0.003, // Match the phishing baseline learning rate
-  "start_epoch": 0, // Starting epoch
-  "print_steps": 10, // Logging interval
-  "early_stop": 10, // Reserved for stage2
-  "attack": "LFBA", // Keep LFBA enabled so stage1 also builds the attacker branch
-  "target_label": 1, // Initial target label; LFBA may resolve the effective target from anchor_idx
-  "poison_rate": 0.1, // Comparable poison ratio
-  "poison_dimensions": 5, // Comparable trigger budget on the attacker slice
-  "trigger_feature_clip": 1.0, // Fixed-value trigger strength
-  "attack_client_num": 2, // The third client is the attacker
-  "feature_extractor": "", // Reserved legacy argument
-  "select_rate": 0.3, // Comparable LFBA replacement ratio
-  "random_select": false, // Disable random poison sample selection
-  "select_replace": true, // Enable LFBA replacement strategy
-  "poison_all": false, // Do not poison all candidate samples
-  "anchor_idx": 1000, // Local reproducible anchor index
-  "pretrain_stage": 0, // LFBA warmup setting
-  "mode": "pretrain_anchor", // Run only stage1 and exit
-  "defense": "anchor", // Enable the stage1 anchor pretraining pipeline
-  "defense_scheme": "AVGuard", // Anchor Voting Guard
-  "force_stage1_retrain": true, // Always rerun stage1 when this config is used
-  "enable_anchor_loss": false, // Stage2-only switch; stage1 now uses lambda_stage1_anchor below
-  "lambda_anchor": 0.0, // Stage2-only weight, kept at zero here
-  "lambda_stage1_anchor": 0.3, // Explicitly optimize anchor loss during stage1 pretraining
-  "anchor_pretrain_epochs": 20, // Number of stage1 epochs
-  "anchor_scale": 16.0, // ArcFace scale for the active-side private head
-  "anchor_margin": 0.2, // ArcFace margin; should match stage2 loading
-  "anchor_bank_path": "./results/AVGuard/PHISHING_anchor_defense_stage1/anchor_artifact.pt", // Serialized stage1 anchor artifact
-  "anchor_stage1_dir": "./results/AVGuard/PHISHING_anchor_defense_stage1/anchor_stage1", // Directory for stage1 local models and anchors
-  "detect_threshold": 2.0, // Reserved for stage3; not used in pretrain mode
-  "detect_threshold_cap": 1.5, // Reserved for stage3; not used in pretrain mode
-  "majority_ratio": 0.5 // Reserved for stage3; not used in pretrain mode
+  "data_dir": "./dataset/data_raw/", // 数据集根目录
+  "dataset": "PHISHING", // 数据集名称
+  "device": 0, // GPU 编号
+  "results_dir": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1", // 结果输出目录
+  "seed": 100, // 随机种子
+  "batch_size": 256, // 批大小
+  "client_num": 3, // 客户端数量
+  "resume_latest": true, // 若存在最新检查点则自动续训
+  "lr": 0.003, // 学习率
+  "print_steps": 10, // 日志打印间隔
+  "attack": "LFBA", // 后门攻击类型
+  "poison_rate": 0.1, // 投毒比例
+  "poison_dimensions": 30, // 触发器维度数
+  "trigger_feature_clip": 1.0, // 触发器取值或裁剪值
+  "attack_client_num": 2, // 攻击客户端编号
+  "select_rate": 0.3, // LFBA 样本切换比例
+  "random_select": false, // 是否随机选择投毒样本
+  "poison_all": false, // 是否对全部候选样本投毒
+  "anchor_idx": 1000, // 锚样本索引
+  "pretrain_stage": 0, // LFBA 预热阶段
+  "mode": "pretrain_anchor", // 运行模式
+  "defense": "anchor", // 防御类型
+  "defense_scheme": "AVGuard", // 防御方案名称
+  "force_stage1_retrain": true, // 是否强制重跑第一阶段
+  "lambda_stage1_anchor": 0.3, // 第一阶段 anchor 损失权重
+  "anchor_pretrain_epochs": 20, // anchor 预训练轮数
+  "anchor_pretrain_early_stop": 5, // anchor 预训练早停耐心值
+  "anchor_pretrain_min_delta": 0.0001, // 视为有效提升的最小 clean_acc 增量
+  "anchor_scale": 16.0, // ArcFace 缩放系数
+  "anchor_margin": 0.2, // ArcFace 间隔参数
+  "gamma": 2.0, // 第三阶段联合投票温度系数
+  "theta_supp": 0.15, // 第三阶段有效支持阈值
+  "anchor_bank_path": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_artifact.pt", // 第一阶段 anchor 工件路径
+  "anchor_stage1_dir": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_stage1" // 第一阶段工件目录
 }

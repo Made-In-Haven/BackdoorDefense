@@ -1,0 +1,41 @@
+{
+  "data_dir": "./dataset/data_raw/", // 数据集根目录
+  "dataset": "CIFAR10", // 数据集名称
+  "device": 0, // GPU 编号
+  "results_dir": "./results/AVGuard/CIFAR10/oracle_attack/CIFAR10_anchor_stage2_3clients_oracle_label", // 结果输出目录
+  "seed": 100, // 随机种子
+  "epoch": 100, // 训练总轮数
+  "batch_size": 256, // 批大小
+  "client_num": 3, // 客户端数量
+  "resume_latest": true, // 若存在最新检查点则自动续训
+  "lr": 0.001, // 学习率
+  "print_steps": 10, // 日志打印间隔
+  "early_stop": 20, // 早停耐心轮数
+  "attack": "LFBA", // 后门攻击类型
+  "lfba_poison_source": "oracle_label", // LFBA 投毒集来源
+  "poison_rate": 1.0, // 投毒比例
+  "poison_dimensions": 5, // 触发器维度数
+  "trigger_feature_clip": 1.0, // 触发器取值或裁剪值
+  "attack_client_num": 2, // 攻击客户端编号
+  "select_rate": 0.5, // LFBA 样本切换比例
+  "random_select": false, // 是否随机选择投毒样本
+  "poison_all": false, // 是否对全部候选样本投毒
+  "anchor_idx": 23470, // 锚样本索引
+  "pretrain_stage": 0, // LFBA 预热阶段
+  "mode": "train", // 运行模式
+  "defense": "anchor", // 防御类型
+  "defense_scheme": "AVGuard", // 防御方案名称
+  "force_stage1_retrain": false, // 是否强制重跑第一阶段
+  "enable_anchor_loss": true, // 是否启用 anchor 损失
+  "lambda_anchor": 0.5, // anchor 损失权重
+  "lambda_stage1_anchor": 0.3, // 第一阶段 anchor 损失权重
+  "anchor_pretrain_epochs": 40, // anchor 预训练轮数
+  "anchor_scale": 16.0, // ArcFace 缩放系数
+  "anchor_margin": 0.0, // ArcFace 间隔参数
+  "anchor_bank_path": "./results/AVGuard/CIFAR10/oracle_attack/CIFAR10_anchor_stage1_3clients_oracle_label/anchor_bank.pt", // 第一阶段 anchor 工件路径
+  "anchor_stage1_dir": "./results/AVGuard/CIFAR10/oracle_attack/CIFAR10_anchor_stage1_3clients_oracle_label/anchor_stage1", // 第一阶段工件目录
+  "anchor_ema_momentum": 0.999, // anchor EMA 动量
+  "anchor_ema_update_freq": 1, // anchor EMA 更新频率
+  "gamma": 2.0, // 第三阶段联合投票温度系数
+  "theta_supp": 0.15 // 第三阶段有效支持阈值
+}

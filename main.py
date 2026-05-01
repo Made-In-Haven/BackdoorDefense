@@ -4,6 +4,7 @@ import json
 import logging
 import math
 import os
+import random
 import sys
 from datetime import datetime
 
@@ -13,16 +14,31 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 
 from attack.runtime import create_attack_runtime
-from dataset.dataset import CIFAR10_VFL, NUSWIDE_VFL, PHISHING_VFL, UCIHAR_VFL
+from dataset.dataset import CIFAR10_VFL, IEEE_CIS_FRAUD_VFL, NUSWIDE_VFL, PHISHING_VFL, UCIHAR_VFL
 from defense.factory import load_defense_runtime_stats, normalize_defense_args, prepare_defense
 from defense.anchor_utils import get_num_classes, get_stage1_dir
-from dataset.utils import get_attacker_feature_slice
+from dataset.utils import (
+    get_attacker_feature_indices,
+    describe_nuswide_client_partition,
+    get_nuswide_local_output_dims,
+    validate_nuswide_attack_client_num,
+    validate_nuswide_client_num,
+    validate_nuswide_total_dim,
+)
 from models.CIFAR10_models import GlobalModelForCifar10, LocalModelForCifar10
+from models.IEEE_CIS_FRAUD_models import GlobalModelForIEEECISFRAUD, LocalModelForIEEECISFRAUD
 from models.NUSWIDE_models import GlobalModelForNUSWIDE, LocalModelForNUSWIDE
 from models.PHISHING_models import GlobalModelForPHISHING, LocalModelForPHISHING
 from models.UCIHAR_models import GlobalModelForUCIHAR, LocalModelForUCIHAR
 from utils.trainer import Trainer
-from utils.utils import raise_dataset_exception, set_seed
+from utils.utils import (
+    LFBA_POISON_SOURCE_GRADIENT,
+    canonicalize_dataset_name,
+    load_torch_artifact,
+    normalize_lfba_poison_source,
+    raise_dataset_exception,
+    set_seed,
+)
 
 
 def create_logger(results_dir):
@@ -75,17 +91,37 @@ def build_datasets(args, logger):
             len(train_data),
             len(test_data),
         )
+    elif args.dataset == "IEEE_CIS_FRAUD":
+        train_data = IEEE_CIS_FRAUD_VFL(root=args.data_dir, train=True, transforms=None)
+        test_data = IEEE_CIS_FRAUD_VFL(root=args.data_dir, train=False, transforms=None)
+        args.ieee_cis_fraud_input_dim = train_data.data.shape[1]
+        args.ieeecis_input_dim = args.ieee_cis_fraud_input_dim
+        args.ieeecis_num_classes = 2
+        logger.info("=> IEEE-CIS-Fraud directory: %s", train_data.source_dir)
+        logger.info(
+            "=> IEEE-CIS-Fraud feature dim: %s, train samples: %s, test samples: %s",
+            args.ieee_cis_fraud_input_dim,
+            len(train_data),
+            len(test_data),
+        )
     elif args.dataset == "NUSWIDE":
         selected_labels = ["buildings", "grass", "animal", "water", "person"]
         train_data = NUSWIDE_VFL(root=args.data_dir, selected_labels=selected_labels, train=True, transforms=None)
         test_data = NUSWIDE_VFL(root=args.data_dir, selected_labels=selected_labels, train=False, transforms=None)
         args.nuswide_total_dim = train_data.data.shape[1]
-        args.nuswide_local_output_dim = getattr(args, "nuswide_local_output_dim", 32)
+        validate_nuswide_total_dim(args.nuswide_total_dim)
+        args.nuswide_local_output_dims = get_nuswide_local_output_dims(args.client_num)
+        args.nuswide_client_partition = describe_nuswide_client_partition(args.client_num)
         logger.info(
-            "=> NUSWIDE total feature dim: %s, client_num: %s",
+            "=> NUSWIDE total feature dim: %s, client_num: %s, local output dims: %s",
             args.nuswide_total_dim,
             args.client_num,
+            args.nuswide_local_output_dims,
         )
+        logger.info("=> NUSWIDE fixed feature order: [CH | CM55 | CORR | EDH | WT | Tags1k]")
+        for partition_description in args.nuswide_client_partition:
+            logger.info("=> NUSWIDE split: %s", partition_description)
+        logger.info("=> NUSWIDE attacker client: client%s", args.attack_client_num)
     else:
         raise_dataset_exception()
 
@@ -103,6 +139,10 @@ def build_models(args, device):
     elif args.dataset == "PHISHING":
         model_list = [GlobalModelForPHISHING(args)] + [
             LocalModelForPHISHING(args, client_id) for client_id in range(args.client_num)
+        ]
+    elif args.dataset == "IEEE_CIS_FRAUD":
+        model_list = [GlobalModelForIEEECISFRAUD(args)] + [
+            LocalModelForIEEECISFRAUD(args, client_id) for client_id in range(args.client_num)
         ]
     elif args.dataset == "NUSWIDE":
         model_list = [GlobalModelForNUSWIDE(args)] + [
@@ -127,62 +167,125 @@ def load_checkpoint_if_available(args, device, logger, model_list, optimizer_lis
         return checkpoint
 
     logger.info("=> Loading checkpoint '%s'", checkpoint_path)
-    checkpoint = torch.load(checkpoint_path, map_location=device)
+    checkpoint = load_torch_artifact(
+        checkpoint_path,
+        map_location=device,
+        logger=logger,
+        description="checkpoint",
+    )
     for model, state_dict in zip(model_list, checkpoint["state_dict"]):
         model.load_state_dict(state_dict)
     if args.mode != "test":
-        for optimizer, optimizer_state in zip(optimizer_list, checkpoint["optimizer"]):
-            optimizer.load_state_dict(optimizer_state)
+        optimizer_states = checkpoint.get("optimizer")
+        if optimizer_states:
+            for optimizer, optimizer_state in zip(optimizer_list, optimizer_states):
+                optimizer.load_state_dict(optimizer_state)
         args.start_epoch = checkpoint.get("epoch", 0)
+        restore_rng_state_if_available(checkpoint, logger)
     logger.info(
-        "=> Loaded checkpoint '%s' (epoch %s, best accuracy: %.4f)",
+        "=> Loaded checkpoint '%s' (epoch %s, best clean accuracy: %.4f)",
         checkpoint_path,
         checkpoint.get("epoch", "n/a"),
-        checkpoint.get("best_acc", 0.0),
+        checkpoint.get("best_clean_acc", checkpoint.get("best_acc", 0.0)),
     )
-    checkpoint_target_label = checkpoint.get("target_label")
-    if checkpoint_target_label is not None:
-        args.target_label = int(checkpoint_target_label)
-        logger.info("=> Restored target_label=%s from checkpoint", args.target_label)
+    if args.mode != "test":
+        logger.info(
+            "=> Resume training from epoch %s/%s using checkpoint '%s'",
+            args.start_epoch,
+            args.epoch,
+            checkpoint_path,
+        )
     return checkpoint
 
 
-def maybe_resolve_lfba_target_label(args, logger, checkpoint, train_data):
-    if args.attack != "LFBA":
+def restore_rng_state_if_available(checkpoint, logger):
+    rng_state = checkpoint.get("rng_state")
+    if not isinstance(rng_state, dict):
         return
+    try:
+        python_state = rng_state.get("python")
+        numpy_state = rng_state.get("numpy")
+        torch_state = rng_state.get("torch")
+        cuda_states = rng_state.get("cuda")
+        if python_state is not None:
+            random.setstate(python_state)
+        if numpy_state is not None:
+            np.random.set_state(numpy_state)
+        if torch_state is not None:
+            torch.random.set_rng_state(torch_state.cpu())
+        if cuda_states is not None and torch.cuda.is_available():
+            torch.cuda.set_rng_state_all([state.cpu() for state in cuda_states])
+        logger.info("=> Restored RNG state from checkpoint for deterministic resume")
+    except Exception as exc:
+        logger.info("=> Skipped RNG state restore because it could not be applied: %s", exc)
 
-    if checkpoint and checkpoint.get("target_label") is not None:
+
+def restore_attack_runtime_state_if_available(checkpoint, attack_runtime, logger):
+    if checkpoint is None or attack_runtime is None or not hasattr(attack_runtime, "load_checkpoint_state"):
         return
+    attack_state = checkpoint.get("attack_state")
+    if attack_state is None:
+        logger.info("=> No serialized attack runtime state found in checkpoint; falling back to compatibility resume path")
+        return
+    attack_runtime.load_checkpoint_state(attack_state)
 
-    if args.anchor_idx < 0 or args.anchor_idx >= len(train_data):
+
+def _extract_class_label(label_value):
+    if torch.is_tensor(label_value):
+        return int(label_value.item())
+    return int(label_value)
+
+
+def resolve_attack_target_label(args, logger, train_data):
+    if args.attack == "LFBA":
+        configured_target_label = getattr(args, "target_label", None)
+        if configured_target_label is not None:
+            logger.info(
+                "=> Ignoring configured target_label=%s for LFBA; the attack target label is determined by anchor_idx=%s",
+                configured_target_label,
+                args.anchor_idx,
+            )
+        if args.anchor_idx < 0 or args.anchor_idx >= len(train_data):
+            raise ValueError(
+                "LFBA requires anchor_idx to point to a valid training sample. Got anchor_idx={} with train size {}.".format(
+                    args.anchor_idx,
+                    len(train_data),
+                )
+            )
+        args.attack_target_label = _extract_class_label(train_data.targets[args.anchor_idx])
         logger.info(
-            "=> Unable to infer LFBA target label from anchor_idx=%s because it is outside the training split",
+            "=> Resolved LFBA attack target label=%s from training anchor_idx=%s",
+            args.attack_target_label,
             args.anchor_idx,
         )
         return
 
-    inferred_target_label = train_data.targets[args.anchor_idx]
-    if torch.is_tensor(inferred_target_label):
-        inferred_target_label = inferred_target_label.item()
-    args.target_label = int(inferred_target_label)
-    logger.info("=> Inferred LFBA target_label=%s from training anchor_idx=%s", args.target_label, args.anchor_idx)
+    configured_target_label = getattr(args, "target_label", None)
+    if configured_target_label is None:
+        configured_target_label = 1 if args.dataset in {"PHISHING", "IEEE_CIS_FRAUD"} else 3
+    num_classes = get_num_classes(args.dataset)
+    args.attack_target_label = min(int(configured_target_label), num_classes - 1)
+    if args.attack_target_label != int(configured_target_label):
+        logger.info(
+            "=> Clamped attack target label from %s to %s because dataset '%s' has %s classes",
+            configured_target_label,
+            args.attack_target_label,
+            args.dataset,
+            num_classes,
+        )
 
 
 def select_trigger_dimensions(args, train_data):
     if args.dataset == "CIFAR10":
         return []
     if args.dataset == "UCIHAR":
-        attacker_start, attacker_end = get_attacker_feature_slice(args, train_data.data.shape[1])
-        ranges = range(attacker_start, attacker_end)
+        ranges = get_attacker_feature_indices(args, train_data.data.shape[1])
     elif args.dataset == "PHISHING":
-        attacker_start, attacker_end = get_attacker_feature_slice(args, train_data.data.shape[1])
-        ranges = range(attacker_start, attacker_end)
+        ranges = get_attacker_feature_indices(args, train_data.data.shape[1])
+    elif args.dataset == "IEEE_CIS_FRAUD":
+        ranges = get_attacker_feature_indices(args, train_data.data.shape[1])
     elif args.dataset == "NUSWIDE":
-        if args.client_num == 2:
-            ranges = range(634, 1634)
-        else:
-            attacker_start, attacker_end = get_attacker_feature_slice(args, train_data.data.shape[1])
-            ranges = range(attacker_start, attacker_end)
+        ranges = get_attacker_feature_indices(args, train_data.data.shape[1])
     else:
         raise_dataset_exception()
     return np.random.choice(ranges, args.poison_dimensions, replace=False)
@@ -196,18 +299,54 @@ def build_loaders(args, train_data, test_data, test_data_asr):
 
 
 def normalize_args(args):
-    args.dataset = args.dataset.upper()
+    requested_dataset_name = str(args.dataset).upper()
+    args.original_dataset = requested_dataset_name
+    args.dataset = canonicalize_dataset_name(requested_dataset_name)
+    args.attack_target_label = None
+    args.lfba_poison_source = normalize_lfba_poison_source(
+        getattr(args, "lfba_poison_source", LFBA_POISON_SOURCE_GRADIENT)
+    )
+    if args.dataset == "NUSWIDE":
+        validate_nuswide_client_num(args.client_num)
+        validate_nuswide_attack_client_num(args.client_num, args.attack_client_num)
+    if args.mode == "pretrain_vflip":
+        raise ValueError(
+            "The pretrain_vflip mode has been removed from this project. "
+            "Please use mode='pretrain_anchor', 'train', or 'test'."
+        )
+    if args.mode not in {"train", "test", "pretrain_anchor"}:
+        raise ValueError("Unsupported mode '{}'.".format(args.mode))
     normalize_defense_args(args)
-    if args.dataset == "PHISHING":
-        args.target_label = 1 if args.target_label is None else args.target_label
-    else:
-        args.target_label = 3 if args.target_label is None else args.target_label
-
+    args.top_k = max(1, int(getattr(args, "top_k", 1)))
+    args.anchor_ema_update_freq = max(1, int(getattr(args, "anchor_ema_update_freq", 1)))
+    args.anchor_ema_momentum = min(max(float(getattr(args, "anchor_ema_momentum", 0.995)), 0.0), 1.0)
+    args.lambda_anchor = min(max(float(getattr(args, "lambda_anchor", 0.1)), 0.0), 1.0)
+    args.anchor_pretrain_early_stop = max(0, int(getattr(args, "anchor_pretrain_early_stop", 5)))
+    args.anchor_pretrain_min_delta = max(0.0, float(getattr(args, "anchor_pretrain_min_delta", 1e-4)))
+    args.enable_stage1 = bool(getattr(args, "enable_stage1", True))
+    args.gamma = max(float(getattr(args, "gamma", 2.0)), 1e-8)
+    args.theta_supp = max(float(getattr(args, "theta_supp", 0.15)), 0.0)
+    args.stage3_enable_joint_weighted_voting = bool(
+        getattr(args, "stage3_enable_joint_weighted_voting", True)
+    )
+    args.stage3_enable_static_reliability = bool(
+        getattr(args, "stage3_enable_static_reliability", True)
+    )
+    args.stage3_confidence_mode = str(getattr(args, "stage3_confidence_mode", "raw_ratio")).strip().lower()
+    if args.stage3_confidence_mode not in {"raw_ratio", "bounded_relative_gap"}:
+        raise ValueError(
+            "Unsupported stage3_confidence_mode '{}'. Supported modes are: raw_ratio, bounded_relative_gap".format(
+                args.stage3_confidence_mode
+            )
+        )
+    args.enable_conservative_correction = bool(getattr(args, "enable_conservative_correction", False))
+    args.tau_corr = max(float(getattr(args, "tau_corr", 0.0)), 0.0)
     args.anchor_margin_auto_adjusted = False
+    args.stage3_debug_batches = max(0, int(getattr(args, "stage3_debug_batches", 0)))
+    args.stage3_debug_max_samples = max(1, int(getattr(args, "stage3_debug_max_samples", 8)))
     args.requested_anchor_margin = args.anchor_margin
     if (
         args.dataset == "CIFAR10"
-        and args.defense == "anchor"
         and args.client_num > 2
         and args.anchor_margin > 0
     ):
@@ -215,17 +354,15 @@ def normalize_args(args):
         args.anchor_margin = 0.0
         args.anchor_margin_auto_adjusted = True
 
-    num_classes = get_num_classes(args.dataset)
-    if args.target_label >= num_classes:
-        args.target_label = num_classes - 1
-
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     if not args.results_dir:
         args.results_dir = os.path.join("results", args.dataset, timestamp)
-    if args.defense == "anchor" and not args.anchor_stage1_dir:
+    if not args.anchor_stage1_dir:
         args.anchor_stage1_dir = get_stage1_dir(args)
-    if args.defense == "anchor" and not args.anchor_bank_path:
+    if not args.anchor_bank_path:
         args.anchor_bank_path = os.path.join(args.results_dir, "anchor_bank.pt")
+    if args.resume_latest and not args.pretrained_checkpoint and args.mode in {"train", "pretrain_anchor"}:
+        args.pretrained_checkpoint = os.path.join(args.results_dir, "latest_checkpoint.pth.tar")
 
 
 def resolve_runtime_device(args):
@@ -249,7 +386,15 @@ def main(args):
     device, device_message = resolve_runtime_device(args)
     logger = create_logger(args.results_dir)
     logger.info(args)
-    logger.info("=> Defense scheme: %s", getattr(args, "defense_scheme", "none"))
+    if getattr(args, "original_dataset", args.dataset) != args.dataset:
+        logger.info(
+            "=> Canonicalized dataset name from '%s' to '%s'; legacy NUS-WIDE aliases now share the unified NUSWIDE entry",
+            args.original_dataset,
+            args.dataset,
+        )
+    logger.info("=> Defense scheme: %s", getattr(args, "defense_scheme", "AVGuard"))
+    if args.attack == "LFBA":
+        logger.info("=> LFBA poison-set source: %s", args.lfba_poison_source)
     if getattr(args, "anchor_margin_auto_adjusted", False):
         logger.info(
             "=> Adjusted anchor_margin from %.4f to %.4f for CIFAR10 anchor stage1 with %s clients to avoid ArcFace collapse on narrow image slices",
@@ -268,13 +413,13 @@ def main(args):
     logger.info("=> %s", device_message)
 
     train_data, test_data, test_data_asr = build_datasets(args, logger)
+    resolve_attack_target_label(args, logger, train_data)
     clean_train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=args.batch_size, shuffle=True)
     clean_test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=args.batch_size, shuffle=False)
     trigger_dimensions = select_trigger_dimensions(args, train_data)
 
     model_list, optimizer_list, criterion = build_models(args, device)
     checkpoint = load_checkpoint_if_available(args, device, logger, model_list, optimizer_list)
-    maybe_resolve_lfba_target_label(args, logger, checkpoint, train_data)
     defense_runtime = prepare_defense(
         args,
         device,
@@ -289,11 +434,17 @@ def main(args):
 
     if args.mode == "pretrain_anchor":
         return
+    if defense_runtime is None:
+        raise RuntimeError(
+            "AVGuard requires anchor artifacts for '{}' mode. "
+            "Please provide a stage1/stage2 checkpoint or a valid anchor_bank_path.".format(args.mode)
+        )
 
     attack_runtime = create_attack_runtime(args=args, logger=logger, trigger_dimensions=trigger_dimensions, device=device)
     attack_runtime.apply_initial_dataset_poisoning(train_data, test_data_asr)
     train_loader, test_loader, test_asr_loader = build_loaders(args, train_data, test_data, test_data_asr)
     attack_runtime.attach_loaders(train_loader, test_asr_loader)
+    restore_attack_runtime_state_if_available(checkpoint, attack_runtime, logger)
 
     trainer = Trainer(
         device=device,
@@ -307,7 +458,7 @@ def main(args):
         logger=logger,
         args=args,
         checkpoint=checkpoint,
-        anchor_defense=defense_runtime,
+        defense_runtime=defense_runtime,
         attack_runtime=attack_runtime,
     )
 
@@ -329,32 +480,57 @@ def build_parser():
     parser.add_argument("--epoch", default=100, type=int, help="number of training epochs")
     parser.add_argument("--batch_size", default=256, type=int, help="training batch size")
     parser.add_argument("--client_num", default=2, type=int, help="number of clients")
-    parser.add_argument("--pretrained_checkpoint", default=None, help="checkpoint used to resume training")
+    parser.add_argument(
+        "--pretrained_checkpoint",
+        default=None,
+        help="checkpoint used to resume training; latest_checkpoint.pth.tar is recommended for interrupted runs",
+    )
     parser.add_argument("--test_checkpoint", default=None, help="checkpoint used for evaluation")
+    parser.add_argument(
+        "--resume_latest",
+        default=False,
+        type=lambda value: str(value).lower() in {"1", "true", "yes", "on"},
+        help="auto-resume from results_dir/latest_checkpoint.pth.tar when training",
+    )
     parser.add_argument("--lr", default=0.001, type=float, help="learning rate")
     parser.add_argument("--start_epoch", default=0, type=int, help="starting epoch index")
     parser.add_argument("--print_steps", default=10, type=int, help="logging interval")
-    parser.add_argument("--early_stop", default=20, type=int, help="early stopping patience")
+    parser.add_argument("--early_stop", default=20, type=int, help="early stopping patience; set 0 to disable")
     parser.add_argument("--attack", default=None, help="attack method")
-    parser.add_argument("--target_label", default=None, type=int, help="target label for the backdoor")
+    parser.add_argument(
+        "--target_label",
+        default=None,
+        type=int,
+        help="optional target label for label-aware attacks; LFBA derives its target label from anchor_idx",
+    )
     parser.add_argument("--poison_rate", default=0.1, type=float, help="ratio of poison samples")
     parser.add_argument("--poison_dimensions", default=5, type=int, help="number of poisoned feature dimensions")
     parser.add_argument("--trigger_feature_clip", default=1, type=float, help="feature trigger clip ratio")
     parser.add_argument("--attack_client_num", default=1, type=int, help="attacker client index")
     parser.add_argument("--feature_extractor", default="", help="reserved legacy argument")
     parser.add_argument("--select_rate", default=1, type=float, help="ratio of switched samples for LFBA")
+    parser.add_argument(
+        "--lfba_poison_source",
+        default=LFBA_POISON_SOURCE_GRADIENT,
+        help="LFBA poison-set source: 'gradient' for label-free inference or 'oracle_label' for same-label supervision",
+    )
     parser.add_argument("--random_select", action="store_true")
-    parser.add_argument("--select_replace", action="store_true")
     parser.add_argument("--poison_all", action="store_true")
     parser.add_argument("--anchor_idx", default=33930, type=int)
     parser.add_argument("--pretrain_stage", default=0, type=int, help="LFBA warmup stage")
 
     parser.add_argument("--mode", default="train", choices=["train", "test", "pretrain_anchor"])
-    parser.add_argument("--defense", default="none", choices=["none", "anchor"])
+    parser.add_argument("--defense", default="anchor", choices=["anchor"])
     parser.add_argument(
         "--defense_scheme",
         default="",
         help="named defense scheme used for experiment tracking, e.g. AVGuard",
+    )
+    parser.add_argument(
+        "--enable_stage1",
+        default=True,
+        type=lambda value: str(value).lower() in {"1", "true", "yes", "on"},
+        help="whether to enable Stage 1 anchor pretraining/artifact reuse; when disabled, anchors are randomly initialized",
     )
     parser.add_argument(
         "--force_stage1_retrain",
@@ -367,7 +543,12 @@ def build_parser():
         type=lambda value: str(value).lower() in {"1", "true", "yes", "on"},
         help="whether to add anchor loss during stage 2 training",
     )
-    parser.add_argument("--lambda_anchor", default=0.1, type=float, help="weight of anchor constraint loss")
+    parser.add_argument(
+        "--lambda_anchor",
+        default=0.1,
+        type=float,
+        help="stage2 interpolation weight in [0, 1] for total loss=(1-lambda_anchor)*CE + lambda_anchor*anchor_loss",
+    )
     parser.add_argument(
         "--lambda_stage1_anchor",
         default=0.3,
@@ -375,6 +556,18 @@ def build_parser():
         help="weight of anchor loss during stage1 anchor pretraining",
     )
     parser.add_argument("--anchor_pretrain_epochs", default=5, type=int, help="anchor pretraining epochs")
+    parser.add_argument(
+        "--anchor_pretrain_early_stop",
+        default=5,
+        type=int,
+        help="stage1 early-stop patience on validation clean_acc; set 0 to disable",
+    )
+    parser.add_argument(
+        "--anchor_pretrain_min_delta",
+        default=1e-4,
+        type=float,
+        help="minimum clean_acc improvement required to reset stage1 early-stop patience",
+    )
     parser.add_argument("--anchor_scale", default=16.0, type=float, help="ArcFace scale")
     parser.add_argument("--anchor_margin", default=0.2, type=float, help="ArcFace angular margin")
     parser.add_argument(
@@ -388,22 +581,81 @@ def build_parser():
         help="directory for saving/loading stage1 passive local models and anchor artifacts",
     )
     parser.add_argument(
-        "--detect_threshold",
+        "--anchor_ema_momentum",
+        default=0.995,
+        type=float,
+        help="EMA momentum used to calibrate the stage2 anchor bank",
+    )
+    parser.add_argument(
+        "--anchor_ema_update_freq",
+        default=1,
+        type=int,
+        help="number of stage2 epochs between anchor-bank EMA updates",
+    )
+    parser.add_argument(
+        "--stage3_enable_joint_weighted_voting",
+        default=True,
+        type=lambda value: str(value).lower() in {"1", "true", "yes", "on"},
+        help="whether Stage 3 uses joint weighted voting; when disabled, majority voting is used directly",
+    )
+    parser.add_argument(
+        "--stage3_enable_static_reliability",
+        default=True,
+        type=lambda value: str(value).lower() in {"1", "true", "yes", "on"},
+        help="whether Stage 3 weighting uses static client reliability r_i from Stage 1 metrics",
+    )
+    parser.add_argument(
+        "--gamma",
         default=2.0,
         type=float,
-        help="stage3 multiplicative threshold gamma",
+        help="stage3 gamma in the joint static-reliability and dynamic-confidence voting formula",
     )
     parser.add_argument(
-        "--detect_threshold_cap",
-        default=1.5,
-        type=float,
-        help="stage3 distance-threshold upper cap; final threshold is min(gamma * client_anchor_loss, cap)",
+        "--stage3_confidence_mode",
+        default="raw_ratio",
+        choices=["raw_ratio", "bounded_relative_gap"],
+        help=(
+            "Stage 3 q_i confidence calibration: raw_ratio uses (d2-d1)/(d1+eps); "
+            "bounded_relative_gap uses (d2-d1)/(d2+eps), which bounds q_i in [0, 1]"
+        ),
     )
     parser.add_argument(
-        "--majority_ratio",
-        default=0.5,
+        "--theta_supp",
+        default=0.15,
         type=float,
-        help="minimum inconsistent-client ratio required to flag a sample",
+        help="minimum local anchor confidence required for a client to count as valid support of the global prediction",
+    )
+    parser.add_argument(
+        "--enable_conservative_correction",
+        default=False,
+        type=lambda value: str(value).lower() in {"1", "true", "yes", "on"},
+        help="whether to require the weighted-vote correction margin to exceed tau_corr before applying Stage 3 correction",
+    )
+    parser.add_argument(
+        "--tau_corr",
+        default=0.0,
+        type=float,
+        help="minimum Stage 3 weighted-vote correction margin required when conservative correction is enabled",
+    )
+    parser.add_argument(
+        "--top_k",
+        "--k",
+        dest="top_k",
+        default=4,
+        type=int,
+        help="top-k accuracy used in unified evaluation metrics",
+    )
+    parser.add_argument(
+        "--stage3_debug_batches",
+        default=0,
+        type=int,
+        help="number of Stage 3 evaluation batches to dump as detailed debug logs; 0 disables batch-level dumps",
+    )
+    parser.add_argument(
+        "--stage3_debug_max_samples",
+        default=8,
+        type=int,
+        help="maximum number of samples to print per Stage 3 debug batch",
     )
     return parser
 

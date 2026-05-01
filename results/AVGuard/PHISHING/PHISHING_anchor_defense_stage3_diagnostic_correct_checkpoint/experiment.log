@@ -1,0 +1,26 @@
+2026-04-13 12:45:41,155 - Namespace(config='', data_dir='./dataset/data_raw/', dataset='PHISHING', device=0, results_dir='./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage3_diagnostic_correct_checkpoint', seed=100, epoch=100, batch_size=256, client_num=3, pretrained_checkpoint=None, test_checkpoint='./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage2/best_checkpoint.pth.tar', resume_latest=False, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.1, poison_dimensions=30, trigger_feature_clip=1.0, attack_client_num=2, feature_extractor='', select_rate=0.3, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=1000, pretrain_stage=0, mode='test', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=False, enable_anchor_loss=True, lambda_anchor=0.1, lambda_stage1_anchor=0.3, anchor_pretrain_epochs=5, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=16.0, anchor_margin=0.2, anchor_bank_path='./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_artifact.pt', anchor_stage1_dir='./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_stage1', anchor_ema_momentum=0.995, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, gamma=2.0, theta_supp=0.15, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='PHISHING', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0.2)
+2026-04-13 12:45:41,156 - => Defense scheme: AVGuard
+2026-04-13 12:45:41,156 - => LFBA poison-set source: gradient
+2026-04-13 12:45:41,157 - => Python executable: D:\Code\Miniconda\envs\backdoor\python.exe
+2026-04-13 12:45:41,157 - => Torch version: 2.5.1+cu121, compiled CUDA: 12.1, cuda available: True, visible GPU count: 1
+2026-04-13 12:45:41,157 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4060 Laptop GPU)
+2026-04-13 12:45:41,157 - => Preparing data...
+2026-04-13 12:45:44,161 - => PHISHING file: ./dataset/data_raw/Phishing\PHISHING_full.csv
+2026-04-13 12:45:44,161 - => PHISHING feature dim: 111, train samples: 70917, test samples: 17730
+2026-04-13 12:45:44,173 - => Resolved LFBA attack target label=0 from training anchor_idx=1000
+2026-04-13 12:45:44,378 - => Loading checkpoint './results/AVGuard/PHISHING/PHISHING_anchor_defense_stage2/best_checkpoint.pth.tar'
+2026-04-13 12:45:44,487 - => checkpoint './results/AVGuard/PHISHING/PHISHING_anchor_defense_stage2/best_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-13 12:45:44,561 - => Loaded checkpoint './results/AVGuard/PHISHING/PHISHING_anchor_defense_stage2/best_checkpoint.pth.tar' (epoch 5, best clean accuracy: 0.9570)
+2026-04-13 12:45:44,561 - => Loading anchor defense state from checkpoint
+2026-04-13 12:45:44,867 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-13 12:45:44,870 - =>Add Trigger to Test Data
+2026-04-13 12:45:45,631 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-13 12:45:45,634 - => Restored LFBA runtime state: cached_features=70917, poison_indexes=7091, anchor_label=0
+2026-04-13 12:45:45,635 - => Test ASR...
+2026-04-13 12:45:45,637 - =>Add Trigger to Test Data
+2026-04-13 12:45:46,460 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-13 12:45:52,000 - => Test Epoch: 5, main task samples: 17730, attack samples: 17730, test loss: 0.1184, clean acc: 0.9307, Top-2: 1.0000, ASR: 0.1608, RAC: 0.9063, test target accuracy: 0.9631, stage3 final accuracy: 0.9307, stage3 final target accuracy: 0.9418, stage3 final asr: 0.1608, anchor loss: 0.0295
+2026-04-13 12:45:52,001 - => Stage 3 Detection Summary: recall: 0.8074, precision: 0.8082, f1: 0.8078, false positive rate: 0.0526, correction rate: 0.8074
+2026-04-13 12:45:52,001 - => Stage 3 Debug (clean): suspicious=933/17730, correction_applied=932, prediction_changed=932, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=1
+2026-04-13 12:45:52,001 - => Stage 3 Debug (poison-valid): suspicious=4057/6130, correction_applied=4057, prediction_changed=4057, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=0
+2026-04-13 12:45:52,002 - => Stage 3 Debug (attack-success): suspicious=4033/4995, correction_applied=4033, prediction_changed=4033, corrected_to_true=4033

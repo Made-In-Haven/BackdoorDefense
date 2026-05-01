@@ -1,44 +1,29 @@
 {
-  "data_dir": "./dataset/data_raw/", // Root directory that contains Phishing/PHISHING_full.csv
-  "dataset": "PHISHING", // Use the phishing dataset
-  "device": 0, // GPU index
-  "results_dir": "./results/AVGuard/PHISHING_anchor_defense_stage3", // Output directory for stage3 evaluation logs
-  "seed": 100, // Random seed
-  "epoch": 25, // Reserved for compatibility; not used in test mode
-  "batch_size": 256, // Batch size
-  "client_num": 3, // Comparable setting: split PHISHING across three clients
-  "pretrained_checkpoint": null, // Not used in test mode
-  "test_checkpoint": "./results/AVGuard/PHISHING_anchor_defense_stage2/best_checkpoint.pth.tar", // Best stage2 checkpoint for evaluation
-  "lr": 0.003, // Match the phishing baseline learning rate
-  "start_epoch": 0, // Reserved for compatibility
-  "print_steps": 10, // Logging interval
-  "early_stop": 10, // Reserved for compatibility
-  "attack": "LFBA", // Keep LFBA enabled so ASR evaluation and stage3 detection are both available
-  "target_label": 1, // Binary backdoor target label for PHISHING
-  "poison_rate": 0.1, // Comparable poison ratio
-  "poison_dimensions": 5, // Comparable trigger budget on the attacker slice
-  "trigger_feature_clip": 1.0, // Fixed-value trigger strength
-  "attack_client_num": 2, // The third client is the attacker
-  "feature_extractor": "", // Reserved legacy argument
-  "select_rate": 0.3, // Comparable LFBA replacement ratio
-  "random_select": false, // Disable random poison sample selection
-  "select_replace": true, // Enable LFBA replacement strategy
-  "poison_all": false, // Do not poison all candidate samples
-  "anchor_idx": 1000, // Local reproducible anchor index
-  "pretrain_stage": 0, // LFBA warmup setting
-  "mode": "test", // Run stage2/stage3 evaluation only
-  "defense": "anchor", // Enable anchor-based defense during evaluation
-  "defense_scheme": "AVGuard", // Anchor Voting Guard
-  "force_stage1_retrain": false, // Never rerun stage1 in test mode
-  "enable_anchor_loss": true, // Report anchor loss during evaluation
-  "lambda_anchor": 1.0, // Kept for compatibility in test mode
-  "lambda_stage1_anchor": 0.3, // Kept for compatibility in test mode
-  "anchor_pretrain_epochs": 20, // Kept for compatibility in test mode
-  "anchor_scale": 16.0, // Must match stage1
-  "anchor_margin": 0.2, // Must match stage1
-  "anchor_bank_path": "./results/AVGuard/AVGuard/PHISHING_anchor_defense_stage1/anchor_artifact.pt", // Fallback stage1 anchor artifact
-  "anchor_stage1_dir": "./results/AVGuard/PHISHING_anchor_defense_stage1/anchor_stage1", // Preferred stage1 artifact directory
-  "detect_threshold": 1.2, // Reserved compatibility field
-  "detect_threshold_cap": 2.0, // Reserved compatibility field
-  "majority_ratio": 0.5 // Majority vote threshold for stage3
+  "data_dir": "./dataset/data_raw/", // 数据集根目录
+  "dataset": "PHISHING", // 数据集名称
+  "device": 0, // GPU 编号
+  "results_dir": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage3", // 结果输出目录
+  "seed": 100, // 随机种子
+  "batch_size": 256, // 批大小
+  "client_num": 3, // 客户端数量
+  "test_checkpoint": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage2/best_checkpoint.pth.tar", // 测试使用的检查点路径
+  "attack": "LFBA", // 后门攻击类型
+  "poison_rate": 0.1, // 投毒比例
+  "poison_dimensions": 30, // 触发器维度数
+  "trigger_feature_clip": 1.0, // 触发器取值或裁剪值
+  "attack_client_num": 2, // 攻击客户端编号
+  "select_rate": 0.3, // LFBA 样本切换比例
+  "random_select": false, // 是否随机选择投毒样本
+  "poison_all": false, // 是否对全部候选样本投毒
+  "anchor_idx": 1000, // 锚样本索引
+  "mode": "test", // 运行模式
+  "defense": "anchor", // 防御类型
+  "defense_scheme": "AVGuard", // 防御方案名称
+  "enable_anchor_loss": true, // 是否启用 anchor 损失
+  "anchor_scale": 16.0, // ArcFace 缩放系数
+  "anchor_margin": 0.2, // ArcFace 间隔参数
+  "anchor_bank_path": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_artifact.pt", // 第一阶段 anchor 工件路径
+  "anchor_stage1_dir": "./results/AVGuard/PHISHING/PHISHING_anchor_defense_stage1/anchor_stage1", // 第一阶段工件目录
+  "gamma": 2.0, // 第三阶段联合投票温度系数
+  "theta_supp": 0.15 // 第三阶段有效支持阈值
 }

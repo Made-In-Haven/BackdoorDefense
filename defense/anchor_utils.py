@@ -1,19 +1,19 @@
-import math
 import os
 
 import torch
 
 from defense.anchor_losses import ArcFaceClassifier
+from utils.utils import canonicalize_dataset_name
 
 
 def get_num_classes(dataset_name):
+    dataset_name = canonicalize_dataset_name(dataset_name)
     mapping = {
         "CIFAR10": 10,
         "UCIHAR": 6,
         "PHISHING": 2,
+        "IEEE_CIS_FRAUD": 2,
         "NUSWIDE": 5,
-        "NUSWIDET": 5,
-        "NUSWIDEI": 5,
     }
     return mapping[dataset_name]
 
@@ -49,13 +49,6 @@ def ensure_parent_dir(path):
 
 def ensure_dir(path):
     os.makedirs(path, exist_ok=True)
-
-
-def build_vote_threshold(client_num, majority_ratio):
-    if majority_ratio <= 0.5:
-        return max(1, (client_num // 2) + 1)
-    return max(1, math.ceil(client_num * majority_ratio))
-
 
 def save_anchor_artifact(path, payload):
     ensure_parent_dir(path)

@@ -1,0 +1,17 @@
+dataset,stage3_enable_static_reliability,scope,status,epoch,best_epoch,clean_acc,topk_name,topk,asr,rac,recall,precision,f1,fpr,correction_rate,checkpoint_score,result_dir
+CIFAR10,on,final_epoch,ok,100.0000,,0.7007,4,0.9801,0.2948,0.5983,0.8822,0.3888,0.5397,0.2856,0.5970,0.7266,results/AVGuard/stage3_static_reliability_ablation/CIFAR10_static_reliability_on
+CIFAR10,on,best_checkpoint,ok,100.0000,2.0000,0.6273,4,0.9602,0.0697,0.6657,0.9639,0.6483,0.7752,0.3610,0.6581,0.7498,results/AVGuard/stage3_static_reliability_ablation/CIFAR10_static_reliability_on
+CIFAR10,off,final_epoch,ok,100.0000,,0.7022,4,0.9803,0.2982,0.5966,0.8755,0.3692,0.5194,0.2837,0.5769,0.7182,results/AVGuard/stage3_static_reliability_ablation/CIFAR10_static_reliability_off
+CIFAR10,off,best_checkpoint,ok,100.0000,2.0000,0.6268,4,0.9602,0.0697,0.6655,0.9639,0.6483,0.7752,0.3610,0.6581,0.7496,results/AVGuard/stage3_static_reliability_ablation/CIFAR10_static_reliability_off
+PHISHING,on,final_epoch,ok,50.0000,,0.9305,2,1.0000,0.1486,0.9076,0.8378,0.8216,0.8296,0.0554,0.8376,0.8686,results/AVGuard/stage3_static_reliability_ablation/PHISHING_static_reliability_on
+PHISHING,on,best_checkpoint,ok,50.0000,18.0000,0.9250,2,1.0000,0.1387,0.9062,0.8463,0.8105,0.8280,0.0596,0.8463,0.8726,results/AVGuard/stage3_static_reliability_ablation/PHISHING_static_reliability_on
+PHISHING,off,final_epoch,ok,50.0000,,0.9305,2,1.0000,0.1486,0.9076,0.8378,0.8216,0.8296,0.0554,0.8376,0.8686,results/AVGuard/stage3_static_reliability_ablation/PHISHING_static_reliability_off
+PHISHING,off,best_checkpoint,ok,50.0000,18.0000,0.9250,2,1.0000,0.1387,0.9062,0.8463,0.8105,0.8280,0.0596,0.8463,0.8726,results/AVGuard/stage3_static_reliability_ablation/PHISHING_static_reliability_off
+IEEE_CIS_FRAUD,on,final_epoch,ok,50.0000,,0.8292,2,1.0000,0.1119,0.7881,0.8876,0.8179,0.8513,0.1294,0.8876,0.8681,results/AVGuard/stage3_static_reliability_ablation/IEEE_CIS_FRAUD_static_reliability_on
+IEEE_CIS_FRAUD,on,best_checkpoint,ok,50.0000,10.0000,0.8180,2,1.0000,0.0891,0.7762,0.9107,0.8624,0.8859,0.0964,0.9107,0.8798,results/AVGuard/stage3_static_reliability_ablation/IEEE_CIS_FRAUD_static_reliability_on
+IEEE_CIS_FRAUD,off,final_epoch,ok,50.0000,,0.8292,2,1.0000,0.1119,0.7881,0.8876,0.8179,0.8513,0.1294,0.8876,0.8681,results/AVGuard/stage3_static_reliability_ablation/IEEE_CIS_FRAUD_static_reliability_off
+IEEE_CIS_FRAUD,off,best_checkpoint,ok,50.0000,10.0000,0.8180,2,1.0000,0.0891,0.7762,0.9107,0.8624,0.8859,0.0964,0.9107,0.8798,results/AVGuard/stage3_static_reliability_ablation/IEEE_CIS_FRAUD_static_reliability_off
+NUSWIDE,on,final_epoch,ok,50.0000,,0.7830,4,0.9940,0.0553,0.7068,0.7175,0.0361,0.0688,0.2030,0.3885,0.6296,results/AVGuard/stage3_static_reliability_ablation/NUSWIDE_static_reliability_on
+NUSWIDE,on,best_checkpoint,ok,50.0000,1.0000,0.7692,4,0.9965,0.2714,0.6724,0.6880,0.2880,0.4061,0.2090,0.5055,0.6542,results/AVGuard/stage3_static_reliability_ablation/NUSWIDE_static_reliability_on
+NUSWIDE,off,final_epoch,ok,50.0000,,0.7829,4,0.9940,0.0551,0.7067,0.7175,0.0361,0.0688,0.2030,0.3885,0.6296,results/AVGuard/stage3_static_reliability_ablation/NUSWIDE_static_reliability_off
+NUSWIDE,off,best_checkpoint,ok,50.0000,1.0000,0.7693,4,0.9965,0.2714,0.6726,0.6880,0.2880,0.4061,0.2090,0.5060,0.6544,results/AVGuard/stage3_static_reliability_ablation/NUSWIDE_static_reliability_off

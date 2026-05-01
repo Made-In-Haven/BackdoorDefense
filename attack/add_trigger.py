@@ -1,5 +1,6 @@
 import math
 from dataset.utils import get_attacker_image_slice
+from utils.utils import get_attack_target_label
 from utils.utils import *
 
 
@@ -21,6 +22,12 @@ def add_trigger_to_data(args, logger, poison_indexes, new_data, trigger_dimensio
                                                                new_targets, rate, mode,
                                                                replace_label)
         return new_data, new_targets
+    elif args.dataset == 'IEEE_CIS_FRAUD':
+        new_data, new_targets = add_vector_replacement_trigger(args, logger, poison_indexes, trigger_dimensions,
+                                                               new_data,
+                                                               new_targets, rate, mode,
+                                                               replace_label)
+        return new_data, new_targets
     elif args.dataset == 'NUSWIDE':
         new_data, new_targets = add_vector_replacement_trigger(args, logger, poison_indexes, trigger_dimensions,
                                                                new_data, new_targets,
@@ -36,10 +43,11 @@ def add_triangle_pattern_trigger(args, logger, poison_indexes, new_data, new_tar
     patch_width = min(3, max(1, attacker_end - attacker_start))
     row_start = height - patch_height
     col_start = attacker_end - patch_width
+    target_label = get_attack_target_label(args)
 
     for idx in poison_indexes:
         if replace_label and mode == 'train':
-            new_targets[idx] = args.target_label
+            new_targets[idx] = target_label
         # Place the trigger inside the attacker's own image slice so CIFAR10 works with different client counts.
         for c in range(channels):
             new_data[idx, row_start:height, col_start:attacker_end, c] = 0
@@ -58,9 +66,10 @@ def add_triangle_pattern_trigger(args, logger, poison_indexes, new_data, new_tar
 
 def add_feature_trigger(args, logger, poison_indexes, trigger_dimensions, new_data, new_targets, rate, mode,
                         replace_label=True):
+    target_label = get_attack_target_label(args)
     for idx in poison_indexes:
         if replace_label and mode == 'train':
-            new_targets[idx] = args.target_label
+            new_targets[idx] = target_label
         new_data[idx][trigger_dimensions] = args.trigger_feature_clip
     logger.info(
         "Add Trigger to %d Bad Samples, %d Clean Samples (%.2f)" % (
@@ -70,9 +79,10 @@ def add_feature_trigger(args, logger, poison_indexes, trigger_dimensions, new_da
 
 def add_vector_replacement_trigger(args, logger, poison_indexes, trigger_dimensions, new_data, new_targets, rate, mode,
                                    replace_label):
+    target_label = get_attack_target_label(args)
     for idx in poison_indexes:
         if replace_label and mode == 'train':
-            new_targets[idx] = args.target_label
+            new_targets[idx] = target_label
         new_data[idx][trigger_dimensions] = 1
     logger.info(
         "Add Trigger to %d Bad Samples, %d Clean Samples (%.2f)" % (

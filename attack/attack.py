@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from attack.add_trigger import add_trigger_to_data
 from attack.add_trigger_replace import add_trigger_to_data_replace
+from utils.utils import get_attack_target_label
 
 
 def attack_lra(args, logger, data, trigger_dimensions, targets, rate, mode):
@@ -42,10 +43,14 @@ def attack_lfba_test(args, logger, data, targets, trigger_dimensions, mode="test
     new_data = copy.deepcopy(data)
     new_targets = copy.deepcopy(targets)
     target_array = np.asarray(targets)
-    attacked_indexes = np.where(target_array != args.target_label)[0]
+    attack_target_label = get_attack_target_label(args)
+    attacked_indexes = np.where(target_array != attack_target_label)[0]
 
     if len(attacked_indexes) == 0:
-        logger.info("=> LFBA test attack skipped because no non-target samples were found for target label %s", args.target_label)
+        logger.info(
+            "=> LFBA test attack skipped because no non-target samples were found for target label %s",
+            attack_target_label,
+        )
         return new_data
 
     # Rebuild the LFBA test set with the same attack family as training instead of falling back to RSA.

@@ -1,42 +1,36 @@
 {
-  "data_dir": "./dataset/data_raw/", // CIFAR10 dataset download/cache directory
-  "dataset": "CIFAR10", // Use the CIFAR10 dataset
-  "device": 0, // GPU index
-  "results_dir": "./results/AVGuard/CIFAR10_anchor_stage1_3clients", // Output directory for the 3-client stage1 run
-  "seed": 100, // Random seed
-  "epoch": 100, // Reserved for stage2; stage1 uses anchor_pretrain_epochs below
-  "batch_size": 256, // Batch size
-  "client_num": 3, // Three CIFAR10 clients
-  "pretrained_checkpoint": null, // Do not resume from a checkpoint
-  "test_checkpoint": null, // Not used in pretrain mode
-  "lr": 0.001, // Learning rate
-  "start_epoch": 0, // Starting epoch
-  "print_steps": 10, // Logging interval
-  "early_stop": 20, // Reserved for stage2
-  "attack": "LFBA", // Keep the attack enabled so stage1 also builds the attacker branch
-  "target_label": 3, // Initial target label
-  "poison_rate": 0.1, // Poison sample ratio
-  "poison_dimensions": 5, // Reserved for vector datasets; CIFAR10 uses an image trigger
-  "trigger_feature_clip": 1.0, // Reserved for vector datasets
-  "attack_client_num": 2, // The last client is the attacker
-  "feature_extractor": "", // Reserved legacy argument
-  "select_rate": 0.5, // Keep the README LFBA selection ratio for consistency
-  "random_select": false, // Disable random poison selection
-  "select_replace": true, // Keep LFBA replacement mode enabled
-  "poison_all": false, // Do not poison every candidate sample
-  "anchor_idx": 23470, // Anchor sample index from the CIFAR10 README example
-  "pretrain_stage": 0, // LFBA warmup setting
-  "mode": "pretrain_anchor", // Run only stage1
-  "defense": "anchor", // Enable the stage1 anchor pretraining pipeline
-  "defense_scheme": "AVGuard", // Anchor Voting Guard
-  "force_stage1_retrain": true, // Always rerun stage1 when this config is used
-  "enable_anchor_loss": false, // Stage1 does not use stage2 anchor loss
-  "lambda_anchor": 0.0, // Stage2-only weight, kept at zero here
-  "anchor_pretrain_epochs": 20, // Number of stage1 epochs
-  "anchor_scale": 16.0, // ArcFace scale for the active-side private head
-  "anchor_margin": 0.0, // Positive margin is disabled for narrow CIFAR10 slices
-  "anchor_bank_path": "./results/AVGuard/CIFAR10_anchor_stage1_3clients/anchor_bank.pt", // Serialized stage1 anchor artifact
-  "anchor_stage1_dir": "./results/AVGuard/CIFAR10_anchor_stage1_3clients/anchor_stage1", // Directory for stage1 local models and anchors
-  "detect_threshold": 3.0, // Reserved for stage3
-  "majority_ratio": 0.5 // Reserved for stage3
+  "data_dir": "./dataset/data_raw/", // 数据集根目录
+  "dataset": "CIFAR10", // 数据集名称
+  "device": 0, // GPU 编号
+  "results_dir": "./results/AVGuard/CIFAR10_anchor_stage1_3clients_ema", // 结果输出目录
+  "seed": 100, // 随机种子
+  "batch_size": 256, // 批大小
+  "client_num": 3, // 客户端数量
+  "resume_latest": true, // 若存在最新检查点则自动续训
+  "lr": 0.001, // 学习率
+  "print_steps": 10, // 日志打印间隔
+  "attack": "LFBA", // 后门攻击类型
+  "poison_rate": 0.1, // 投毒比例
+  "poison_dimensions": 5, // 触发器维度数
+  "trigger_feature_clip": 1.0, // 触发器取值或裁剪值
+  "attack_client_num": 2, // 攻击客户端编号
+  "select_rate": 0.5, // LFBA 样本切换比例
+  "random_select": false, // 是否随机选择投毒样本
+  "poison_all": false, // 是否对全部候选样本投毒
+  "anchor_idx": 23470, // 锚样本索引
+  "pretrain_stage": 0, // LFBA 预热阶段
+  "mode": "pretrain_anchor", // 运行模式
+  "defense": "anchor", // 防御类型
+  "defense_scheme": "AVGuard", // 防御方案名称
+  "force_stage1_retrain": true, // 是否强制重跑第一阶段
+  "lambda_stage1_anchor": 0.3, // 第一阶段 anchor 损失权重
+  "anchor_pretrain_epochs": 50, // anchor 预训练轮数
+  "anchor_pretrain_early_stop": 5, // anchor 预训练早停耐心值
+  "anchor_pretrain_min_delta": 0.0001, // 视为有效提升的最小 clean_acc 增量
+  "anchor_scale": 16.0, // ArcFace 缩放系数
+  "anchor_margin": 0.0, // ArcFace 间隔参数
+  "gamma": 2.0, // 第三阶段联合投票温度系数
+  "theta_supp": 0.15, // 第三阶段有效支持阈值
+  "anchor_bank_path": "./results/AVGuard/CIFAR10_anchor_stage1_3clients_ema/anchor_bank.pt", // 第一阶段 anchor 工件路径
+  "anchor_stage1_dir": "./results/AVGuard/CIFAR10_anchor_stage1_3clients_ema/anchor_stage1" // 第一阶段工件目录
 }

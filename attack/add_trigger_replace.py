@@ -1,6 +1,6 @@
 import copy
 
-from dataset.utils import get_attacker_feature_slice, get_attacker_image_slice
+from dataset.utils import get_attacker_feature_indices, get_attacker_image_slice
 from utils.utils import *
 
 
@@ -22,6 +22,13 @@ def add_trigger_to_data_replace(args, logger, replace_indexes_others, replace_in
                                                     replace_label)
         return new_data, new_targets
     elif args.dataset == 'PHISHING':
+        new_data, new_targets = add_vector_replacement_trigger(args, logger, replace_indexes_others,
+                                                               replace_indexes_target, train_indexes, poison_indexes,
+                                                               trigger_dimensions, new_data,
+                                                               new_targets, rate, mode,
+                                                               replace_label)
+        return new_data, new_targets
+    elif args.dataset == 'IEEE_CIS_FRAUD':
         new_data, new_targets = add_vector_replacement_trigger(args, logger, replace_indexes_others,
                                                                replace_indexes_target, train_indexes, poison_indexes,
                                                                trigger_dimensions, new_data,
@@ -72,12 +79,12 @@ def add_feature_trigger(args, logger, replace_indexes_others, replace_indexes_ta
                         rate, mode,
                         replace_label=True):
     temp = copy.deepcopy(new_data)
-    attacker_start, attacker_end = get_attacker_feature_slice(args, new_data.shape[1])
+    attacker_feature_indices = get_attacker_feature_indices(args, new_data.shape[1])
     for i, idx in enumerate(replace_indexes_others):
         temp[idx][trigger_dimensions] = args.trigger_feature_clip
         if args.dataset == 'UCIHAR':
             # Only copy the malicious client's feature slice when replacing samples.
-            new_data[replace_indexes_target[i]][attacker_start:attacker_end] = temp[idx][attacker_start:attacker_end]
+            new_data[replace_indexes_target[i]][attacker_feature_indices] = temp[idx][attacker_feature_indices]
     logger.info(
         "Add Trigger to %d Bad Samples, %d Clean Samples (%.2f)" % (
             len(poison_indexes), len(new_data) - len(poison_indexes), rate))
@@ -88,15 +95,19 @@ def add_vector_replacement_trigger(args, logger, replace_indexes_others, replace
                                    poison_indexes, trigger_dimensions, new_data,
                                    new_targets, rate, mode, replace_label):
     temp = copy.deepcopy(new_data)
-    attacker_start, attacker_end = get_attacker_feature_slice(args, new_data.shape[1])
+    attacker_feature_indices = get_attacker_feature_indices(args, new_data.shape[1])
     if args.dataset == 'PHISHING':
         for i, idx in enumerate(replace_indexes_others):
             temp[idx][trigger_dimensions] = 1
-            new_data[replace_indexes_target[i]][attacker_start:attacker_end] = temp[idx][attacker_start:attacker_end]
+            new_data[replace_indexes_target[i]][attacker_feature_indices] = temp[idx][attacker_feature_indices]
+    elif args.dataset == 'IEEE_CIS_FRAUD':
+        for i, idx in enumerate(replace_indexes_others):
+            temp[idx][trigger_dimensions] = 1
+            new_data[replace_indexes_target[i]][attacker_feature_indices] = temp[idx][attacker_feature_indices]
     elif args.dataset == 'NUSWIDE':
         for i, idx in enumerate(replace_indexes_others):
             temp[idx][trigger_dimensions] = 1
-            new_data[replace_indexes_target[i]][attacker_start:attacker_end] = temp[idx][attacker_start:attacker_end]
+            new_data[replace_indexes_target[i]][attacker_feature_indices] = temp[idx][attacker_feature_indices]
     logger.info(
         "Add Trigger to %d Bad Samples, %d Clean Samples (%.2f)" % (
             len(poison_indexes), len(new_data) - len(poison_indexes), rate))

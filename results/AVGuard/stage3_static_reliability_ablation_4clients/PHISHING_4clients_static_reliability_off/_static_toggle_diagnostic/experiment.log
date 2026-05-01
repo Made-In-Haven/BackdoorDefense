@@ -1,0 +1,15 @@
+2026-04-15 18:11:11,235 - => Preparing data...
+2026-04-15 18:11:13,532 - => PHISHING file: ./dataset/data_raw/Phishing\PHISHING_full.csv
+2026-04-15 18:11:13,532 - => PHISHING feature dim: 111, train samples: 70917, test samples: 17730
+2026-04-15 18:11:13,535 - => Resolved LFBA attack target label=0 from training anchor_idx=1000
+2026-04-15 18:11:13,544 - => Loading checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\PHISHING_4clients_static_reliability_off\latest_checkpoint.pth.tar'
+2026-04-15 18:11:13,665 - => checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\PHISHING_4clients_static_reliability_off\latest_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-15 18:11:13,722 - => Restored RNG state from checkpoint for deterministic resume
+2026-04-15 18:11:13,722 - => Loaded checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\PHISHING_4clients_static_reliability_off\latest_checkpoint.pth.tar' (epoch 50, best clean accuracy: 0.9079)
+2026-04-15 18:11:13,723 - => Resume training from epoch 50/50 using checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\PHISHING_4clients_static_reliability_off\latest_checkpoint.pth.tar'
+2026-04-15 18:11:13,723 - => Loading anchor defense state from checkpoint
+2026-04-15 18:11:13,733 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-15 18:11:13,736 - =>Add Trigger to Test Data
+2026-04-15 18:11:14,151 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-15 18:11:14,156 - =>Add Trigger to Test Data
+2026-04-15 18:11:14,618 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)

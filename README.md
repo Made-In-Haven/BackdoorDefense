@@ -1,70 +1,114 @@
-# Label-Free Backdoor Attacks in Vertical Federated Learning
+# BackdoorDefense: LFBA Attack and AVGuard Defense in Vertical Federated Learning
 
-**The pytorch implementation of "Label-Free Backdoor Attacks in Vertical Federated Learning" (AAAI-25).**
+This repository implements **vertical federated learning (VFL)** experiments with the **LFBA** (label-free backdoor) attack and the **AVGuard** anchor-based defense: three-stage training (anchor pretraining, joint training with anchor loss / EMA calibration, and test-time detection with joint weighted correction). The integrated entry point is `main.py` with JSON configs under `configs/avguard/`.
 
 ![](./framework.svg)
 
-> [Label-Free Backdoor Attacks in Vertical Federated Learning](https://ojs.aaai.org/index.php/AAAI/article/view/34246)
->
-> Wei Shen, Wenke Huang, Guancheng Wan, Mang Ye
->
-> School of Computer Science, Wuhan University
->
-> **Abstract** Vertical Federated Learning (VFL) involves multiple clients collaborating to train a global model with distributed features but shared samples. While it becomes a critical privacy-preserving learning paradigm, its security can be significantly compromised by backdoor attacks, where a malicious client injects a target backdoor by manipulating local data. Existing attack methods in VFL rely on the assumption that the malicious client can obtain additional knowledge about task labels, which is not applicable in VFL. In this work, we investigate a new backdoor attack paradigm in VFL, **L**abel-**F**ree **B**ackdoor **A**ttacks (**LFBA**), which does not require any additional label information and is feasible in VFL settings. Specifically, while existing methods assume access to task labels or target-class samples, we demonstrate that local embedding gradients reflect the semantic information of labels. It can guide the construction of the poison sample set from the backdoor target. Besides, we uncover that backdoor triggers tend to be ignored and under-fitted due to the learning of original features, which hinders backdoor task optimization. To address this, we propose selectively switching poison samples to disrupt feature learning, promoting backdoor task learning while maintaining accuracy on clean data. Extensive experiments demonstrate the effectiveness of our method in various settings.
+## Background (LFBA)
+
+> [Label-Free Backdoor Attacks in Vertical Federated Learning](https://ojs.aaai.org/index.php/AAAI/article/view/34246)  
+> Wei Shen, Wenke Huang, Guancheng Wan, Mang Ye — Wuhan University
+
+VFL trains a global model from distributed features and shared sample IDs. **LFBA** constructs a poison set without extra label knowledge by using embedding-gradient cues and selective sample switching so the backdoor trigger is learned together with clean accuracy.
 
 ## Requirements
-We use a single NVIDIA GeForce RTX 3090 for all evaluations. Clone the repository and install the dependencies from requirements.txt using the Anaconda environment:
+
+- Python 3.9+ recommended  
+- PyTorch / CUDA as in `requirements.txt` (pinned around `torch==1.12.1`). If CUDA is unavailable, `main.py` falls back to CPU with a log message.  
+- A GPU (e.g. single RTX 3090 class card) matches the original LFBA evaluation setup; CPU runs are possible but slow.
+
+Install from the repository root:
+
 ```bash
-conda create -n LFBA python=3.9
-conda activate LFBA
-git clone 'https://github.com/shentt67/LFBA.git'
-cd LFBA
-pip install requirements.txt
+conda create -n backdoor_defense python=3.9
+conda activate backdoor_defense
+cd BackdoorDefense   # or your clone path
+pip install -r requirements.txt
 ```
 
-## Example Usage
+## Repository layout
 
-For instance, to perform backdoor attacks with LFBA on the NUS-WIDE dataset, run:
+| Path | Role |
+|------|------|
+| `main.py` | CLI, config merge, data/models, defense + attack runtime, training / testing |
+| `attack/` | LFBA trigger and poisoning runtime |
+| `defense/` | AVGuard anchor defense, detector, trainer hooks |
+| `dataset/` | VFL dataset loaders (`dataset/README.md` documents NUS-WIDE feature layout) |
+| `models/` | Global / local models per dataset |
+| `configs/avguard/` | Staged JSON configs (per-dataset subfolders and ablation grids) |
+| `configs/README.md` | Config layout and `oracle_label` vs gradient poison source |
+| `utils/` | Training loop, seeds, helpers |
+| `draw_pictures/` | Optional plotting scripts |
+| `results/` | Run outputs; Git tracks `*.csv` / `*.log` only (see `.gitignore`; checkpoints `*.pt` / `*.pth.tar` stay local) |
+
+## Datasets and `data_dir`
+
+Default CLI `--data_dir` is `dataset/`. JSON configs often set `"data_dir": "./dataset/data_raw/"`. Resolve paths relative to that root.
+
+- **CIFAR10** — Torchvision CIFAR-10 under `data_dir` (`download=True` in code if missing).
+- **PHISHING** — File `PHISHING_full.csv` in one of: `data_dir/Phishing/`, `data_dir/data_raw/Phishing/`, or `data_dir/` (root). Label column: `phishing` or `Result`.
+- **IEEE_CIS_FRAUD** — Directory `IEEE-CIS-Fraud` containing `X_balanced.npy`, `y_balanced.npy`, and optionally `feature_columns.csv`, under one of: `data_dir/processed/`, `data_dir/data_raw/processed/`, or `data_dir/`.
+- **NUSWIDE** — Under `data_dir`, expected layout includes `Groundtruth/TrainTestLabels/` and `Low_Level_Features/` (see `dataset/utils.py` and `dataset/README.md`). Supported `client_num`: 2, 3, 4, or 5.
+- **UCIHAR** — UCI HAR features under `data_dir` per `UCIHAR_VFL` loader.
+
+Dataset name aliases such as `IEEE-CIS-Fraud` / `IEEECISFRAUD` are canonicalized to `IEEE_CIS_FRAUD` at runtime.
+
+## AVGuard workflow
+
+Use staged configs (examples below; swap dataset folder as needed):
+
+1. **Stage 1 — anchor pretraining** (`mode`: `pretrain_anchor`)
+
 ```bash
-python main.py --device 0 --dataset NUSWIDE --epoch 100 --batch_size 256 --lr 0.001 --attack LFBA --anchor_idx 33930 --poison_rate 0.1 --poison_dimensions 10 --select_replace --select_rate 0.3
+python main.py --config configs/avguard/phishing/stage1.json
 ```
 
-For CIFAR-10 dataset:
+2. **Stage 2 — joint training** with anchor loss and EMA anchor calibration (`mode`: `train`)
+
 ```bash
-python main.py --device 0 --dataset CIFAR10 --epoch 100 --batch_size 256 --lr 0.001 --attack LFBA --anchor_idx 23470 --poison_rate 0.1 --select_replace --select_rate 0.5
+python main.py --config configs/avguard/phishing/stage2.json
 ```
 
-Hyperparameter explanations:
+3. **Stage 3 — evaluation** with support detection and joint weighted voting (`mode`: `test`)
 
-**--device:** The ID of GPU to be used.
+```bash
+python main.py --config configs/avguard/phishing/stage3_test.json
+```
 
-**--dataset:** The experiment datasets. We include ['NUSWIDE', 'UCIHAR', 'Phishing', 'CIFAR10'] for evaluations.
+Other datasets:
 
-**--epoch:** The training epochs.
+- CIFAR-10: `configs/avguard/cifar10/` (e.g. `stage1_3clients.json`, `stage2_3clients.json`, …)  
+- NUS-WIDE: `configs/avguard/nuswide/`  
+- IEEE-CIS Fraud: `configs/avguard/ieee_cis_fraud/`  
+- Ablations (e.g. gamma, static reliability, 4 clients): `configs/avguard/stage3_*`, `configs/avguard/phishing/stage2_noema.json`, etc.
 
-**--batch_size:** The training batch size.
+Configs can set `"lfba_poison_source": "oracle_label"` or use the `*_oracle_label.json` templates for the supervised same-label poison pool (see `configs/README.md`).
 
-**--lr:** The learning rate.
+## Useful CLI / config fields
 
-**--attack:** The attack methods. Set 'LFBA' for the proposed method.
+| Field | Meaning |
+|-------|--------|
+| `--config` | JSON path; values override argparse defaults |
+| `--device` | GPU index (invalid index falls back to `cuda:0` if CUDA exists) |
+| `--dataset` | `CIFAR10`, `NUSWIDE`, `UCIHAR`, `PHISHING`, `IEEE_CIS_FRAUD` |
+| `--mode` | `pretrain_anchor`, `train`, or `test` |
+| `--results_dir` | If empty, defaults to `results/<DATASET>/<timestamp>/` |
+| `--resume_latest` | Resume from `results_dir/latest_checkpoint.pth.tar` when training |
+| `--attack` | e.g. `LFBA` |
+| `--anchor_idx` | Anchor sample index; LFBA infers target label from this sample |
+| `--poison_rate`, `--poison_dimensions`, `--select_rate` | LFBA poisoning and switching |
+| `--lfba_poison_source` | `gradient` (label-free) or `oracle_label` |
+| `--theta_supp` | Stage 3 valid-support threshold on local confidence / agreement |
+| `--gamma` | Stage 3 joint voting temperature |
+| `stage3_confidence_mode` | `raw_ratio` or `bounded_relative_gap` (see config JSONs) |
 
-**--anchor_idx:** The index of anchor.
-
-**--poison_rate:** The poison ratio ($p=\frac{N_p}{N}$ in the paper).
-
-**--poison_dimensions:** The dimension of triggers, e.g., 10 means randomly set 10 dimensions in the attacker client into the fixed value. 
-
-**--select_replace:** Add this params to perform attack with selectively sample switching.
-
-**--select_rate:** The switch ratio ($s=\frac{N_s}{N}$ in the paper).
-
-For the updated `PHISHING` dataset in this workspace, place the file at `dataset/data_raw/Phishing/PHISHING_full.csv`. The loader will automatically adapt to the new feature dimension.
-
+Training and metrics are written under `results_dir` (`experiment.log`, checkpoints, JSON metrics). Stage 2/3 configs should point `anchor_stage1_dir` / checkpoints to the Stage 1 output you intend to use.
 
 ## Citation
-Please cite our work, thank you!
 
-```
+If you use the LFBA attack formulation, please cite:
+
+```text
 @inproceedings{shen2025label,
   title={Label-free backdoor attacks in vertical federated learning},
   author={Shen, Wei and Huang, Wenke and Wan, Guancheng and Ye, Mang},
@@ -72,4 +116,7 @@ Please cite our work, thank you!
   year={2025}
 }
 ```
-Contact: [weishen@whu.edu.cn](mailto:weishen@whu.edu.cn)
+
+LFBA authors: [weishen@whu.edu.cn](mailto:weishen@whu.edu.cn)
+
+For the AVGuard implementation and experiment scripts in this fork/workspace, cite or acknowledge this repository as appropriate for your publication context.
