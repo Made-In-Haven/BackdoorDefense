@@ -1,0 +1,7 @@
+scope,experiment,epoch,completed_test_epochs,clean_acc,top4,asr,rac,recall,precision,f1,fpr,correction_rate,score,anchor_loss,attack_success_suspicious,attack_success_total,corrected_to_true,note
+best_checkpoint_score,with_anchor_ema,1,50,0.7692,0.9965,0.2714,0.6724,0.6880,0.2880,0.4061,0.2090,0.5055,0.6542,0.0830,6995,10167,5139,best epoch selected by checkpoint score
+best_checkpoint_score,without_anchor_ema,1,14,0.7692,0.9965,0.2714,0.6724,0.6880,0.2880,0.4061,0.2090,0.5055,0.6542,0.0830,6995,10167,5139,best epoch selected by checkpoint score
+same_epoch_14,with_anchor_ema,14,50,0.7633,0.9959,0.0555,0.6709,0.6854,0.0252,0.0487,0.2201,0.3005,0.5831,0.0824,584,852,256,fair completed same-epoch comparison
+same_epoch_14,without_anchor_ema,14,14,0.7641,0.9954,0.0664,0.6732,0.6423,0.0165,0.0322,0.2211,0.3245,0.5770,0.0835,386,601,195,fair completed same-epoch comparison
+last_available,with_anchor_ema,50,50,0.7830,0.9940,0.0553,0.7068,0.7175,0.0361,0.0688,0.2030,0.3885,0.6296,0.0743,772,1076,418,full 50-epoch run
+last_available,without_anchor_ema,14,14,0.7641,0.9954,0.0664,0.6732,0.6423,0.0165,0.0322,0.2211,0.3245,0.5770,0.0835,386,601,195,last completed test epoch in incomplete log

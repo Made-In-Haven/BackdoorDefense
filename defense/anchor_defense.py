@@ -59,6 +59,7 @@ class AnchorDefense(nn.Module):
             enable_static_reliability=getattr(args, "stage3_enable_static_reliability", True),
             enable_conservative_correction=getattr(args, "enable_conservative_correction", False),
             tau_corr=getattr(args, "tau_corr", 0.0),
+            confidence_mode=getattr(args, "stage3_confidence_mode", "raw_ratio"),
             client_reliability=self.client_reliability,
         )
         self.detector.load_state_dict(detector_state)
@@ -77,6 +78,9 @@ class AnchorDefense(nn.Module):
             getattr(args, "enable_conservative_correction", False)
         )
         self.detector.tau_corr = float(getattr(args, "tau_corr", 0.0))
+        self.detector.confidence_mode = self.detector._normalize_confidence_mode(
+            getattr(args, "stage3_confidence_mode", "raw_ratio")
+        )
         self.detector.set_client_reliability(self.client_reliability)
 
         for parameter in self.parameters():

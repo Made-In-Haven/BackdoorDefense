@@ -18,8 +18,11 @@ env/
 .ruff_cache/
 .ipynb_checkpoints/
 
-# Project outputs
-results/
+# Project outputs: ignore everything under results/ except small text artifacts
+results/**
+!results/**/
+!results/**/*.csv
+!results/**/*.log
 logs/
 
 # Datasets and large local assets

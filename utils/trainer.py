@@ -297,6 +297,11 @@ class Trainer:
         self.logger.info(
             "=> Stage 2 best checkpoint metric: mean(clean_acc, detection_recall, correction_rate)"
         )
+        if self.anchor_defense is not None:
+            self.logger.info(
+                "=> Stage 3 confidence mode for q_i: %s",
+                getattr(self.anchor_defense.detector, "confidence_mode", "raw_ratio"),
+            )
 
         epoch_loss_list = []
         model_list = self.model_list
@@ -360,7 +365,7 @@ class Trainer:
                     self.attack_runtime.before_backward(local_output_list)
 
                 ce_loss = self.criterion(global_output, y)
-                anchor_loss = torch.zeros(1, device=self.device).squeeze()
+                anchor_loss = torch.zeros(1, self.device).squeeze()
                 client_anchor_loss_dict = {}
                 if self.anchor_defense is not None:
                     anchor_loss, client_anchor_loss_dict = self.anchor_defense.compute_anchor_loss(

@@ -357,6 +357,13 @@ def normalize_args(args):
     args.stage3_enable_static_reliability = bool(
         getattr(args, "stage3_enable_static_reliability", True)
     )
+    args.stage3_confidence_mode = str(getattr(args, "stage3_confidence_mode", "raw_ratio")).strip().lower()
+    if args.stage3_confidence_mode not in {"raw_ratio", "bounded_relative_gap"}:
+        raise ValueError(
+            "Unsupported stage3_confidence_mode '{}'. Supported modes are: raw_ratio, bounded_relative_gap".format(
+                args.stage3_confidence_mode
+            )
+        )
     args.enable_conservative_correction = bool(getattr(args, "enable_conservative_correction", False))
     args.tau_corr = max(float(getattr(args, "tau_corr", 0.0)), 0.0)
     args.anchor_margin_auto_adjusted = False
@@ -639,6 +646,15 @@ def build_parser():
         default=2.0,
         type=float,
         help="stage3 gamma in the joint static-reliability and dynamic-confidence voting formula",
+    )
+    parser.add_argument(
+        "--stage3_confidence_mode",
+        default="raw_ratio",
+        choices=["raw_ratio", "bounded_relative_gap"],
+        help=(
+            "Stage 3 q_i confidence calibration: raw_ratio uses (d2-d1)/(d1+eps); "
+            "bounded_relative_gap uses (d2-d1)/(d2+eps), which bounds q_i in [0, 1]"
+        ),
     )
     parser.add_argument(
         "--theta_supp",

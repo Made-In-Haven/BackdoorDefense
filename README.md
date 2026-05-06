@@ -94,8 +94,6 @@ The loader automatically supports `--dataset IEEE-CIS-Fraud`, `--dataset IEEE_CI
 
 ## Citation
 
-Please cite our work, thank you!
-
 ```text
 @inproceedings{shen2025label,
   title={Label-free backdoor attacks in vertical federated learning},
@@ -104,5 +102,3 @@ Please cite our work, thank you!
   year={2025}
 }
 ```
-
-Contact: [weishen@whu.edu.cn](mailto:weishen@whu.edu.cn)

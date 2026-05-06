@@ -1,0 +1,15 @@
+2026-04-15 18:11:14,918 - => Preparing data...
+2026-04-15 18:11:15,688 - => IEEE-CIS-Fraud directory: ./dataset/data_raw\processed\IEEE-CIS-Fraud
+2026-04-15 18:11:15,689 - => IEEE-CIS-Fraud feature dim: 432, train samples: 49591, test samples: 12398
+2026-04-15 18:11:15,694 - => Resolved LFBA attack target label=1 from training anchor_idx=1001
+2026-04-15 18:11:15,710 - => Loading checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\IEEE_CIS_FRAUD_4clients_static_reliability_off\latest_checkpoint.pth.tar'
+2026-04-15 18:11:15,911 - => checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\IEEE_CIS_FRAUD_4clients_static_reliability_off\latest_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-15 18:11:15,979 - => Restored RNG state from checkpoint for deterministic resume
+2026-04-15 18:11:15,979 - => Loaded checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\IEEE_CIS_FRAUD_4clients_static_reliability_off\latest_checkpoint.pth.tar' (epoch 50, best clean accuracy: 0.7940)
+2026-04-15 18:11:15,979 - => Resume training from epoch 50/50 using checkpoint 'results\AVGuard\stage3_static_reliability_ablation_4clients\IEEE_CIS_FRAUD_4clients_static_reliability_off\latest_checkpoint.pth.tar'
+2026-04-15 18:11:15,980 - => Loading anchor defense state from checkpoint
+2026-04-15 18:11:15,991 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-15 18:11:15,995 - =>Add Trigger to Test Data
+2026-04-15 18:11:16,671 - Add Trigger to 8265 Bad Samples, 4133 Clean Samples (1.00)
+2026-04-15 18:11:16,677 - =>Add Trigger to Test Data
+2026-04-15 18:11:17,319 - Add Trigger to 8265 Bad Samples, 4133 Clean Samples (1.00)
