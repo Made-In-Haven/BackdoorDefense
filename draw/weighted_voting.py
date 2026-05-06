@@ -19,7 +19,7 @@ bars1 = ax1.bar(x - width/2, asr_with, width, label='with Weighted Voting',
 bars2 = ax1.bar(x + width/2, asr_without, width, label='without Weighted Voting',
                 color="#7AA6D1", edgecolor='black')
 
-ax1.set_ylabel('ASR', fontsize=12)
+ax1.set_ylabel('Defense ASR', fontsize=12)
 # ax1.set_title('ASR and Correction Rate Comparison', fontsize=14, fontweight='bold')
 ax1.set_xticks(x)
 ax1.set_xticklabels(datasets, fontsize=11)
@@ -37,7 +37,7 @@ bars3 = ax2.bar(x - width/2, cr_with, width, label='with Weighted Voting',
 bars4 = ax2.bar(x + width/2, cr_without, width, label='without Weighted Voting',
                 color="#7AA6D1", edgecolor='black')
 
-ax2.set_ylabel('Correction Rate', fontsize=12)
+ax2.set_ylabel('CR', fontsize=12)
 ax2.set_xlabel('Datasets', fontsize=12)
 ax2.set_xticks(x)
 ax2.set_xticklabels(datasets, fontsize=11)
@@ -50,5 +50,5 @@ for bar in bars3 + bars4:
              f'{height:.4f}', ha='center', va='bottom', fontsize=8)  # 字号调小一号
 
 plt.tight_layout()
-plt.savefig('wight_vote_cmp.png', dpi=300, bbox_inches='tight')
+plt.savefig('./draw/wight_vote_cmp.png', dpi=300, bbox_inches='tight')
 plt.show()

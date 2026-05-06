@@ -44,7 +44,7 @@ datasets = {
 
 # 定义要绘制的指标及对应的图例名称
 metrics = ["clean_accuracy", "defense_asr", "detection_recall", "correction_rate"]
-metric_labels = ["Clean Accuracy", "Defense ASR", "Detection Recall", "Correction Rate"]
+metric_labels = ["Defense Acc", "Defense ASR", "Recall", "CR"]
 # 颜色和线型（可根据喜好修改）
 colors = ["#E68483", "#F2B38F", "#7AA6D1", "#8FC9A3"]
 markers = ["o", "s", "^", "D"]

@@ -39,6 +39,7 @@ df = pd.DataFrame(
 # =========================
 # 2. Plot settings
 # =========================
+# DataFrame column names (must match df columns above)
 metrics = [
     "clean_accuracy",
     "attack_success_rate",
@@ -47,10 +48,10 @@ metrics = [
 ]
 
 metric_labels = [
-    "Clean Acc.",
-    "ASR",
+    "Defense Acc",
+    "Defense ASR",
     "Recall",
-    "Correction Rate",
+    "CR",
 ]
 
 # Similar color palette to your reference figure

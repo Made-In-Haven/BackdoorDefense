@@ -28,6 +28,7 @@ dataset/data_raw/
 *.tar.gz
 *.zip
 *.7z
+*.png
 
 # Model artifacts
 *.pt
