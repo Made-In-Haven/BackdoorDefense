@@ -1,0 +1,1015 @@
+2026-04-28 03:29:35,025 - Namespace(config='', data_dir='./dataset/data_raw/', dataset='PHISHING', device=0, results_dir='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2', seed=100, epoch=50, batch_size=256, client_num=3, pretrained_checkpoint='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\\latest_checkpoint.pth.tar', test_checkpoint=None, resume_latest=True, lr=0.003, start_epoch=0, print_steps=10, early_stop=10, attack='LFBA', target_label=None, poison_rate=0.25, poison_dimensions=30, trigger_feature_clip=1.0, attack_client_num=2, feature_extractor='', select_rate=0.3, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=1000, pretrain_stage=0, mode='train', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=False, enable_anchor_loss=True, lambda_anchor=0.5, lambda_stage1_anchor=0.7, anchor_pretrain_epochs=30, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=1, anchor_margin=0, anchor_bank_path='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage1/anchor_artifact.pt', anchor_stage1_dir='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, disable_stage3_eval=False, gamma=2.0, theta_supp=0.15, stage3_required_support_count=2, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='PHISHING', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0)
+2026-04-28 03:29:35,028 - => Defense scheme: AVGuard
+2026-04-28 03:29:35,029 - => LFBA poison-set source: gradient
+2026-04-28 03:29:35,030 - => Python executable: D:\python3\generative-compression-master1\KAVF\python.exe
+2026-04-28 03:29:35,030 - => Torch version: 2.7.1+cu126, compiled CUDA: 12.6, cuda available: True, visible GPU count: 1
+2026-04-28 03:29:35,031 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4080)
+2026-04-28 03:29:35,032 - => Preparing data...
+2026-04-28 03:29:37,387 - => PHISHING file: ./dataset/data_raw/Phishing\PHISHING_full.csv
+2026-04-28 03:29:37,388 - => PHISHING feature dim: 111, train samples: 70917, test samples: 17730
+2026-04-28 03:29:37,394 - => Resolved LFBA attack target label=0 from training anchor_idx=1000
+2026-04-28 03:29:37,514 - => No checkpoint found at './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\latest_checkpoint.pth.tar'
+2026-04-28 03:29:37,553 - => Loading stage1 local models and anchors from './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage1/anchor_stage1/stage1_artifact.pt'
+2026-04-28 03:29:37,675 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-28 03:29:37,678 - =>Add Trigger to Test Data
+2026-04-28 03:29:38,388 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:29:38,389 - => Start Training with LFBA...
+2026-04-28 03:29:38,389 - => Enter Stage 2: joint VFL training starts from stage1 passive local backbones with frozen anchor heads
+2026-04-28 03:29:38,390 - => Stage 2 anchor loss enabled: True
+2026-04-28 03:29:38,390 - => Stage 2 loss form: total_loss=(1-lambda_anchor)*CE + lambda_anchor*anchor_loss with lambda_anchor=0.5000
+2026-04-28 03:29:38,391 - => Stage 2 EMA anchor calibration disabled: momentum=1.0000 makes anchor updates a no-op, update_freq=1 epoch(s)
+2026-04-28 03:29:38,391 - => Stage 2 latest checkpoint path: './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\latest_checkpoint.pth.tar'
+2026-04-28 03:29:38,392 - => Stage 2 best checkpoint path: './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\best_checkpoint.pth.tar'
+2026-04-28 03:29:38,392 - => Stage 2 best checkpoint compatibility alias path: './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\best_clean_checkpoint.pth.tar'
+2026-04-28 03:29:38,393 - => Stage 2 best checkpoint metric: mean(clean_acc, detection_recall, correction_rate)
+2026-04-28 03:29:38,399 - => Start Training for Injecting Backdoor...
+2026-04-28 03:29:38,848 - Epoch: 1, 1/278: VFL loss: 0.8335, total loss: 0.4602, anchor loss: 0.0870, VFL train accuracy: 0.6914
+2026-04-28 03:29:39,284 - Epoch: 1, 11/278: VFL loss: 0.5189, total loss: 0.3174, anchor loss: 0.1159, VFL train accuracy: 0.7333
+2026-04-28 03:29:39,605 - Epoch: 1, 21/278: VFL loss: 0.3904, total loss: 0.2550, anchor loss: 0.1197, VFL train accuracy: 0.8153
+2026-04-28 03:29:39,854 - Epoch: 1, 31/278: VFL loss: 0.3342, total loss: 0.2262, anchor loss: 0.1182, VFL train accuracy: 0.8440
+2026-04-28 03:29:40,096 - Epoch: 1, 41/278: VFL loss: 0.3040, total loss: 0.2103, anchor loss: 0.1166, VFL train accuracy: 0.8621
+2026-04-28 03:29:40,340 - Epoch: 1, 51/278: VFL loss: 0.2843, total loss: 0.2004, anchor loss: 0.1164, VFL train accuracy: 0.8744
+2026-04-28 03:29:40,581 - Epoch: 1, 61/278: VFL loss: 0.2679, total loss: 0.1910, anchor loss: 0.1142, VFL train accuracy: 0.8834
+2026-04-28 03:29:40,826 - Epoch: 1, 71/278: VFL loss: 0.2548, total loss: 0.1846, anchor loss: 0.1144, VFL train accuracy: 0.8899
+2026-04-28 03:29:41,078 - Epoch: 1, 81/278: VFL loss: 0.2428, total loss: 0.1780, anchor loss: 0.1131, VFL train accuracy: 0.8959
+2026-04-28 03:29:41,328 - Epoch: 1, 91/278: VFL loss: 0.2333, total loss: 0.1729, anchor loss: 0.1125, VFL train accuracy: 0.9008
+2026-04-28 03:29:41,571 - Epoch: 1, 101/278: VFL loss: 0.2245, total loss: 0.1686, anchor loss: 0.1128, VFL train accuracy: 0.9053
+2026-04-28 03:29:41,842 - Epoch: 1, 111/278: VFL loss: 0.2185, total loss: 0.1655, anchor loss: 0.1124, VFL train accuracy: 0.9079
+2026-04-28 03:29:42,082 - Epoch: 1, 121/278: VFL loss: 0.2139, total loss: 0.1630, anchor loss: 0.1120, VFL train accuracy: 0.9099
+2026-04-28 03:29:42,322 - Epoch: 1, 131/278: VFL loss: 0.2087, total loss: 0.1599, anchor loss: 0.1112, VFL train accuracy: 0.9126
+2026-04-28 03:29:42,562 - Epoch: 1, 141/278: VFL loss: 0.2042, total loss: 0.1573, anchor loss: 0.1103, VFL train accuracy: 0.9143
+2026-04-28 03:29:42,803 - Epoch: 1, 151/278: VFL loss: 0.2017, total loss: 0.1559, anchor loss: 0.1101, VFL train accuracy: 0.9152
+2026-04-28 03:29:43,042 - Epoch: 1, 161/278: VFL loss: 0.1976, total loss: 0.1537, anchor loss: 0.1097, VFL train accuracy: 0.9171
+2026-04-28 03:29:43,283 - Epoch: 1, 171/278: VFL loss: 0.1941, total loss: 0.1515, anchor loss: 0.1089, VFL train accuracy: 0.9187
+2026-04-28 03:29:43,522 - Epoch: 1, 181/278: VFL loss: 0.1917, total loss: 0.1502, anchor loss: 0.1088, VFL train accuracy: 0.9195
+2026-04-28 03:29:43,761 - Epoch: 1, 191/278: VFL loss: 0.1893, total loss: 0.1489, anchor loss: 0.1085, VFL train accuracy: 0.9208
+2026-04-28 03:29:44,001 - Epoch: 1, 201/278: VFL loss: 0.1867, total loss: 0.1474, anchor loss: 0.1081, VFL train accuracy: 0.9221
+2026-04-28 03:29:44,242 - Epoch: 1, 211/278: VFL loss: 0.1845, total loss: 0.1462, anchor loss: 0.1079, VFL train accuracy: 0.9230
+2026-04-28 03:29:44,482 - Epoch: 1, 221/278: VFL loss: 0.1828, total loss: 0.1452, anchor loss: 0.1076, VFL train accuracy: 0.9238
+2026-04-28 03:29:44,723 - Epoch: 1, 231/278: VFL loss: 0.1816, total loss: 0.1447, anchor loss: 0.1078, VFL train accuracy: 0.9245
+2026-04-28 03:29:44,963 - Epoch: 1, 241/278: VFL loss: 0.1802, total loss: 0.1439, anchor loss: 0.1076, VFL train accuracy: 0.9253
+2026-04-28 03:29:45,203 - Epoch: 1, 251/278: VFL loss: 0.1784, total loss: 0.1429, anchor loss: 0.1074, VFL train accuracy: 0.9264
+2026-04-28 03:29:45,442 - Epoch: 1, 261/278: VFL loss: 0.1765, total loss: 0.1418, anchor loss: 0.1072, VFL train accuracy: 0.9272
+2026-04-28 03:29:45,682 - Epoch: 1, 271/278: VFL loss: 0.1752, total loss: 0.1412, anchor loss: 0.1071, VFL train accuracy: 0.9278
+2026-04-28 03:29:45,867 - => Recorded Stage 2 client anchor losses for epoch 1 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.152169, 1: 0.168674, 2: 0.000193}
+2026-04-28 03:29:45,882 - => Stage 2 EMA anchor update skipped at epoch 1 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:29:45,882 - => Stage 2 Epoch 1 Training Summary: VFL loss: 0.1739, total loss: 0.1403, anchor loss: 0.1067, VFL train accuracy: 0.9281
+2026-04-28 03:29:45,883 - => Test ASR...
+2026-04-28 03:29:45,888 - =>Add Trigger to Test Data
+2026-04-28 03:29:46,674 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:29:49,757 - => Test Epoch: 1, main task samples: 17730, attack samples: 17730, test loss: 0.1355, clean acc: 0.8939, Top-2: 1.0000, ASR: 0.1029, RAC: 0.9052, test target accuracy: 0.9559, stage3 final accuracy: 0.8939, stage3 final target accuracy: 0.9095, stage3 final asr: 0.1029, anchor loss: 0.1022
+2026-04-28 03:29:49,758 - => Stage 3 Detection Summary: recall: 0.4841, precision: 0.1642, f1: 0.2453, false positive rate: 0.0970, correction rate: 0.9843
+2026-04-28 03:29:49,758 - => Stage 3 Debug (clean): suspicious=1720/17730, correction_applied=1706, prediction_changed=1706, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=14
+2026-04-28 03:29:49,758 - => Stage 3 Debug (poison-valid): suspicious=600/6130, correction_applied=594, prediction_changed=594, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=6
+2026-04-28 03:29:49,759 - => Stage 3 Debug (attack-success): suspicious=381/787, correction_applied=375, prediction_changed=375, corrected_to_true=375
+2026-04-28 03:29:49,759 - => Stage 3 Effective Support Avg: clean(all)=1.8603, clean_suspicious(false_positive)=0.5605, clean_correction_applied=0.5569, poison_valid(all)=1.8788, poison_valid_suspicious=0.7617, poison_valid_correction_applied=0.7593, attack_success(all)=1.3482, attack_success_suspicious=0.6535
+2026-04-28 03:29:49,760 - => Stage 2 checkpoint score: mean(clean_acc=0.8939, recall=0.4841, correction_rate=0.9843) = 0.7874
+2026-04-28 03:29:49,760 - => Save best checkpoint model...
+2026-04-28 03:29:49,871 - => End Epoch: 1, early stop epochs: 0, best epoch: 1, best clean acc: 0.8939, best Top-2: 1.0000, best ASR: 0.1029, best RAC: 0.9052, anchor loss: 0.1022, best checkpoint score: 0.7874
+2026-04-28 03:29:49,872 - => Stage 3 Detection Summary: recall: 0.4841, precision: 0.1642, f1: 0.2453, false positive rate: 0.0970, correction rate: 0.9843
+2026-04-28 03:29:49,902 - => Rebuilt LFBA poison set from cached gradients: anchor label=0, poison samples=17729, same-label poison samples=17728, consistent rate=0.9999
+2026-04-28 03:29:49,939 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:29:49,947 - =>Add Trigger to Train Data
+2026-04-28 03:29:50,612 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:29:50,622 - => Start Training for Injecting Backdoor...
+2026-04-28 03:29:50,685 - Epoch: 2, 1/278: VFL loss: 0.1268, total loss: 0.1149, anchor loss: 0.1030, VFL train accuracy: 0.9531
+2026-04-28 03:29:50,935 - Epoch: 2, 11/278: VFL loss: 0.1165, total loss: 0.1063, anchor loss: 0.0960, VFL train accuracy: 0.9535
+2026-04-28 03:29:51,139 - Epoch: 2, 21/278: VFL loss: 0.1106, total loss: 0.1039, anchor loss: 0.0972, VFL train accuracy: 0.9585
+2026-04-28 03:29:51,343 - Epoch: 2, 31/278: VFL loss: 0.1101, total loss: 0.1044, anchor loss: 0.0987, VFL train accuracy: 0.9579
+2026-04-28 03:29:51,551 - Epoch: 2, 41/278: VFL loss: 0.1122, total loss: 0.1065, anchor loss: 0.1007, VFL train accuracy: 0.9571
+2026-04-28 03:29:51,758 - Epoch: 2, 51/278: VFL loss: 0.1117, total loss: 0.1064, anchor loss: 0.1011, VFL train accuracy: 0.9576
+2026-04-28 03:29:51,966 - Epoch: 2, 61/278: VFL loss: 0.1127, total loss: 0.1073, anchor loss: 0.1020, VFL train accuracy: 0.9569
+2026-04-28 03:29:52,184 - Epoch: 2, 71/278: VFL loss: 0.1124, total loss: 0.1075, anchor loss: 0.1025, VFL train accuracy: 0.9565
+2026-04-28 03:29:52,391 - Epoch: 2, 81/278: VFL loss: 0.1127, total loss: 0.1074, anchor loss: 0.1021, VFL train accuracy: 0.9560
+2026-04-28 03:29:52,598 - Epoch: 2, 91/278: VFL loss: 0.1109, total loss: 0.1059, anchor loss: 0.1009, VFL train accuracy: 0.9569
+2026-04-28 03:29:52,809 - Epoch: 2, 101/278: VFL loss: 0.1120, total loss: 0.1065, anchor loss: 0.1010, VFL train accuracy: 0.9569
+2026-04-28 03:29:53,016 - Epoch: 2, 111/278: VFL loss: 0.1131, total loss: 0.1074, anchor loss: 0.1018, VFL train accuracy: 0.9564
+2026-04-28 03:29:53,228 - Epoch: 2, 121/278: VFL loss: 0.1135, total loss: 0.1078, anchor loss: 0.1022, VFL train accuracy: 0.9564
+2026-04-28 03:29:53,438 - Epoch: 2, 131/278: VFL loss: 0.1135, total loss: 0.1079, anchor loss: 0.1023, VFL train accuracy: 0.9565
+2026-04-28 03:29:53,681 - Epoch: 2, 141/278: VFL loss: 0.1135, total loss: 0.1080, anchor loss: 0.1025, VFL train accuracy: 0.9567
+2026-04-28 03:29:53,886 - Epoch: 2, 151/278: VFL loss: 0.1130, total loss: 0.1077, anchor loss: 0.1025, VFL train accuracy: 0.9569
+2026-04-28 03:29:54,100 - Epoch: 2, 161/278: VFL loss: 0.1122, total loss: 0.1074, anchor loss: 0.1027, VFL train accuracy: 0.9572
+2026-04-28 03:29:54,309 - Epoch: 2, 171/278: VFL loss: 0.1121, total loss: 0.1073, anchor loss: 0.1025, VFL train accuracy: 0.9573
+2026-04-28 03:29:54,509 - Epoch: 2, 181/278: VFL loss: 0.1117, total loss: 0.1071, anchor loss: 0.1024, VFL train accuracy: 0.9572
+2026-04-28 03:29:54,721 - Epoch: 2, 191/278: VFL loss: 0.1109, total loss: 0.1064, anchor loss: 0.1020, VFL train accuracy: 0.9576
+2026-04-28 03:29:54,932 - Epoch: 2, 201/278: VFL loss: 0.1107, total loss: 0.1063, anchor loss: 0.1020, VFL train accuracy: 0.9575
+2026-04-28 03:29:55,143 - Epoch: 2, 211/278: VFL loss: 0.1107, total loss: 0.1065, anchor loss: 0.1023, VFL train accuracy: 0.9576
+2026-04-28 03:29:55,353 - Epoch: 2, 221/278: VFL loss: 0.1103, total loss: 0.1062, anchor loss: 0.1022, VFL train accuracy: 0.9576
+2026-04-28 03:29:55,564 - Epoch: 2, 231/278: VFL loss: 0.1103, total loss: 0.1063, anchor loss: 0.1023, VFL train accuracy: 0.9576
+2026-04-28 03:29:55,777 - Epoch: 2, 241/278: VFL loss: 0.1106, total loss: 0.1065, anchor loss: 0.1023, VFL train accuracy: 0.9575
+2026-04-28 03:29:55,988 - Epoch: 2, 251/278: VFL loss: 0.1110, total loss: 0.1067, anchor loss: 0.1024, VFL train accuracy: 0.9575
+2026-04-28 03:29:56,198 - Epoch: 2, 261/278: VFL loss: 0.1109, total loss: 0.1067, anchor loss: 0.1025, VFL train accuracy: 0.9575
+2026-04-28 03:29:56,400 - Epoch: 2, 271/278: VFL loss: 0.1115, total loss: 0.1069, anchor loss: 0.1024, VFL train accuracy: 0.9573
+2026-04-28 03:29:56,576 - => Recorded Stage 2 client anchor losses for epoch 2 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.148673, 1: 0.159144, 2: 6.8e-05}
+2026-04-28 03:29:56,578 - => Stage 2 EMA anchor update skipped at epoch 2 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:29:56,578 - => Stage 2 Epoch 2 Training Summary: VFL loss: 0.1115, total loss: 0.1069, anchor loss: 0.1023, VFL train accuracy: 0.9573
+2026-04-28 03:29:56,579 - => Test ASR...
+2026-04-28 03:29:56,584 - =>Add Trigger to Test Data
+2026-04-28 03:29:57,301 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:30:00,426 - => Test Epoch: 2, main task samples: 17730, attack samples: 17730, test loss: 0.1300, clean acc: 0.8898, Top-2: 1.0000, ASR: 0.0821, RAC: 0.9160, test target accuracy: 0.9587, stage3 final accuracy: 0.8898, stage3 final target accuracy: 0.9149, stage3 final asr: 0.0821, anchor loss: 0.1013
+2026-04-28 03:30:00,427 - => Stage 3 Detection Summary: recall: 0.8994, precision: 0.6808, f1: 0.7750, false positive rate: 0.1036, correction rate: 0.9968
+2026-04-28 03:30:00,428 - => Stage 3 Debug (clean): suspicious=1837/17730, correction_applied=1828, prediction_changed=1828, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=9
+2026-04-28 03:30:00,429 - => Stage 3 Debug (poison-valid): suspicious=4049/6130, correction_applied=4036, prediction_changed=4036, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=13
+2026-04-28 03:30:00,430 - => Stage 3 Debug (attack-success): suspicious=4007/4455, correction_applied=3994, prediction_changed=3994, corrected_to_true=3994
+2026-04-28 03:30:00,430 - => Stage 3 Effective Support Avg: clean(all)=1.8602, clean_suspicious(false_positive)=0.6511, clean_correction_applied=0.6493, poison_valid(all)=0.7667, poison_valid_suspicious=0.1329, poison_valid_correction_applied=0.1301, attack_success(all)=0.3125, attack_success_suspicious=0.1238
+2026-04-28 03:30:00,432 - => Stage 2 checkpoint score: mean(clean_acc=0.8898, recall=0.8994, correction_rate=0.9968) = 0.9287
+2026-04-28 03:30:00,432 - => Save best checkpoint model...
+2026-04-28 03:30:00,547 - => End Epoch: 2, early stop epochs: 0, best epoch: 2, best clean acc: 0.8898, best Top-2: 1.0000, best ASR: 0.0821, best RAC: 0.9160, anchor loss: 0.1013, best checkpoint score: 0.9287
+2026-04-28 03:30:00,548 - => Stage 3 Detection Summary: recall: 0.8994, precision: 0.6808, f1: 0.7750, false positive rate: 0.1036, correction rate: 0.9968
+2026-04-28 03:30:00,597 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:30:00,606 - =>Add Trigger to Train Data
+2026-04-28 03:30:01,271 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:30:01,281 - => Start Training for Injecting Backdoor...
+2026-04-28 03:30:01,355 - Epoch: 3, 1/278: VFL loss: 0.0989, total loss: 0.0962, anchor loss: 0.0935, VFL train accuracy: 0.9648
+2026-04-28 03:30:01,642 - Epoch: 3, 11/278: VFL loss: 0.1012, total loss: 0.0993, anchor loss: 0.0974, VFL train accuracy: 0.9606
+2026-04-28 03:30:01,889 - Epoch: 3, 21/278: VFL loss: 0.1083, total loss: 0.1052, anchor loss: 0.1021, VFL train accuracy: 0.9576
+2026-04-28 03:30:02,149 - Epoch: 3, 31/278: VFL loss: 0.1112, total loss: 0.1071, anchor loss: 0.1029, VFL train accuracy: 0.9572
+2026-04-28 03:30:02,386 - Epoch: 3, 41/278: VFL loss: 0.1138, total loss: 0.1089, anchor loss: 0.1040, VFL train accuracy: 0.9564
+2026-04-28 03:30:02,625 - Epoch: 3, 51/278: VFL loss: 0.1131, total loss: 0.1080, anchor loss: 0.1028, VFL train accuracy: 0.9575
+2026-04-28 03:30:02,865 - Epoch: 3, 61/278: VFL loss: 0.1147, total loss: 0.1090, anchor loss: 0.1033, VFL train accuracy: 0.9570
+2026-04-28 03:30:03,105 - Epoch: 3, 71/278: VFL loss: 0.1142, total loss: 0.1087, anchor loss: 0.1032, VFL train accuracy: 0.9573
+2026-04-28 03:30:03,344 - Epoch: 3, 81/278: VFL loss: 0.1152, total loss: 0.1095, anchor loss: 0.1038, VFL train accuracy: 0.9565
+2026-04-28 03:30:03,584 - Epoch: 3, 91/278: VFL loss: 0.1161, total loss: 0.1098, anchor loss: 0.1036, VFL train accuracy: 0.9561
+2026-04-28 03:30:03,824 - Epoch: 3, 101/278: VFL loss: 0.1162, total loss: 0.1097, anchor loss: 0.1031, VFL train accuracy: 0.9558
+2026-04-28 03:30:04,062 - Epoch: 3, 111/278: VFL loss: 0.1168, total loss: 0.1104, anchor loss: 0.1040, VFL train accuracy: 0.9557
+2026-04-28 03:30:04,295 - Epoch: 3, 121/278: VFL loss: 0.1176, total loss: 0.1112, anchor loss: 0.1048, VFL train accuracy: 0.9552
+2026-04-28 03:30:04,538 - Epoch: 3, 131/278: VFL loss: 0.1170, total loss: 0.1106, anchor loss: 0.1042, VFL train accuracy: 0.9557
+2026-04-28 03:30:04,779 - Epoch: 3, 141/278: VFL loss: 0.1171, total loss: 0.1109, anchor loss: 0.1046, VFL train accuracy: 0.9558
+2026-04-28 03:30:05,021 - Epoch: 3, 151/278: VFL loss: 0.1159, total loss: 0.1102, anchor loss: 0.1045, VFL train accuracy: 0.9565
+2026-04-28 03:30:05,263 - Epoch: 3, 161/278: VFL loss: 0.1153, total loss: 0.1096, anchor loss: 0.1039, VFL train accuracy: 0.9568
+2026-04-28 03:30:05,504 - Epoch: 3, 171/278: VFL loss: 0.1148, total loss: 0.1092, anchor loss: 0.1036, VFL train accuracy: 0.9570
+2026-04-28 03:30:05,853 - Epoch: 3, 181/278: VFL loss: 0.1147, total loss: 0.1090, anchor loss: 0.1033, VFL train accuracy: 0.9572
+2026-04-28 03:30:06,102 - Epoch: 3, 191/278: VFL loss: 0.1142, total loss: 0.1086, anchor loss: 0.1030, VFL train accuracy: 0.9574
+2026-04-28 03:30:06,345 - Epoch: 3, 201/278: VFL loss: 0.1146, total loss: 0.1086, anchor loss: 0.1026, VFL train accuracy: 0.9572
+2026-04-28 03:30:06,582 - Epoch: 3, 211/278: VFL loss: 0.1142, total loss: 0.1083, anchor loss: 0.1025, VFL train accuracy: 0.9572
+2026-04-28 03:30:06,821 - Epoch: 3, 221/278: VFL loss: 0.1139, total loss: 0.1082, anchor loss: 0.1026, VFL train accuracy: 0.9574
+2026-04-28 03:30:07,064 - Epoch: 3, 231/278: VFL loss: 0.1137, total loss: 0.1081, anchor loss: 0.1026, VFL train accuracy: 0.9573
+2026-04-28 03:30:07,304 - Epoch: 3, 241/278: VFL loss: 0.1131, total loss: 0.1076, anchor loss: 0.1021, VFL train accuracy: 0.9576
+2026-04-28 03:30:07,545 - Epoch: 3, 251/278: VFL loss: 0.1131, total loss: 0.1076, anchor loss: 0.1021, VFL train accuracy: 0.9575
+2026-04-28 03:30:07,785 - Epoch: 3, 261/278: VFL loss: 0.1132, total loss: 0.1076, anchor loss: 0.1021, VFL train accuracy: 0.9574
+2026-04-28 03:30:08,026 - Epoch: 3, 271/278: VFL loss: 0.1126, total loss: 0.1072, anchor loss: 0.1018, VFL train accuracy: 0.9576
+2026-04-28 03:30:08,227 - => Recorded Stage 2 client anchor losses for epoch 3 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.147014, 1: 0.157944, 2: 5.7e-05}
+2026-04-28 03:30:08,229 - => Stage 2 EMA anchor update skipped at epoch 3 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:30:08,230 - => Stage 2 Epoch 3 Training Summary: VFL loss: 0.1123, total loss: 0.1075, anchor loss: 0.1026, VFL train accuracy: 0.9577
+2026-04-28 03:30:08,230 - => Test ASR...
+2026-04-28 03:30:08,237 - =>Add Trigger to Test Data
+2026-04-28 03:30:08,965 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:30:12,038 - => Test Epoch: 3, main task samples: 17730, attack samples: 17730, test loss: 0.1280, clean acc: 0.8906, Top-2: 1.0000, ASR: 0.0993, RAC: 0.9130, test target accuracy: 0.9674, stage3 final accuracy: 0.8906, stage3 final target accuracy: 0.9195, stage3 final asr: 0.0993, anchor loss: 0.1012
+2026-04-28 03:30:12,039 - => Stage 3 Detection Summary: recall: 0.8848, precision: 0.7268, f1: 0.7981, false positive rate: 0.0905, correction rate: 0.9970
+2026-04-28 03:30:12,039 - => Stage 3 Debug (clean): suspicious=1604/17730, correction_applied=1584, prediction_changed=1584, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=20
+2026-04-28 03:30:12,039 - => Stage 3 Debug (poison-valid): suspicious=4377/6130, correction_applied=4364, prediction_changed=4364, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=13
+2026-04-28 03:30:12,040 - => Stage 3 Debug (attack-success): suspicious=4347/4913, correction_applied=4334, prediction_changed=4334, corrected_to_true=4334
+2026-04-28 03:30:12,040 - => Stage 3 Effective Support Avg: clean(all)=1.8745, clean_suspicious(false_positive)=0.6128, clean_correction_applied=0.6086, poison_valid(all)=0.6437, poison_valid_suspicious=0.1005, poison_valid_correction_applied=0.0983, attack_success(all)=0.3139, attack_success_suspicious=0.0943
+2026-04-28 03:30:12,041 - => Stage 2 checkpoint score: mean(clean_acc=0.8906, recall=0.8848, correction_rate=0.9970) = 0.9241
+2026-04-28 03:30:12,089 - => End Epoch: 3, early stop epochs: 1, best epoch: 2, best clean acc: 0.8898, best Top-2: 1.0000, best ASR: 0.0821, best RAC: 0.9160, anchor loss: 0.1013, best checkpoint score: 0.9287
+2026-04-28 03:30:12,089 - => Stage 3 Detection Summary: recall: 0.8994, precision: 0.6808, f1: 0.7750, false positive rate: 0.1036, correction rate: 0.9968
+2026-04-28 03:30:12,143 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:30:12,152 - =>Add Trigger to Train Data
+2026-04-28 03:30:12,892 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:30:12,894 - => Start Training for Injecting Backdoor...
+2026-04-28 03:30:12,950 - Epoch: 4, 1/278: VFL loss: 0.0741, total loss: 0.0839, anchor loss: 0.0937, VFL train accuracy: 0.9688
+2026-04-28 03:30:13,244 - Epoch: 4, 11/278: VFL loss: 0.1180, total loss: 0.1136, anchor loss: 0.1093, VFL train accuracy: 0.9553
+2026-04-28 03:30:13,484 - Epoch: 4, 21/278: VFL loss: 0.1144, total loss: 0.1126, anchor loss: 0.1108, VFL train accuracy: 0.9555
+2026-04-28 03:30:13,724 - Epoch: 4, 31/278: VFL loss: 0.1135, total loss: 0.1118, anchor loss: 0.1101, VFL train accuracy: 0.9564
+2026-04-28 03:30:13,965 - Epoch: 4, 41/278: VFL loss: 0.1115, total loss: 0.1101, anchor loss: 0.1086, VFL train accuracy: 0.9569
+2026-04-28 03:30:14,205 - Epoch: 4, 51/278: VFL loss: 0.1122, total loss: 0.1097, anchor loss: 0.1072, VFL train accuracy: 0.9572
+2026-04-28 03:30:14,444 - Epoch: 4, 61/278: VFL loss: 0.1104, total loss: 0.1083, anchor loss: 0.1062, VFL train accuracy: 0.9582
+2026-04-28 03:30:14,685 - Epoch: 4, 71/278: VFL loss: 0.1087, total loss: 0.1071, anchor loss: 0.1055, VFL train accuracy: 0.9585
+2026-04-28 03:30:14,925 - Epoch: 4, 81/278: VFL loss: 0.1077, total loss: 0.1059, anchor loss: 0.1041, VFL train accuracy: 0.9587
+2026-04-28 03:30:15,166 - Epoch: 4, 91/278: VFL loss: 0.1073, total loss: 0.1053, anchor loss: 0.1033, VFL train accuracy: 0.9590
+2026-04-28 03:30:15,405 - Epoch: 4, 101/278: VFL loss: 0.1072, total loss: 0.1051, anchor loss: 0.1030, VFL train accuracy: 0.9593
+2026-04-28 03:30:15,646 - Epoch: 4, 111/278: VFL loss: 0.1067, total loss: 0.1047, anchor loss: 0.1027, VFL train accuracy: 0.9595
+2026-04-28 03:30:15,886 - Epoch: 4, 121/278: VFL loss: 0.1069, total loss: 0.1049, anchor loss: 0.1029, VFL train accuracy: 0.9593
+2026-04-28 03:30:16,123 - Epoch: 4, 131/278: VFL loss: 0.1073, total loss: 0.1052, anchor loss: 0.1031, VFL train accuracy: 0.9591
+2026-04-28 03:30:16,361 - Epoch: 4, 141/278: VFL loss: 0.1067, total loss: 0.1049, anchor loss: 0.1032, VFL train accuracy: 0.9595
+2026-04-28 03:30:16,601 - Epoch: 4, 151/278: VFL loss: 0.1065, total loss: 0.1047, anchor loss: 0.1030, VFL train accuracy: 0.9595
+2026-04-28 03:30:16,841 - Epoch: 4, 161/278: VFL loss: 0.1062, total loss: 0.1044, anchor loss: 0.1026, VFL train accuracy: 0.9597
+2026-04-28 03:30:17,086 - Epoch: 4, 171/278: VFL loss: 0.1062, total loss: 0.1045, anchor loss: 0.1028, VFL train accuracy: 0.9593
+2026-04-28 03:30:17,323 - Epoch: 4, 181/278: VFL loss: 0.1060, total loss: 0.1045, anchor loss: 0.1029, VFL train accuracy: 0.9594
+2026-04-28 03:30:17,562 - Epoch: 4, 191/278: VFL loss: 0.1055, total loss: 0.1041, anchor loss: 0.1027, VFL train accuracy: 0.9598
+2026-04-28 03:30:17,800 - Epoch: 4, 201/278: VFL loss: 0.1057, total loss: 0.1040, anchor loss: 0.1023, VFL train accuracy: 0.9597
+2026-04-28 03:30:18,043 - Epoch: 4, 211/278: VFL loss: 0.1058, total loss: 0.1041, anchor loss: 0.1024, VFL train accuracy: 0.9596
+2026-04-28 03:30:18,281 - Epoch: 4, 221/278: VFL loss: 0.1055, total loss: 0.1040, anchor loss: 0.1025, VFL train accuracy: 0.9598
+2026-04-28 03:30:18,520 - Epoch: 4, 231/278: VFL loss: 0.1056, total loss: 0.1039, anchor loss: 0.1021, VFL train accuracy: 0.9598
+2026-04-28 03:30:18,763 - Epoch: 4, 241/278: VFL loss: 0.1055, total loss: 0.1038, anchor loss: 0.1020, VFL train accuracy: 0.9598
+2026-04-28 03:30:19,001 - Epoch: 4, 251/278: VFL loss: 0.1051, total loss: 0.1035, anchor loss: 0.1019, VFL train accuracy: 0.9600
+2026-04-28 03:30:19,244 - Epoch: 4, 261/278: VFL loss: 0.1055, total loss: 0.1037, anchor loss: 0.1019, VFL train accuracy: 0.9597
+2026-04-28 03:30:19,481 - Epoch: 4, 271/278: VFL loss: 0.1054, total loss: 0.1037, anchor loss: 0.1020, VFL train accuracy: 0.9598
+2026-04-28 03:30:19,675 - => Recorded Stage 2 client anchor losses for epoch 4 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.148159, 1: 0.157788, 2: 6.9e-05}
+2026-04-28 03:30:19,678 - => Stage 2 EMA anchor update skipped at epoch 4 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:30:19,678 - => Stage 2 Epoch 4 Training Summary: VFL loss: 0.1052, total loss: 0.1035, anchor loss: 0.1018, VFL train accuracy: 0.9599
+2026-04-28 03:30:19,679 - => Test ASR...
+2026-04-28 03:30:19,686 - =>Add Trigger to Test Data
+2026-04-28 03:30:20,410 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:30:23,519 - => Test Epoch: 4, main task samples: 17730, attack samples: 17730, test loss: 0.1216, clean acc: 0.8926, Top-2: 1.0000, ASR: 0.0793, RAC: 0.9169, test target accuracy: 0.9640, stage3 final accuracy: 0.8926, stage3 final target accuracy: 0.9149, stage3 final asr: 0.0793, anchor loss: 0.0992
+2026-04-28 03:30:23,520 - => Stage 3 Detection Summary: recall: 0.9171, precision: 0.7233, f1: 0.8087, false positive rate: 0.1029, correction rate: 0.9959
+2026-04-28 03:30:23,520 - => Stage 3 Debug (clean): suspicious=1825/17730, correction_applied=1804, prediction_changed=1804, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=21
+2026-04-28 03:30:23,521 - => Stage 3 Debug (poison-valid): suspicious=4872/6130, correction_applied=4852, prediction_changed=4852, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=20
+2026-04-28 03:30:23,521 - => Stage 3 Debug (attack-success): suspicious=4844/5282, correction_applied=4824, prediction_changed=4824, corrected_to_true=4824
+2026-04-28 03:30:23,521 - => Stage 3 Effective Support Avg: clean(all)=1.8557, clean_suspicious(false_positive)=0.5984, clean_correction_applied=0.5937, poison_valid(all)=0.4936, poison_valid_suspicious=0.1047, poison_valid_correction_applied=0.1010, attack_success(all)=0.2571, attack_success_suspicious=0.0995
+2026-04-28 03:30:23,522 - => Stage 2 checkpoint score: mean(clean_acc=0.8926, recall=0.9171, correction_rate=0.9959) = 0.9352
+2026-04-28 03:30:23,522 - => Save best checkpoint model...
+2026-04-28 03:30:23,626 - => End Epoch: 4, early stop epochs: 0, best epoch: 4, best clean acc: 0.8926, best Top-2: 1.0000, best ASR: 0.0793, best RAC: 0.9169, anchor loss: 0.0992, best checkpoint score: 0.9352
+2026-04-28 03:30:23,627 - => Stage 3 Detection Summary: recall: 0.9171, precision: 0.7233, f1: 0.8087, false positive rate: 0.1029, correction rate: 0.9959
+2026-04-28 03:30:23,674 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:30:23,683 - =>Add Trigger to Train Data
+2026-04-28 03:30:24,349 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:30:24,359 - => Start Training for Injecting Backdoor...
+2026-04-28 03:30:24,425 - Epoch: 5, 1/278: VFL loss: 0.0796, total loss: 0.0734, anchor loss: 0.0672, VFL train accuracy: 0.9648
+2026-04-28 03:30:24,673 - Epoch: 5, 11/278: VFL loss: 0.1081, total loss: 0.1007, anchor loss: 0.0933, VFL train accuracy: 0.9588
+2026-04-28 03:30:24,879 - Epoch: 5, 21/278: VFL loss: 0.1117, total loss: 0.1041, anchor loss: 0.0965, VFL train accuracy: 0.9561
+2026-04-28 03:30:25,089 - Epoch: 5, 31/278: VFL loss: 0.1126, total loss: 0.1060, anchor loss: 0.0995, VFL train accuracy: 0.9569
+2026-04-28 03:30:25,296 - Epoch: 5, 41/278: VFL loss: 0.1071, total loss: 0.1022, anchor loss: 0.0974, VFL train accuracy: 0.9594
+2026-04-28 03:30:25,505 - Epoch: 5, 51/278: VFL loss: 0.1076, total loss: 0.1027, anchor loss: 0.0978, VFL train accuracy: 0.9595
+2026-04-28 03:30:25,730 - Epoch: 5, 61/278: VFL loss: 0.1049, total loss: 0.1011, anchor loss: 0.0972, VFL train accuracy: 0.9601
+2026-04-28 03:30:25,929 - Epoch: 5, 71/278: VFL loss: 0.1046, total loss: 0.1015, anchor loss: 0.0983, VFL train accuracy: 0.9606
+2026-04-28 03:30:26,135 - Epoch: 5, 81/278: VFL loss: 0.1053, total loss: 0.1015, anchor loss: 0.0978, VFL train accuracy: 0.9606
+2026-04-28 03:30:26,345 - Epoch: 5, 91/278: VFL loss: 0.1069, total loss: 0.1025, anchor loss: 0.0982, VFL train accuracy: 0.9600
+2026-04-28 03:30:26,557 - Epoch: 5, 101/278: VFL loss: 0.1075, total loss: 0.1030, anchor loss: 0.0985, VFL train accuracy: 0.9595
+2026-04-28 03:30:26,765 - Epoch: 5, 111/278: VFL loss: 0.1069, total loss: 0.1027, anchor loss: 0.0986, VFL train accuracy: 0.9597
+2026-04-28 03:30:26,974 - Epoch: 5, 121/278: VFL loss: 0.1078, total loss: 0.1032, anchor loss: 0.0985, VFL train accuracy: 0.9595
+2026-04-28 03:30:27,187 - Epoch: 5, 131/278: VFL loss: 0.1082, total loss: 0.1033, anchor loss: 0.0983, VFL train accuracy: 0.9595
+2026-04-28 03:30:27,394 - Epoch: 5, 141/278: VFL loss: 0.1082, total loss: 0.1032, anchor loss: 0.0982, VFL train accuracy: 0.9593
+2026-04-28 03:30:27,604 - Epoch: 5, 151/278: VFL loss: 0.1086, total loss: 0.1037, anchor loss: 0.0988, VFL train accuracy: 0.9594
+2026-04-28 03:30:27,814 - Epoch: 5, 161/278: VFL loss: 0.1085, total loss: 0.1039, anchor loss: 0.0993, VFL train accuracy: 0.9595
+2026-04-28 03:30:28,027 - Epoch: 5, 171/278: VFL loss: 0.1083, total loss: 0.1040, anchor loss: 0.0998, VFL train accuracy: 0.9597
+2026-04-28 03:30:28,235 - Epoch: 5, 181/278: VFL loss: 0.1080, total loss: 0.1039, anchor loss: 0.0997, VFL train accuracy: 0.9598
+2026-04-28 03:30:28,447 - Epoch: 5, 191/278: VFL loss: 0.1081, total loss: 0.1041, anchor loss: 0.1001, VFL train accuracy: 0.9596
+2026-04-28 03:30:28,654 - Epoch: 5, 201/278: VFL loss: 0.1080, total loss: 0.1041, anchor loss: 0.1002, VFL train accuracy: 0.9597
+2026-04-28 03:30:28,877 - Epoch: 5, 211/278: VFL loss: 0.1078, total loss: 0.1039, anchor loss: 0.1000, VFL train accuracy: 0.9595
+2026-04-28 03:30:29,080 - Epoch: 5, 221/278: VFL loss: 0.1079, total loss: 0.1040, anchor loss: 0.1001, VFL train accuracy: 0.9594
+2026-04-28 03:30:29,295 - Epoch: 5, 231/278: VFL loss: 0.1083, total loss: 0.1045, anchor loss: 0.1007, VFL train accuracy: 0.9593
+2026-04-28 03:30:29,501 - Epoch: 5, 241/278: VFL loss: 0.1082, total loss: 0.1044, anchor loss: 0.1006, VFL train accuracy: 0.9592
+2026-04-28 03:30:29,706 - Epoch: 5, 251/278: VFL loss: 0.1078, total loss: 0.1041, anchor loss: 0.1004, VFL train accuracy: 0.9594
+2026-04-28 03:30:29,916 - Epoch: 5, 261/278: VFL loss: 0.1079, total loss: 0.1043, anchor loss: 0.1008, VFL train accuracy: 0.9593
+2026-04-28 03:30:30,124 - Epoch: 5, 271/278: VFL loss: 0.1085, total loss: 0.1048, anchor loss: 0.1010, VFL train accuracy: 0.9591
+2026-04-28 03:30:30,295 - => Recorded Stage 2 client anchor losses for epoch 5 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.146202, 1: 0.156435, 2: 6.1e-05}
+2026-04-28 03:30:30,297 - => Stage 2 EMA anchor update skipped at epoch 5 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:30:30,298 - => Stage 2 Epoch 5 Training Summary: VFL loss: 0.1080, total loss: 0.1045, anchor loss: 0.1011, VFL train accuracy: 0.9592
+2026-04-28 03:30:30,298 - => Test ASR...
+2026-04-28 03:30:30,304 - =>Add Trigger to Test Data
+2026-04-28 03:30:31,023 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:30:34,373 - => Test Epoch: 5, main task samples: 17730, attack samples: 17730, test loss: 0.1225, clean acc: 0.8945, Top-2: 1.0000, ASR: 0.0814, RAC: 0.9183, test target accuracy: 0.9567, stage3 final accuracy: 0.8945, stage3 final target accuracy: 0.9181, stage3 final asr: 0.0814, anchor loss: 0.0995
+2026-04-28 03:30:34,374 - => Stage 3 Detection Summary: recall: 0.9115, precision: 0.7248, f1: 0.8075, false positive rate: 0.0992, correction rate: 0.9975
+2026-04-28 03:30:34,374 - => Stage 3 Debug (clean): suspicious=1758/17730, correction_applied=1738, prediction_changed=1738, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=20
+2026-04-28 03:30:34,375 - => Stage 3 Debug (poison-valid): suspicious=4739/6130, correction_applied=4727, prediction_changed=4727, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=12
+2026-04-28 03:30:34,375 - => Stage 3 Debug (attack-success): suspicious=4709/5166, correction_applied=4697, prediction_changed=4697, corrected_to_true=4697
+2026-04-28 03:30:34,375 - => Stage 3 Effective Support Avg: clean(all)=1.8603, clean_suspicious(false_positive)=0.5916, clean_correction_applied=0.5869, poison_valid(all)=0.5305, poison_valid_suspicious=0.0992, poison_valid_correction_applied=0.0969, attack_success(all)=0.2621, attack_success_suspicious=0.0934
+2026-04-28 03:30:34,377 - => Stage 2 checkpoint score: mean(clean_acc=0.8945, recall=0.9115, correction_rate=0.9975) = 0.9345
+2026-04-28 03:30:34,412 - => End Epoch: 5, early stop epochs: 1, best epoch: 4, best clean acc: 0.8926, best Top-2: 1.0000, best ASR: 0.0793, best RAC: 0.9169, anchor loss: 0.0992, best checkpoint score: 0.9352
+2026-04-28 03:30:34,412 - => Stage 3 Detection Summary: recall: 0.9171, precision: 0.7233, f1: 0.8087, false positive rate: 0.1029, correction rate: 0.9959
+2026-04-28 03:30:34,463 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:30:34,472 - =>Add Trigger to Train Data
+2026-04-28 03:30:35,137 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:30:35,146 - => Start Training for Injecting Backdoor...
+2026-04-28 03:30:35,220 - Epoch: 6, 1/278: VFL loss: 0.0883, total loss: 0.0996, anchor loss: 0.1109, VFL train accuracy: 0.9688
+2026-04-28 03:30:35,490 - Epoch: 6, 11/278: VFL loss: 0.0856, total loss: 0.0943, anchor loss: 0.1030, VFL train accuracy: 0.9691
+2026-04-28 03:30:35,689 - Epoch: 6, 21/278: VFL loss: 0.0853, total loss: 0.0911, anchor loss: 0.0969, VFL train accuracy: 0.9702
+2026-04-28 03:30:35,887 - Epoch: 6, 31/278: VFL loss: 0.0939, total loss: 0.0967, anchor loss: 0.0995, VFL train accuracy: 0.9664
+2026-04-28 03:30:36,095 - Epoch: 6, 41/278: VFL loss: 0.0940, total loss: 0.0965, anchor loss: 0.0990, VFL train accuracy: 0.9660
+2026-04-28 03:30:36,305 - Epoch: 6, 51/278: VFL loss: 0.0947, total loss: 0.0975, anchor loss: 0.1003, VFL train accuracy: 0.9648
+2026-04-28 03:30:36,517 - Epoch: 6, 61/278: VFL loss: 0.0928, total loss: 0.0963, anchor loss: 0.0998, VFL train accuracy: 0.9648
+2026-04-28 03:30:36,726 - Epoch: 6, 71/278: VFL loss: 0.0925, total loss: 0.0959, anchor loss: 0.0993, VFL train accuracy: 0.9645
+2026-04-28 03:30:36,934 - Epoch: 6, 81/278: VFL loss: 0.0959, total loss: 0.0978, anchor loss: 0.0997, VFL train accuracy: 0.9633
+2026-04-28 03:30:37,145 - Epoch: 6, 91/278: VFL loss: 0.0955, total loss: 0.0974, anchor loss: 0.0993, VFL train accuracy: 0.9628
+2026-04-28 03:30:37,354 - Epoch: 6, 101/278: VFL loss: 0.0965, total loss: 0.0985, anchor loss: 0.1004, VFL train accuracy: 0.9628
+2026-04-28 03:30:37,566 - Epoch: 6, 111/278: VFL loss: 0.0972, total loss: 0.0986, anchor loss: 0.1001, VFL train accuracy: 0.9626
+2026-04-28 03:30:37,774 - Epoch: 6, 121/278: VFL loss: 0.0969, total loss: 0.0984, anchor loss: 0.1000, VFL train accuracy: 0.9630
+2026-04-28 03:30:37,984 - Epoch: 6, 131/278: VFL loss: 0.0970, total loss: 0.0983, anchor loss: 0.0996, VFL train accuracy: 0.9633
+2026-04-28 03:30:38,196 - Epoch: 6, 141/278: VFL loss: 0.0971, total loss: 0.0983, anchor loss: 0.0994, VFL train accuracy: 0.9630
+2026-04-28 03:30:38,403 - Epoch: 6, 151/278: VFL loss: 0.0976, total loss: 0.0985, anchor loss: 0.0994, VFL train accuracy: 0.9630
+2026-04-28 03:30:38,614 - Epoch: 6, 161/278: VFL loss: 0.0974, total loss: 0.0983, anchor loss: 0.0993, VFL train accuracy: 0.9630
+2026-04-28 03:30:38,825 - Epoch: 6, 171/278: VFL loss: 0.0978, total loss: 0.0986, anchor loss: 0.0994, VFL train accuracy: 0.9627
+2026-04-28 03:30:39,059 - Epoch: 6, 181/278: VFL loss: 0.0979, total loss: 0.0988, anchor loss: 0.0997, VFL train accuracy: 0.9625
+2026-04-28 03:30:39,271 - Epoch: 6, 191/278: VFL loss: 0.0983, total loss: 0.0990, anchor loss: 0.0997, VFL train accuracy: 0.9625
+2026-04-28 03:30:39,482 - Epoch: 6, 201/278: VFL loss: 0.0984, total loss: 0.0991, anchor loss: 0.0998, VFL train accuracy: 0.9625
+2026-04-28 03:30:39,695 - Epoch: 6, 211/278: VFL loss: 0.0988, total loss: 0.0994, anchor loss: 0.0999, VFL train accuracy: 0.9624
+2026-04-28 03:30:39,905 - Epoch: 6, 221/278: VFL loss: 0.0993, total loss: 0.0998, anchor loss: 0.1002, VFL train accuracy: 0.9624
+2026-04-28 03:30:40,114 - Epoch: 6, 231/278: VFL loss: 0.0998, total loss: 0.1001, anchor loss: 0.1005, VFL train accuracy: 0.9623
+2026-04-28 03:30:40,324 - Epoch: 6, 241/278: VFL loss: 0.0997, total loss: 0.1000, anchor loss: 0.1002, VFL train accuracy: 0.9623
+2026-04-28 03:30:40,535 - Epoch: 6, 251/278: VFL loss: 0.1001, total loss: 0.1001, anchor loss: 0.1001, VFL train accuracy: 0.9623
+2026-04-28 03:30:40,751 - Epoch: 6, 261/278: VFL loss: 0.1000, total loss: 0.1002, anchor loss: 0.1003, VFL train accuracy: 0.9621
+2026-04-28 03:30:40,958 - Epoch: 6, 271/278: VFL loss: 0.1005, total loss: 0.1004, anchor loss: 0.1003, VFL train accuracy: 0.9619
+2026-04-28 03:30:41,126 - => Recorded Stage 2 client anchor losses for epoch 6 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.144982, 1: 0.156071, 2: 2.7e-05}
+2026-04-28 03:30:41,128 - => Stage 2 EMA anchor update skipped at epoch 6 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:30:41,128 - => Stage 2 Epoch 6 Training Summary: VFL loss: 0.1007, total loss: 0.1008, anchor loss: 0.1009, VFL train accuracy: 0.9619
+2026-04-28 03:30:41,128 - => Test ASR...
+2026-04-28 03:30:41,133 - =>Add Trigger to Test Data
+2026-04-28 03:30:41,852 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:30:44,932 - => Test Epoch: 6, main task samples: 17730, attack samples: 17730, test loss: 0.1179, clean acc: 0.8919, Top-2: 1.0000, ASR: 0.0871, RAC: 0.9169, test target accuracy: 0.9606, stage3 final accuracy: 0.8919, stage3 final target accuracy: 0.9191, stage3 final asr: 0.0871, anchor loss: 0.0989
+2026-04-28 03:30:44,933 - => Stage 3 Detection Summary: recall: 0.9085, precision: 0.7081, f1: 0.7959, false positive rate: 0.1035, correction rate: 0.9919
+2026-04-28 03:30:44,934 - => Stage 3 Debug (clean): suspicious=1835/17730, correction_applied=1794, prediction_changed=1794, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=41
+2026-04-28 03:30:44,934 - => Stage 3 Debug (poison-valid): suspicious=4585/6130, correction_applied=4548, prediction_changed=4548, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=37
+2026-04-28 03:30:44,935 - => Stage 3 Debug (attack-success): suspicious=4546/5004, correction_applied=4509, prediction_changed=4509, corrected_to_true=4509
+2026-04-28 03:30:44,935 - => Stage 3 Effective Support Avg: clean(all)=1.8539, clean_suspicious(false_positive)=0.5880, clean_correction_applied=0.5786, poison_valid(all)=0.5874, poison_valid_suspicious=0.1115, poison_valid_correction_applied=0.1042, attack_success(all)=0.2774, attack_success_suspicious=0.1038
+2026-04-28 03:30:44,936 - => Stage 2 checkpoint score: mean(clean_acc=0.8919, recall=0.9085, correction_rate=0.9919) = 0.9307
+2026-04-28 03:30:44,971 - => End Epoch: 6, early stop epochs: 2, best epoch: 4, best clean acc: 0.8926, best Top-2: 1.0000, best ASR: 0.0793, best RAC: 0.9169, anchor loss: 0.0992, best checkpoint score: 0.9352
+2026-04-28 03:30:44,971 - => Stage 3 Detection Summary: recall: 0.9171, precision: 0.7233, f1: 0.8087, false positive rate: 0.1029, correction rate: 0.9959
+2026-04-28 03:30:45,025 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:30:45,034 - =>Add Trigger to Train Data
+2026-04-28 03:30:45,704 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:30:45,709 - => Start Training for Injecting Backdoor...
+2026-04-28 03:30:45,787 - Epoch: 7, 1/278: VFL loss: 0.1039, total loss: 0.1131, anchor loss: 0.1224, VFL train accuracy: 0.9531
+2026-04-28 03:30:46,045 - Epoch: 7, 11/278: VFL loss: 0.1207, total loss: 0.1117, anchor loss: 0.1027, VFL train accuracy: 0.9503
+2026-04-28 03:30:46,293 - Epoch: 7, 21/278: VFL loss: 0.1108, total loss: 0.1068, anchor loss: 0.1027, VFL train accuracy: 0.9554
+2026-04-28 03:30:46,538 - Epoch: 7, 31/278: VFL loss: 0.1080, total loss: 0.1051, anchor loss: 0.1021, VFL train accuracy: 0.9565
+2026-04-28 03:30:46,780 - Epoch: 7, 41/278: VFL loss: 0.1060, total loss: 0.1032, anchor loss: 0.1004, VFL train accuracy: 0.9567
+2026-04-28 03:30:47,024 - Epoch: 7, 51/278: VFL loss: 0.1054, total loss: 0.1036, anchor loss: 0.1017, VFL train accuracy: 0.9575
+2026-04-28 03:30:47,287 - Epoch: 7, 61/278: VFL loss: 0.1042, total loss: 0.1025, anchor loss: 0.1007, VFL train accuracy: 0.9583
+2026-04-28 03:30:47,545 - Epoch: 7, 71/278: VFL loss: 0.1040, total loss: 0.1018, anchor loss: 0.0997, VFL train accuracy: 0.9596
+2026-04-28 03:30:47,791 - Epoch: 7, 81/278: VFL loss: 0.1026, total loss: 0.1007, anchor loss: 0.0988, VFL train accuracy: 0.9600
+2026-04-28 03:30:48,037 - Epoch: 7, 91/278: VFL loss: 0.1006, total loss: 0.0993, anchor loss: 0.0981, VFL train accuracy: 0.9612
+2026-04-28 03:30:48,290 - Epoch: 7, 101/278: VFL loss: 0.1004, total loss: 0.0990, anchor loss: 0.0976, VFL train accuracy: 0.9612
+2026-04-28 03:30:48,526 - Epoch: 7, 111/278: VFL loss: 0.1013, total loss: 0.0995, anchor loss: 0.0978, VFL train accuracy: 0.9610
+2026-04-28 03:30:48,771 - Epoch: 7, 121/278: VFL loss: 0.1023, total loss: 0.1000, anchor loss: 0.0977, VFL train accuracy: 0.9605
+2026-04-28 03:30:49,006 - Epoch: 7, 131/278: VFL loss: 0.1028, total loss: 0.1004, anchor loss: 0.0981, VFL train accuracy: 0.9605
+2026-04-28 03:30:49,247 - Epoch: 7, 141/278: VFL loss: 0.1022, total loss: 0.1001, anchor loss: 0.0980, VFL train accuracy: 0.9609
+2026-04-28 03:30:49,479 - Epoch: 7, 151/278: VFL loss: 0.1018, total loss: 0.1003, anchor loss: 0.0987, VFL train accuracy: 0.9612
+2026-04-28 03:30:49,723 - Epoch: 7, 161/278: VFL loss: 0.1021, total loss: 0.1004, anchor loss: 0.0987, VFL train accuracy: 0.9610
+2026-04-28 03:30:49,960 - Epoch: 7, 171/278: VFL loss: 0.1029, total loss: 0.1009, anchor loss: 0.0989, VFL train accuracy: 0.9607
+2026-04-28 03:30:50,213 - Epoch: 7, 181/278: VFL loss: 0.1034, total loss: 0.1012, anchor loss: 0.0990, VFL train accuracy: 0.9603
+2026-04-28 03:30:50,459 - Epoch: 7, 191/278: VFL loss: 0.1034, total loss: 0.1013, anchor loss: 0.0991, VFL train accuracy: 0.9604
+2026-04-28 03:30:50,711 - Epoch: 7, 201/278: VFL loss: 0.1038, total loss: 0.1013, anchor loss: 0.0989, VFL train accuracy: 0.9603
+2026-04-28 03:30:50,953 - Epoch: 7, 211/278: VFL loss: 0.1038, total loss: 0.1014, anchor loss: 0.0990, VFL train accuracy: 0.9602
+2026-04-28 03:30:51,191 - Epoch: 7, 221/278: VFL loss: 0.1039, total loss: 0.1015, anchor loss: 0.0992, VFL train accuracy: 0.9602
+2026-04-28 03:30:51,433 - Epoch: 7, 231/278: VFL loss: 0.1041, total loss: 0.1017, anchor loss: 0.0993, VFL train accuracy: 0.9601
+2026-04-28 03:30:51,671 - Epoch: 7, 241/278: VFL loss: 0.1040, total loss: 0.1015, anchor loss: 0.0989, VFL train accuracy: 0.9602
+2026-04-28 03:30:51,936 - Epoch: 7, 251/278: VFL loss: 0.1039, total loss: 0.1015, anchor loss: 0.0990, VFL train accuracy: 0.9603
+2026-04-28 03:30:52,181 - Epoch: 7, 261/278: VFL loss: 0.1040, total loss: 0.1015, anchor loss: 0.0989, VFL train accuracy: 0.9604
+2026-04-28 03:30:52,428 - Epoch: 7, 271/278: VFL loss: 0.1038, total loss: 0.1013, anchor loss: 0.0989, VFL train accuracy: 0.9606
+2026-04-28 03:30:52,617 - => Recorded Stage 2 client anchor losses for epoch 7 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.141057, 1: 0.15557, 2: 3e-05}
+2026-04-28 03:30:52,620 - => Stage 2 EMA anchor update skipped at epoch 7 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:30:52,620 - => Stage 2 Epoch 7 Training Summary: VFL loss: 0.1034, total loss: 0.1010, anchor loss: 0.0986, VFL train accuracy: 0.9606
+2026-04-28 03:30:52,620 - => Test ASR...
+2026-04-28 03:30:52,625 - =>Add Trigger to Test Data
+2026-04-28 03:30:53,342 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:30:56,382 - => Test Epoch: 7, main task samples: 17730, attack samples: 17730, test loss: 0.1185, clean acc: 0.8943, Top-2: 1.0000, ASR: 0.0799, RAC: 0.9231, test target accuracy: 0.9669, stage3 final accuracy: 0.8943, stage3 final target accuracy: 0.9247, stage3 final asr: 0.0799, anchor loss: 0.0968
+2026-04-28 03:30:56,383 - => Stage 3 Detection Summary: recall: 0.9158, precision: 0.7306, f1: 0.8128, false positive rate: 0.1029, correction rate: 0.9962
+2026-04-28 03:30:56,383 - => Stage 3 Debug (clean): suspicious=1825/17730, correction_applied=1804, prediction_changed=1804, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=21
+2026-04-28 03:30:56,383 - => Stage 3 Debug (poison-valid): suspicious=4997/6130, correction_applied=4978, prediction_changed=4978, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=19
+2026-04-28 03:30:56,384 - => Stage 3 Debug (attack-success): suspicious=4984/5442, correction_applied=4965, prediction_changed=4965, corrected_to_true=4965
+2026-04-28 03:30:56,384 - => Stage 3 Effective Support Avg: clean(all)=1.8556, clean_suspicious(false_positive)=0.5973, clean_correction_applied=0.5926, poison_valid(all)=0.4584, poison_valid_suspicious=0.1089, poison_valid_correction_applied=0.1055, attack_success(all)=0.2659, attack_success_suspicious=0.1065
+2026-04-28 03:30:56,385 - => Stage 2 checkpoint score: mean(clean_acc=0.8943, recall=0.9158, correction_rate=0.9962) = 0.9354
+2026-04-28 03:30:56,385 - => Save best checkpoint model...
+2026-04-28 03:30:56,493 - => End Epoch: 7, early stop epochs: 0, best epoch: 7, best clean acc: 0.8943, best Top-2: 1.0000, best ASR: 0.0799, best RAC: 0.9231, anchor loss: 0.0968, best checkpoint score: 0.9354
+2026-04-28 03:30:56,494 - => Stage 3 Detection Summary: recall: 0.9158, precision: 0.7306, f1: 0.8128, false positive rate: 0.1029, correction rate: 0.9962
+2026-04-28 03:30:56,538 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:30:56,548 - =>Add Trigger to Train Data
+2026-04-28 03:30:57,217 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:30:57,225 - => Start Training for Injecting Backdoor...
+2026-04-28 03:30:57,287 - Epoch: 8, 1/278: VFL loss: 0.0717, total loss: 0.0713, anchor loss: 0.0709, VFL train accuracy: 0.9766
+2026-04-28 03:30:57,546 - Epoch: 8, 11/278: VFL loss: 0.1010, total loss: 0.0982, anchor loss: 0.0955, VFL train accuracy: 0.9609
+2026-04-28 03:30:57,757 - Epoch: 8, 21/278: VFL loss: 0.0970, total loss: 0.0964, anchor loss: 0.0959, VFL train accuracy: 0.9624
+2026-04-28 03:30:57,967 - Epoch: 8, 31/278: VFL loss: 0.0989, total loss: 0.0972, anchor loss: 0.0955, VFL train accuracy: 0.9617
+2026-04-28 03:30:58,177 - Epoch: 8, 41/278: VFL loss: 0.0990, total loss: 0.0977, anchor loss: 0.0963, VFL train accuracy: 0.9610
+2026-04-28 03:30:58,427 - Epoch: 8, 51/278: VFL loss: 0.0976, total loss: 0.0976, anchor loss: 0.0975, VFL train accuracy: 0.9612
+2026-04-28 03:30:58,628 - Epoch: 8, 61/278: VFL loss: 0.0998, total loss: 0.0985, anchor loss: 0.0972, VFL train accuracy: 0.9613
+2026-04-28 03:30:58,835 - Epoch: 8, 71/278: VFL loss: 0.0994, total loss: 0.0987, anchor loss: 0.0981, VFL train accuracy: 0.9620
+2026-04-28 03:30:59,051 - Epoch: 8, 81/278: VFL loss: 0.1009, total loss: 0.1001, anchor loss: 0.0992, VFL train accuracy: 0.9611
+2026-04-28 03:30:59,259 - Epoch: 8, 91/278: VFL loss: 0.1011, total loss: 0.1000, anchor loss: 0.0990, VFL train accuracy: 0.9610
+2026-04-28 03:30:59,565 - Epoch: 8, 101/278: VFL loss: 0.1019, total loss: 0.1005, anchor loss: 0.0992, VFL train accuracy: 0.9608
+2026-04-28 03:30:59,772 - Epoch: 8, 111/278: VFL loss: 0.1016, total loss: 0.1005, anchor loss: 0.0995, VFL train accuracy: 0.9609
+2026-04-28 03:30:59,982 - Epoch: 8, 121/278: VFL loss: 0.1027, total loss: 0.1012, anchor loss: 0.0997, VFL train accuracy: 0.9604
+2026-04-28 03:31:00,211 - Epoch: 8, 131/278: VFL loss: 0.1014, total loss: 0.1004, anchor loss: 0.0994, VFL train accuracy: 0.9608
+2026-04-28 03:31:00,426 - Epoch: 8, 141/278: VFL loss: 0.1006, total loss: 0.0999, anchor loss: 0.0993, VFL train accuracy: 0.9609
+2026-04-28 03:31:00,635 - Epoch: 8, 151/278: VFL loss: 0.1004, total loss: 0.0997, anchor loss: 0.0990, VFL train accuracy: 0.9612
+2026-04-28 03:31:00,843 - Epoch: 8, 161/278: VFL loss: 0.0992, total loss: 0.0987, anchor loss: 0.0982, VFL train accuracy: 0.9618
+2026-04-28 03:31:01,058 - Epoch: 8, 171/278: VFL loss: 0.0981, total loss: 0.0981, anchor loss: 0.0981, VFL train accuracy: 0.9623
+2026-04-28 03:31:01,265 - Epoch: 8, 181/278: VFL loss: 0.0983, total loss: 0.0980, anchor loss: 0.0978, VFL train accuracy: 0.9624
+2026-04-28 03:31:01,477 - Epoch: 8, 191/278: VFL loss: 0.0983, total loss: 0.0979, anchor loss: 0.0976, VFL train accuracy: 0.9626
+2026-04-28 03:31:01,685 - Epoch: 8, 201/278: VFL loss: 0.0980, total loss: 0.0978, anchor loss: 0.0976, VFL train accuracy: 0.9624
+2026-04-28 03:31:01,895 - Epoch: 8, 211/278: VFL loss: 0.0984, total loss: 0.0981, anchor loss: 0.0978, VFL train accuracy: 0.9623
+2026-04-28 03:31:02,115 - Epoch: 8, 221/278: VFL loss: 0.0983, total loss: 0.0981, anchor loss: 0.0978, VFL train accuracy: 0.9625
+2026-04-28 03:31:02,320 - Epoch: 8, 231/278: VFL loss: 0.0983, total loss: 0.0981, anchor loss: 0.0980, VFL train accuracy: 0.9624
+2026-04-28 03:31:02,526 - Epoch: 8, 241/278: VFL loss: 0.0986, total loss: 0.0983, anchor loss: 0.0981, VFL train accuracy: 0.9624
+2026-04-28 03:31:02,737 - Epoch: 8, 251/278: VFL loss: 0.0994, total loss: 0.0987, anchor loss: 0.0981, VFL train accuracy: 0.9622
+2026-04-28 03:31:02,948 - Epoch: 8, 261/278: VFL loss: 0.0995, total loss: 0.0989, anchor loss: 0.0983, VFL train accuracy: 0.9622
+2026-04-28 03:31:03,154 - Epoch: 8, 271/278: VFL loss: 0.0992, total loss: 0.0986, anchor loss: 0.0981, VFL train accuracy: 0.9624
+2026-04-28 03:31:03,324 - => Recorded Stage 2 client anchor losses for epoch 8 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.138527, 1: 0.155173, 2: 3.2e-05}
+2026-04-28 03:31:03,327 - => Stage 2 EMA anchor update skipped at epoch 8 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:31:03,327 - => Stage 2 Epoch 8 Training Summary: VFL loss: 0.0987, total loss: 0.0984, anchor loss: 0.0981, VFL train accuracy: 0.9625
+2026-04-28 03:31:03,328 - => Test ASR...
+2026-04-28 03:31:03,334 - =>Add Trigger to Test Data
+2026-04-28 03:31:04,061 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:31:07,199 - => Test Epoch: 8, main task samples: 17730, attack samples: 17730, test loss: 0.1229, clean acc: 0.8967, Top-2: 1.0000, ASR: 0.0790, RAC: 0.9225, test target accuracy: 0.9573, stage3 final accuracy: 0.8967, stage3 final target accuracy: 0.9233, stage3 final asr: 0.0790, anchor loss: 0.0962
+2026-04-28 03:31:07,200 - => Stage 3 Detection Summary: recall: 0.9186, precision: 0.7159, f1: 0.8047, false positive rate: 0.1068, correction rate: 0.9946
+2026-04-28 03:31:07,201 - => Stage 3 Debug (clean): suspicious=1893/17730, correction_applied=1858, prediction_changed=1858, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=35
+2026-04-28 03:31:07,201 - => Stage 3 Debug (poison-valid): suspicious=4872/6130, correction_applied=4846, prediction_changed=4846, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=26
+2026-04-28 03:31:07,202 - => Stage 3 Debug (attack-success): suspicious=4843/5272, correction_applied=4817, prediction_changed=4817, corrected_to_true=4817
+2026-04-28 03:31:07,203 - => Stage 3 Effective Support Avg: clean(all)=1.8474, clean_suspicious(false_positive)=0.5711, clean_correction_applied=0.5630, poison_valid(all)=0.4940, poison_valid_suspicious=0.1051, poison_valid_correction_applied=0.1003, attack_success(all)=0.2544, attack_success_suspicious=0.0997
+2026-04-28 03:31:07,204 - => Stage 2 checkpoint score: mean(clean_acc=0.8967, recall=0.9186, correction_rate=0.9946) = 0.9366
+2026-04-28 03:31:07,205 - => Save best checkpoint model...
+2026-04-28 03:31:07,313 - => End Epoch: 8, early stop epochs: 0, best epoch: 8, best clean acc: 0.8967, best Top-2: 1.0000, best ASR: 0.0790, best RAC: 0.9225, anchor loss: 0.0962, best checkpoint score: 0.9366
+2026-04-28 03:31:07,314 - => Stage 3 Detection Summary: recall: 0.9186, precision: 0.7159, f1: 0.8047, false positive rate: 0.1068, correction rate: 0.9946
+2026-04-28 03:31:07,345 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:31:07,355 - =>Add Trigger to Train Data
+2026-04-28 03:31:08,018 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:31:08,027 - => Start Training for Injecting Backdoor...
+2026-04-28 03:31:08,100 - Epoch: 9, 1/278: VFL loss: 0.1247, total loss: 0.1246, anchor loss: 0.1245, VFL train accuracy: 0.9453
+2026-04-28 03:31:08,375 - Epoch: 9, 11/278: VFL loss: 0.1050, total loss: 0.1049, anchor loss: 0.1048, VFL train accuracy: 0.9609
+2026-04-28 03:31:08,619 - Epoch: 9, 21/278: VFL loss: 0.1061, total loss: 0.1024, anchor loss: 0.0988, VFL train accuracy: 0.9606
+2026-04-28 03:31:08,860 - Epoch: 9, 31/278: VFL loss: 0.1044, total loss: 0.1013, anchor loss: 0.0983, VFL train accuracy: 0.9611
+2026-04-28 03:31:09,103 - Epoch: 9, 41/278: VFL loss: 0.1034, total loss: 0.1006, anchor loss: 0.0978, VFL train accuracy: 0.9615
+2026-04-28 03:31:09,343 - Epoch: 9, 51/278: VFL loss: 0.1015, total loss: 0.0989, anchor loss: 0.0962, VFL train accuracy: 0.9611
+2026-04-28 03:31:09,586 - Epoch: 9, 61/278: VFL loss: 0.1020, total loss: 0.0991, anchor loss: 0.0963, VFL train accuracy: 0.9616
+2026-04-28 03:31:09,825 - Epoch: 9, 71/278: VFL loss: 0.0981, total loss: 0.0968, anchor loss: 0.0955, VFL train accuracy: 0.9629
+2026-04-28 03:31:10,064 - Epoch: 9, 81/278: VFL loss: 0.0972, total loss: 0.0961, anchor loss: 0.0950, VFL train accuracy: 0.9630
+2026-04-28 03:31:10,301 - Epoch: 9, 91/278: VFL loss: 0.0971, total loss: 0.0964, anchor loss: 0.0956, VFL train accuracy: 0.9630
+2026-04-28 03:31:10,548 - Epoch: 9, 101/278: VFL loss: 0.0968, total loss: 0.0965, anchor loss: 0.0963, VFL train accuracy: 0.9631
+2026-04-28 03:31:10,791 - Epoch: 9, 111/278: VFL loss: 0.0981, total loss: 0.0973, anchor loss: 0.0966, VFL train accuracy: 0.9624
+2026-04-28 03:31:11,026 - Epoch: 9, 121/278: VFL loss: 0.0991, total loss: 0.0984, anchor loss: 0.0978, VFL train accuracy: 0.9619
+2026-04-28 03:31:11,264 - Epoch: 9, 131/278: VFL loss: 0.0998, total loss: 0.0987, anchor loss: 0.0976, VFL train accuracy: 0.9620
+2026-04-28 03:31:11,511 - Epoch: 9, 141/278: VFL loss: 0.1011, total loss: 0.0995, anchor loss: 0.0980, VFL train accuracy: 0.9615
+2026-04-28 03:31:11,756 - Epoch: 9, 151/278: VFL loss: 0.1004, total loss: 0.0988, anchor loss: 0.0973, VFL train accuracy: 0.9619
+2026-04-28 03:31:12,003 - Epoch: 9, 161/278: VFL loss: 0.1016, total loss: 0.0995, anchor loss: 0.0973, VFL train accuracy: 0.9615
+2026-04-28 03:31:12,247 - Epoch: 9, 171/278: VFL loss: 0.1018, total loss: 0.0996, anchor loss: 0.0974, VFL train accuracy: 0.9614
+2026-04-28 03:31:12,488 - Epoch: 9, 181/278: VFL loss: 0.1009, total loss: 0.0992, anchor loss: 0.0975, VFL train accuracy: 0.9617
+2026-04-28 03:31:12,734 - Epoch: 9, 191/278: VFL loss: 0.1008, total loss: 0.0991, anchor loss: 0.0974, VFL train accuracy: 0.9617
+2026-04-28 03:31:12,975 - Epoch: 9, 201/278: VFL loss: 0.1008, total loss: 0.0990, anchor loss: 0.0972, VFL train accuracy: 0.9617
+2026-04-28 03:31:13,215 - Epoch: 9, 211/278: VFL loss: 0.1015, total loss: 0.0995, anchor loss: 0.0975, VFL train accuracy: 0.9615
+2026-04-28 03:31:13,456 - Epoch: 9, 221/278: VFL loss: 0.1013, total loss: 0.0995, anchor loss: 0.0976, VFL train accuracy: 0.9615
+2026-04-28 03:31:13,696 - Epoch: 9, 231/278: VFL loss: 0.1013, total loss: 0.0994, anchor loss: 0.0975, VFL train accuracy: 0.9613
+2026-04-28 03:31:13,936 - Epoch: 9, 241/278: VFL loss: 0.1012, total loss: 0.0994, anchor loss: 0.0976, VFL train accuracy: 0.9613
+2026-04-28 03:31:14,173 - Epoch: 9, 251/278: VFL loss: 0.1009, total loss: 0.0992, anchor loss: 0.0975, VFL train accuracy: 0.9614
+2026-04-28 03:31:14,411 - Epoch: 9, 261/278: VFL loss: 0.1010, total loss: 0.0991, anchor loss: 0.0973, VFL train accuracy: 0.9615
+2026-04-28 03:31:14,656 - Epoch: 9, 271/278: VFL loss: 0.1013, total loss: 0.0994, anchor loss: 0.0974, VFL train accuracy: 0.9614
+2026-04-28 03:31:14,845 - => Recorded Stage 2 client anchor losses for epoch 9 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.137198, 1: 0.155064, 2: 4.6e-05}
+2026-04-28 03:31:14,847 - => Stage 2 EMA anchor update skipped at epoch 9 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:31:14,847 - => Stage 2 Epoch 9 Training Summary: VFL loss: 0.1011, total loss: 0.0991, anchor loss: 0.0972, VFL train accuracy: 0.9613
+2026-04-28 03:31:14,848 - => Test ASR...
+2026-04-28 03:31:14,852 - =>Add Trigger to Test Data
+2026-04-28 03:31:15,569 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:31:18,593 - => Test Epoch: 9, main task samples: 17730, attack samples: 17730, test loss: 0.1144, clean acc: 0.8955, Top-2: 1.0000, ASR: 0.0772, RAC: 0.9204, test target accuracy: 0.9632, stage3 final accuracy: 0.8955, stage3 final target accuracy: 0.9191, stage3 final asr: 0.0772, anchor loss: 0.0960
+2026-04-28 03:31:18,594 - => Stage 3 Detection Summary: recall: 0.9130, precision: 0.7263, f1: 0.8091, false positive rate: 0.0981, correction rate: 0.9996
+2026-04-28 03:31:18,594 - => Stage 3 Debug (clean): suspicious=1739/17730, correction_applied=1728, prediction_changed=1728, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=11
+2026-04-28 03:31:18,595 - => Stage 3 Debug (poison-valid): suspicious=4707/6130, correction_applied=4705, prediction_changed=4705, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=2
+2026-04-28 03:31:18,595 - => Stage 3 Debug (attack-success): suspicious=4682/5128, correction_applied=4680, prediction_changed=4680, corrected_to_true=4680
+2026-04-28 03:31:18,595 - => Stage 3 Effective Support Avg: clean(all)=1.8614, clean_suspicious(false_positive)=0.5865, clean_correction_applied=0.5839, poison_valid(all)=0.5427, poison_valid_suspicious=0.1022, poison_valid_correction_applied=0.1018, attack_success(all)=0.2629, attack_success_suspicious=0.0974
+2026-04-28 03:31:18,596 - => Stage 2 checkpoint score: mean(clean_acc=0.8955, recall=0.9130, correction_rate=0.9996) = 0.9360
+2026-04-28 03:31:18,632 - => End Epoch: 9, early stop epochs: 1, best epoch: 8, best clean acc: 0.8967, best Top-2: 1.0000, best ASR: 0.0790, best RAC: 0.9225, anchor loss: 0.0962, best checkpoint score: 0.9366
+2026-04-28 03:31:18,633 - => Stage 3 Detection Summary: recall: 0.9186, precision: 0.7159, f1: 0.8047, false positive rate: 0.1068, correction rate: 0.9946
+2026-04-28 03:31:18,675 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:31:18,683 - =>Add Trigger to Train Data
+2026-04-28 03:31:19,352 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:31:19,357 - => Start Training for Injecting Backdoor...
+2026-04-28 03:31:19,424 - Epoch: 10, 1/278: VFL loss: 0.0856, total loss: 0.0945, anchor loss: 0.1034, VFL train accuracy: 0.9609
+2026-04-28 03:31:19,680 - Epoch: 10, 11/278: VFL loss: 0.0868, total loss: 0.0927, anchor loss: 0.0987, VFL train accuracy: 0.9656
+2026-04-28 03:31:19,903 - Epoch: 10, 21/278: VFL loss: 0.0909, total loss: 0.0959, anchor loss: 0.1009, VFL train accuracy: 0.9647
+2026-04-28 03:31:20,111 - Epoch: 10, 31/278: VFL loss: 0.0955, total loss: 0.0981, anchor loss: 0.1007, VFL train accuracy: 0.9624
+2026-04-28 03:31:20,317 - Epoch: 10, 41/278: VFL loss: 0.0966, total loss: 0.0988, anchor loss: 0.1009, VFL train accuracy: 0.9627
+2026-04-28 03:31:20,528 - Epoch: 10, 51/278: VFL loss: 0.0948, total loss: 0.0975, anchor loss: 0.1002, VFL train accuracy: 0.9643
+2026-04-28 03:31:20,775 - Epoch: 10, 61/278: VFL loss: 0.0948, total loss: 0.0979, anchor loss: 0.1010, VFL train accuracy: 0.9640
+2026-04-28 03:31:20,978 - Epoch: 10, 71/278: VFL loss: 0.0944, total loss: 0.0975, anchor loss: 0.1006, VFL train accuracy: 0.9646
+2026-04-28 03:31:21,186 - Epoch: 10, 81/278: VFL loss: 0.0938, total loss: 0.0964, anchor loss: 0.0989, VFL train accuracy: 0.9647
+2026-04-28 03:31:21,412 - Epoch: 10, 91/278: VFL loss: 0.0928, total loss: 0.0956, anchor loss: 0.0983, VFL train accuracy: 0.9654
+2026-04-28 03:31:21,625 - Epoch: 10, 101/278: VFL loss: 0.0928, total loss: 0.0954, anchor loss: 0.0979, VFL train accuracy: 0.9652
+2026-04-28 03:31:21,883 - Epoch: 10, 111/278: VFL loss: 0.0925, total loss: 0.0950, anchor loss: 0.0976, VFL train accuracy: 0.9649
+2026-04-28 03:31:22,090 - Epoch: 10, 121/278: VFL loss: 0.0923, total loss: 0.0947, anchor loss: 0.0971, VFL train accuracy: 0.9650
+2026-04-28 03:31:22,296 - Epoch: 10, 131/278: VFL loss: 0.0926, total loss: 0.0948, anchor loss: 0.0971, VFL train accuracy: 0.9649
+2026-04-28 03:31:22,505 - Epoch: 10, 141/278: VFL loss: 0.0929, total loss: 0.0950, anchor loss: 0.0971, VFL train accuracy: 0.9648
+2026-04-28 03:31:22,714 - Epoch: 10, 151/278: VFL loss: 0.0935, total loss: 0.0954, anchor loss: 0.0972, VFL train accuracy: 0.9645
+2026-04-28 03:31:22,925 - Epoch: 10, 161/278: VFL loss: 0.0938, total loss: 0.0955, anchor loss: 0.0971, VFL train accuracy: 0.9646
+2026-04-28 03:31:23,135 - Epoch: 10, 171/278: VFL loss: 0.0951, total loss: 0.0962, anchor loss: 0.0974, VFL train accuracy: 0.9645
+2026-04-28 03:31:23,344 - Epoch: 10, 181/278: VFL loss: 0.0957, total loss: 0.0965, anchor loss: 0.0974, VFL train accuracy: 0.9642
+2026-04-28 03:31:23,554 - Epoch: 10, 191/278: VFL loss: 0.0949, total loss: 0.0960, anchor loss: 0.0970, VFL train accuracy: 0.9645
+2026-04-28 03:31:23,764 - Epoch: 10, 201/278: VFL loss: 0.0950, total loss: 0.0960, anchor loss: 0.0971, VFL train accuracy: 0.9645
+2026-04-28 03:31:23,974 - Epoch: 10, 211/278: VFL loss: 0.0953, total loss: 0.0963, anchor loss: 0.0973, VFL train accuracy: 0.9644
+2026-04-28 03:31:24,184 - Epoch: 10, 221/278: VFL loss: 0.0954, total loss: 0.0965, anchor loss: 0.0975, VFL train accuracy: 0.9641
+2026-04-28 03:31:24,395 - Epoch: 10, 231/278: VFL loss: 0.0958, total loss: 0.0967, anchor loss: 0.0977, VFL train accuracy: 0.9638
+2026-04-28 03:31:24,606 - Epoch: 10, 241/278: VFL loss: 0.0960, total loss: 0.0968, anchor loss: 0.0976, VFL train accuracy: 0.9638
+2026-04-28 03:31:24,816 - Epoch: 10, 251/278: VFL loss: 0.0958, total loss: 0.0966, anchor loss: 0.0974, VFL train accuracy: 0.9638
+2026-04-28 03:31:25,149 - Epoch: 10, 261/278: VFL loss: 0.0957, total loss: 0.0965, anchor loss: 0.0973, VFL train accuracy: 0.9638
+2026-04-28 03:31:25,358 - Epoch: 10, 271/278: VFL loss: 0.0952, total loss: 0.0961, anchor loss: 0.0969, VFL train accuracy: 0.9641
+2026-04-28 03:31:25,528 - => Recorded Stage 2 client anchor losses for epoch 10 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.136207, 1: 0.154102, 2: 2.3e-05}
+2026-04-28 03:31:25,531 - => Stage 2 EMA anchor update skipped at epoch 10 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:31:25,531 - => Stage 2 Epoch 10 Training Summary: VFL loss: 0.0948, total loss: 0.0958, anchor loss: 0.0969, VFL train accuracy: 0.9642
+2026-04-28 03:31:25,532 - => Test ASR...
+2026-04-28 03:31:25,539 - =>Add Trigger to Test Data
+2026-04-28 03:31:26,262 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:31:29,270 - => Test Epoch: 10, main task samples: 17730, attack samples: 17730, test loss: 0.1149, clean acc: 0.8979, Top-2: 1.0000, ASR: 0.0892, RAC: 0.9222, test target accuracy: 0.9697, stage3 final accuracy: 0.8979, stage3 final target accuracy: 0.9283, stage3 final asr: 0.0892, anchor loss: 0.0962
+2026-04-28 03:31:29,271 - => Stage 3 Detection Summary: recall: 0.9042, precision: 0.7401, f1: 0.8140, false positive rate: 0.0938, correction rate: 0.9971
+2026-04-28 03:31:29,271 - => Stage 3 Debug (clean): suspicious=1663/17730, correction_applied=1645, prediction_changed=1645, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=18
+2026-04-28 03:31:29,272 - => Stage 3 Debug (poison-valid): suspicious=4829/6130, correction_applied=4815, prediction_changed=4815, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=14
+2026-04-28 03:31:29,272 - => Stage 3 Debug (attack-success): suspicious=4805/5314, correction_applied=4791, prediction_changed=4791, corrected_to_true=4791
+2026-04-28 03:31:29,272 - => Stage 3 Effective Support Avg: clean(all)=1.8637, clean_suspicious(false_positive)=0.5472, clean_correction_applied=0.5422, poison_valid(all)=0.5020, poison_valid_suspicious=0.0984, poison_valid_correction_applied=0.0957, attack_success(all)=0.2764, attack_success_suspicious=0.0939
+2026-04-28 03:31:29,273 - => Stage 2 checkpoint score: mean(clean_acc=0.8979, recall=0.9042, correction_rate=0.9971) = 0.9331
+2026-04-28 03:31:29,309 - => End Epoch: 10, early stop epochs: 2, best epoch: 8, best clean acc: 0.8967, best Top-2: 1.0000, best ASR: 0.0790, best RAC: 0.9225, anchor loss: 0.0962, best checkpoint score: 0.9366
+2026-04-28 03:31:29,310 - => Stage 3 Detection Summary: recall: 0.9186, precision: 0.7159, f1: 0.8047, false positive rate: 0.1068, correction rate: 0.9946
+2026-04-28 03:31:29,355 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:31:29,364 - =>Add Trigger to Train Data
+2026-04-28 03:31:29,968 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:31:29,971 - => Start Training for Injecting Backdoor...
+2026-04-28 03:31:30,013 - Epoch: 11, 1/278: VFL loss: 0.1073, total loss: 0.1002, anchor loss: 0.0932, VFL train accuracy: 0.9531
+2026-04-28 03:31:30,287 - Epoch: 11, 11/278: VFL loss: 0.0934, total loss: 0.0899, anchor loss: 0.0863, VFL train accuracy: 0.9656
+2026-04-28 03:31:30,489 - Epoch: 11, 21/278: VFL loss: 0.0986, total loss: 0.0962, anchor loss: 0.0939, VFL train accuracy: 0.9632
+2026-04-28 03:31:30,715 - Epoch: 11, 31/278: VFL loss: 0.0966, total loss: 0.0962, anchor loss: 0.0959, VFL train accuracy: 0.9631
+2026-04-28 03:31:30,929 - Epoch: 11, 41/278: VFL loss: 0.0980, total loss: 0.0971, anchor loss: 0.0962, VFL train accuracy: 0.9625
+2026-04-28 03:31:31,151 - Epoch: 11, 51/278: VFL loss: 0.0966, total loss: 0.0963, anchor loss: 0.0960, VFL train accuracy: 0.9628
+2026-04-28 03:31:31,356 - Epoch: 11, 61/278: VFL loss: 0.0992, total loss: 0.0987, anchor loss: 0.0982, VFL train accuracy: 0.9620
+2026-04-28 03:31:31,565 - Epoch: 11, 71/278: VFL loss: 0.0992, total loss: 0.0988, anchor loss: 0.0984, VFL train accuracy: 0.9617
+2026-04-28 03:31:31,776 - Epoch: 11, 81/278: VFL loss: 0.0990, total loss: 0.0989, anchor loss: 0.0988, VFL train accuracy: 0.9620
+2026-04-28 03:31:31,987 - Epoch: 11, 91/278: VFL loss: 0.1002, total loss: 0.0995, anchor loss: 0.0988, VFL train accuracy: 0.9616
+2026-04-28 03:31:32,195 - Epoch: 11, 101/278: VFL loss: 0.0996, total loss: 0.0992, anchor loss: 0.0987, VFL train accuracy: 0.9620
+2026-04-28 03:31:32,405 - Epoch: 11, 111/278: VFL loss: 0.0988, total loss: 0.0984, anchor loss: 0.0980, VFL train accuracy: 0.9624
+2026-04-28 03:31:32,618 - Epoch: 11, 121/278: VFL loss: 0.0985, total loss: 0.0978, anchor loss: 0.0971, VFL train accuracy: 0.9626
+2026-04-28 03:31:32,826 - Epoch: 11, 131/278: VFL loss: 0.0997, total loss: 0.0984, anchor loss: 0.0971, VFL train accuracy: 0.9624
+2026-04-28 03:31:33,037 - Epoch: 11, 141/278: VFL loss: 0.0993, total loss: 0.0980, anchor loss: 0.0967, VFL train accuracy: 0.9624
+2026-04-28 03:31:33,245 - Epoch: 11, 151/278: VFL loss: 0.0989, total loss: 0.0979, anchor loss: 0.0969, VFL train accuracy: 0.9627
+2026-04-28 03:31:33,454 - Epoch: 11, 161/278: VFL loss: 0.0985, total loss: 0.0976, anchor loss: 0.0967, VFL train accuracy: 0.9629
+2026-04-28 03:31:33,666 - Epoch: 11, 171/278: VFL loss: 0.0978, total loss: 0.0970, anchor loss: 0.0962, VFL train accuracy: 0.9631
+2026-04-28 03:31:33,875 - Epoch: 11, 181/278: VFL loss: 0.0979, total loss: 0.0971, anchor loss: 0.0963, VFL train accuracy: 0.9630
+2026-04-28 03:31:34,101 - Epoch: 11, 191/278: VFL loss: 0.0977, total loss: 0.0970, anchor loss: 0.0962, VFL train accuracy: 0.9631
+2026-04-28 03:31:34,302 - Epoch: 11, 201/278: VFL loss: 0.0975, total loss: 0.0968, anchor loss: 0.0961, VFL train accuracy: 0.9632
+2026-04-28 03:31:34,508 - Epoch: 11, 211/278: VFL loss: 0.0980, total loss: 0.0971, anchor loss: 0.0963, VFL train accuracy: 0.9631
+2026-04-28 03:31:34,716 - Epoch: 11, 221/278: VFL loss: 0.0980, total loss: 0.0970, anchor loss: 0.0960, VFL train accuracy: 0.9632
+2026-04-28 03:31:34,924 - Epoch: 11, 231/278: VFL loss: 0.0984, total loss: 0.0972, anchor loss: 0.0960, VFL train accuracy: 0.9629
+2026-04-28 03:31:35,137 - Epoch: 11, 241/278: VFL loss: 0.0983, total loss: 0.0972, anchor loss: 0.0960, VFL train accuracy: 0.9630
+2026-04-28 03:31:35,344 - Epoch: 11, 251/278: VFL loss: 0.0982, total loss: 0.0971, anchor loss: 0.0959, VFL train accuracy: 0.9629
+2026-04-28 03:31:35,554 - Epoch: 11, 261/278: VFL loss: 0.0989, total loss: 0.0977, anchor loss: 0.0964, VFL train accuracy: 0.9625
+2026-04-28 03:31:35,765 - Epoch: 11, 271/278: VFL loss: 0.0994, total loss: 0.0979, anchor loss: 0.0965, VFL train accuracy: 0.9623
+2026-04-28 03:31:35,931 - => Recorded Stage 2 client anchor losses for epoch 11 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.135794, 1: 0.154109, 2: 2.5e-05}
+2026-04-28 03:31:35,933 - => Stage 2 EMA anchor update skipped at epoch 11 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:31:35,933 - => Stage 2 Epoch 11 Training Summary: VFL loss: 0.0993, total loss: 0.0981, anchor loss: 0.0968, VFL train accuracy: 0.9623
+2026-04-28 03:31:35,934 - => Test ASR...
+2026-04-28 03:31:35,940 - =>Add Trigger to Test Data
+2026-04-28 03:31:36,673 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:31:39,771 - => Test Epoch: 11, main task samples: 17730, attack samples: 17730, test loss: 0.1240, clean acc: 0.8955, Top-2: 1.0000, ASR: 0.0587, RAC: 0.9225, test target accuracy: 0.9477, stage3 final accuracy: 0.8955, stage3 final target accuracy: 0.9126, stage3 final asr: 0.0587, anchor loss: 0.0976
+2026-04-28 03:31:39,771 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:31:39,772 - => Stage 3 Debug (clean): suspicious=1923/17730, correction_applied=1841, prediction_changed=1841, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=82
+2026-04-28 03:31:39,772 - => Stage 3 Debug (poison-valid): suspicious=4895/6130, correction_applied=4879, prediction_changed=4879, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=16
+2026-04-28 03:31:39,772 - => Stage 3 Debug (attack-success): suspicious=4862/5173, correction_applied=4846, prediction_changed=4846, corrected_to_true=4846
+2026-04-28 03:31:39,773 - => Stage 3 Effective Support Avg: clean(all)=1.8532, clean_suspicious(false_positive)=0.6464, clean_correction_applied=0.6306, poison_valid(all)=0.4852, poison_valid_suspicious=0.1030, poison_valid_correction_applied=0.1000, attack_success(all)=0.2113, attack_success_suspicious=0.0969
+2026-04-28 03:31:39,773 - => Stage 2 checkpoint score: mean(clean_acc=0.8955, recall=0.9399, correction_rate=0.9967) = 0.9440
+2026-04-28 03:31:39,774 - => Save best checkpoint model...
+2026-04-28 03:31:39,882 - => End Epoch: 11, early stop epochs: 0, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:31:39,883 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:31:39,938 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:31:39,948 - =>Add Trigger to Train Data
+2026-04-28 03:31:40,621 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:31:40,629 - => Start Training for Injecting Backdoor...
+2026-04-28 03:31:40,703 - Epoch: 12, 1/278: VFL loss: 0.1137, total loss: 0.1023, anchor loss: 0.0908, VFL train accuracy: 0.9570
+2026-04-28 03:31:40,944 - Epoch: 12, 11/278: VFL loss: 0.1072, total loss: 0.1048, anchor loss: 0.1024, VFL train accuracy: 0.9542
+2026-04-28 03:31:41,158 - Epoch: 12, 21/278: VFL loss: 0.1008, total loss: 0.1011, anchor loss: 0.1015, VFL train accuracy: 0.9593
+2026-04-28 03:31:41,364 - Epoch: 12, 31/278: VFL loss: 0.0975, total loss: 0.0988, anchor loss: 0.1001, VFL train accuracy: 0.9611
+2026-04-28 03:31:41,587 - Epoch: 12, 41/278: VFL loss: 0.0984, total loss: 0.0994, anchor loss: 0.1005, VFL train accuracy: 0.9610
+2026-04-28 03:31:41,797 - Epoch: 12, 51/278: VFL loss: 0.0976, total loss: 0.0982, anchor loss: 0.0987, VFL train accuracy: 0.9620
+2026-04-28 03:31:42,009 - Epoch: 12, 61/278: VFL loss: 0.0958, total loss: 0.0966, anchor loss: 0.0975, VFL train accuracy: 0.9631
+2026-04-28 03:31:42,217 - Epoch: 12, 71/278: VFL loss: 0.0949, total loss: 0.0959, anchor loss: 0.0968, VFL train accuracy: 0.9633
+2026-04-28 03:31:42,426 - Epoch: 12, 81/278: VFL loss: 0.0953, total loss: 0.0959, anchor loss: 0.0964, VFL train accuracy: 0.9631
+2026-04-28 03:31:42,635 - Epoch: 12, 91/278: VFL loss: 0.0965, total loss: 0.0966, anchor loss: 0.0966, VFL train accuracy: 0.9626
+2026-04-28 03:31:42,847 - Epoch: 12, 101/278: VFL loss: 0.0975, total loss: 0.0975, anchor loss: 0.0976, VFL train accuracy: 0.9624
+2026-04-28 03:31:43,054 - Epoch: 12, 111/278: VFL loss: 0.0959, total loss: 0.0965, anchor loss: 0.0972, VFL train accuracy: 0.9630
+2026-04-28 03:31:43,265 - Epoch: 12, 121/278: VFL loss: 0.0960, total loss: 0.0967, anchor loss: 0.0975, VFL train accuracy: 0.9628
+2026-04-28 03:31:43,477 - Epoch: 12, 131/278: VFL loss: 0.0947, total loss: 0.0958, anchor loss: 0.0969, VFL train accuracy: 0.9633
+2026-04-28 03:31:43,685 - Epoch: 12, 141/278: VFL loss: 0.0951, total loss: 0.0959, anchor loss: 0.0967, VFL train accuracy: 0.9630
+2026-04-28 03:31:43,898 - Epoch: 12, 151/278: VFL loss: 0.0948, total loss: 0.0957, anchor loss: 0.0966, VFL train accuracy: 0.9631
+2026-04-28 03:31:44,105 - Epoch: 12, 161/278: VFL loss: 0.0960, total loss: 0.0964, anchor loss: 0.0968, VFL train accuracy: 0.9627
+2026-04-28 03:31:44,324 - Epoch: 12, 171/278: VFL loss: 0.0960, total loss: 0.0964, anchor loss: 0.0967, VFL train accuracy: 0.9628
+2026-04-28 03:31:44,532 - Epoch: 12, 181/278: VFL loss: 0.0965, total loss: 0.0967, anchor loss: 0.0969, VFL train accuracy: 0.9626
+2026-04-28 03:31:44,740 - Epoch: 12, 191/278: VFL loss: 0.0967, total loss: 0.0967, anchor loss: 0.0967, VFL train accuracy: 0.9623
+2026-04-28 03:31:44,982 - Epoch: 12, 201/278: VFL loss: 0.0969, total loss: 0.0969, anchor loss: 0.0969, VFL train accuracy: 0.9624
+2026-04-28 03:31:45,190 - Epoch: 12, 211/278: VFL loss: 0.0964, total loss: 0.0967, anchor loss: 0.0969, VFL train accuracy: 0.9625
+2026-04-28 03:31:45,404 - Epoch: 12, 221/278: VFL loss: 0.0959, total loss: 0.0963, anchor loss: 0.0966, VFL train accuracy: 0.9628
+2026-04-28 03:31:45,607 - Epoch: 12, 231/278: VFL loss: 0.0965, total loss: 0.0967, anchor loss: 0.0969, VFL train accuracy: 0.9626
+2026-04-28 03:31:45,817 - Epoch: 12, 241/278: VFL loss: 0.0962, total loss: 0.0964, anchor loss: 0.0966, VFL train accuracy: 0.9627
+2026-04-28 03:31:46,026 - Epoch: 12, 251/278: VFL loss: 0.0965, total loss: 0.0967, anchor loss: 0.0969, VFL train accuracy: 0.9625
+2026-04-28 03:31:46,238 - Epoch: 12, 261/278: VFL loss: 0.0962, total loss: 0.0965, anchor loss: 0.0968, VFL train accuracy: 0.9627
+2026-04-28 03:31:46,446 - Epoch: 12, 271/278: VFL loss: 0.0961, total loss: 0.0964, anchor loss: 0.0967, VFL train accuracy: 0.9628
+2026-04-28 03:31:46,615 - => Recorded Stage 2 client anchor losses for epoch 12 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.13638, 1: 0.153271, 2: 2.2e-05}
+2026-04-28 03:31:46,617 - => Stage 2 EMA anchor update skipped at epoch 12 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:31:46,618 - => Stage 2 Epoch 12 Training Summary: VFL loss: 0.0953, total loss: 0.0961, anchor loss: 0.0969, VFL train accuracy: 0.9631
+2026-04-28 03:31:46,618 - => Test ASR...
+2026-04-28 03:31:46,625 - =>Add Trigger to Test Data
+2026-04-28 03:31:47,340 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:31:50,400 - => Test Epoch: 12, main task samples: 17730, attack samples: 17730, test loss: 0.1176, clean acc: 0.8942, Top-2: 1.0000, ASR: 0.0760, RAC: 0.9175, test target accuracy: 0.9602, stage3 final accuracy: 0.8942, stage3 final target accuracy: 0.9141, stage3 final asr: 0.0760, anchor loss: 0.0966
+2026-04-28 03:31:50,401 - => Stage 3 Detection Summary: recall: 0.9210, precision: 0.7262, f1: 0.8121, false positive rate: 0.1062, correction rate: 0.9974
+2026-04-28 03:31:50,401 - => Stage 3 Debug (clean): suspicious=1883/17730, correction_applied=1865, prediction_changed=1865, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=18
+2026-04-28 03:31:50,401 - => Stage 3 Debug (poison-valid): suspicious=5067/6130, correction_applied=5054, prediction_changed=5054, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=13
+2026-04-28 03:31:50,402 - => Stage 3 Debug (attack-success): suspicious=5047/5480, correction_applied=5034, prediction_changed=5034, corrected_to_true=5034
+2026-04-28 03:31:50,402 - => Stage 3 Effective Support Avg: clean(all)=1.8468, clean_suspicious(false_positive)=0.5571, clean_correction_applied=0.5539, poison_valid(all)=0.4219, poison_valid_suspicious=0.0908, poison_valid_correction_applied=0.0886, attack_success(all)=0.2383, attack_success_suspicious=0.0872
+2026-04-28 03:31:50,403 - => Stage 2 checkpoint score: mean(clean_acc=0.8942, recall=0.9210, correction_rate=0.9974) = 0.9376
+2026-04-28 03:31:50,437 - => End Epoch: 12, early stop epochs: 1, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:31:50,437 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:31:50,468 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:31:50,476 - =>Add Trigger to Train Data
+2026-04-28 03:31:51,145 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:31:51,149 - => Start Training for Injecting Backdoor...
+2026-04-28 03:31:51,216 - Epoch: 13, 1/278: VFL loss: 0.1137, total loss: 0.1170, anchor loss: 0.1203, VFL train accuracy: 0.9609
+2026-04-28 03:31:51,600 - Epoch: 13, 11/278: VFL loss: 0.0927, total loss: 0.0948, anchor loss: 0.0970, VFL train accuracy: 0.9634
+2026-04-28 03:31:51,860 - Epoch: 13, 21/278: VFL loss: 0.0976, total loss: 0.0978, anchor loss: 0.0980, VFL train accuracy: 0.9624
+2026-04-28 03:31:52,121 - Epoch: 13, 31/278: VFL loss: 0.0980, total loss: 0.0977, anchor loss: 0.0974, VFL train accuracy: 0.9609
+2026-04-28 03:31:52,363 - Epoch: 13, 41/278: VFL loss: 0.0953, total loss: 0.0958, anchor loss: 0.0963, VFL train accuracy: 0.9607
+2026-04-28 03:31:52,604 - Epoch: 13, 51/278: VFL loss: 0.0954, total loss: 0.0963, anchor loss: 0.0972, VFL train accuracy: 0.9619
+2026-04-28 03:31:52,845 - Epoch: 13, 61/278: VFL loss: 0.0969, total loss: 0.0973, anchor loss: 0.0978, VFL train accuracy: 0.9616
+2026-04-28 03:31:53,082 - Epoch: 13, 71/278: VFL loss: 0.0981, total loss: 0.0979, anchor loss: 0.0977, VFL train accuracy: 0.9613
+2026-04-28 03:31:53,324 - Epoch: 13, 81/278: VFL loss: 0.0988, total loss: 0.0980, anchor loss: 0.0972, VFL train accuracy: 0.9620
+2026-04-28 03:31:53,561 - Epoch: 13, 91/278: VFL loss: 0.0995, total loss: 0.0985, anchor loss: 0.0974, VFL train accuracy: 0.9618
+2026-04-28 03:31:53,804 - Epoch: 13, 101/278: VFL loss: 0.0997, total loss: 0.0984, anchor loss: 0.0971, VFL train accuracy: 0.9620
+2026-04-28 03:31:54,052 - Epoch: 13, 111/278: VFL loss: 0.1003, total loss: 0.0986, anchor loss: 0.0969, VFL train accuracy: 0.9622
+2026-04-28 03:31:54,287 - Epoch: 13, 121/278: VFL loss: 0.0997, total loss: 0.0981, anchor loss: 0.0966, VFL train accuracy: 0.9627
+2026-04-28 03:31:54,526 - Epoch: 13, 131/278: VFL loss: 0.0980, total loss: 0.0971, anchor loss: 0.0962, VFL train accuracy: 0.9632
+2026-04-28 03:31:54,766 - Epoch: 13, 141/278: VFL loss: 0.0986, total loss: 0.0976, anchor loss: 0.0966, VFL train accuracy: 0.9628
+2026-04-28 03:31:55,006 - Epoch: 13, 151/278: VFL loss: 0.0991, total loss: 0.0980, anchor loss: 0.0968, VFL train accuracy: 0.9627
+2026-04-28 03:31:55,246 - Epoch: 13, 161/278: VFL loss: 0.0986, total loss: 0.0977, anchor loss: 0.0968, VFL train accuracy: 0.9629
+2026-04-28 03:31:55,485 - Epoch: 13, 171/278: VFL loss: 0.0975, total loss: 0.0969, anchor loss: 0.0964, VFL train accuracy: 0.9632
+2026-04-28 03:31:55,722 - Epoch: 13, 181/278: VFL loss: 0.0972, total loss: 0.0968, anchor loss: 0.0963, VFL train accuracy: 0.9633
+2026-04-28 03:31:55,964 - Epoch: 13, 191/278: VFL loss: 0.0971, total loss: 0.0968, anchor loss: 0.0964, VFL train accuracy: 0.9632
+2026-04-28 03:31:56,205 - Epoch: 13, 201/278: VFL loss: 0.0973, total loss: 0.0969, anchor loss: 0.0964, VFL train accuracy: 0.9633
+2026-04-28 03:31:56,441 - Epoch: 13, 211/278: VFL loss: 0.0973, total loss: 0.0969, anchor loss: 0.0965, VFL train accuracy: 0.9632
+2026-04-28 03:31:56,681 - Epoch: 13, 221/278: VFL loss: 0.0971, total loss: 0.0968, anchor loss: 0.0965, VFL train accuracy: 0.9633
+2026-04-28 03:31:56,936 - Epoch: 13, 231/278: VFL loss: 0.0970, total loss: 0.0969, anchor loss: 0.0967, VFL train accuracy: 0.9633
+2026-04-28 03:31:57,196 - Epoch: 13, 241/278: VFL loss: 0.0976, total loss: 0.0972, anchor loss: 0.0969, VFL train accuracy: 0.9632
+2026-04-28 03:31:57,437 - Epoch: 13, 251/278: VFL loss: 0.0981, total loss: 0.0976, anchor loss: 0.0972, VFL train accuracy: 0.9630
+2026-04-28 03:31:57,682 - Epoch: 13, 261/278: VFL loss: 0.0979, total loss: 0.0973, anchor loss: 0.0967, VFL train accuracy: 0.9632
+2026-04-28 03:31:57,918 - Epoch: 13, 271/278: VFL loss: 0.0977, total loss: 0.0970, anchor loss: 0.0964, VFL train accuracy: 0.9633
+2026-04-28 03:31:58,111 - => Recorded Stage 2 client anchor losses for epoch 13 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.135096, 1: 0.154552, 2: 1.6e-05}
+2026-04-28 03:31:58,113 - => Stage 2 EMA anchor update skipped at epoch 13 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:31:58,114 - => Stage 2 Epoch 13 Training Summary: VFL loss: 0.0977, total loss: 0.0970, anchor loss: 0.0962, VFL train accuracy: 0.9632
+2026-04-28 03:31:58,114 - => Test ASR...
+2026-04-28 03:31:58,121 - =>Add Trigger to Test Data
+2026-04-28 03:31:58,850 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:32:02,193 - => Test Epoch: 13, main task samples: 17730, attack samples: 17730, test loss: 0.1150, clean acc: 0.8962, Top-2: 1.0000, ASR: 0.0796, RAC: 0.9198, test target accuracy: 0.9616, stage3 final accuracy: 0.8962, stage3 final target accuracy: 0.9195, stage3 final asr: 0.0796, anchor loss: 0.0956
+2026-04-28 03:32:02,194 - => Stage 3 Detection Summary: recall: 0.9183, precision: 0.7285, f1: 0.8125, false positive rate: 0.1040, correction rate: 0.9944
+2026-04-28 03:32:02,194 - => Stage 3 Debug (clean): suspicious=1844/17730, correction_applied=1798, prediction_changed=1798, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=46
+2026-04-28 03:32:02,194 - => Stage 3 Debug (poison-valid): suspicious=5007/6130, correction_applied=4979, prediction_changed=4979, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=28
+2026-04-28 03:32:02,195 - => Stage 3 Debug (attack-success): suspicious=4991/5435, correction_applied=4963, prediction_changed=4963, corrected_to_true=4963
+2026-04-28 03:32:02,195 - => Stage 3 Effective Support Avg: clean(all)=1.8500, clean_suspicious(false_positive)=0.5575, clean_correction_applied=0.5489, poison_valid(all)=0.4405, poison_valid_suspicious=0.0907, poison_valid_correction_applied=0.0856, attack_success(all)=0.2440, attack_success_suspicious=0.0878
+2026-04-28 03:32:02,196 - => Stage 2 checkpoint score: mean(clean_acc=0.8962, recall=0.9183, correction_rate=0.9944) = 0.9363
+2026-04-28 03:32:02,234 - => End Epoch: 13, early stop epochs: 2, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:32:02,235 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:32:02,267 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:32:02,276 - =>Add Trigger to Train Data
+2026-04-28 03:32:02,943 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:32:02,948 - => Start Training for Injecting Backdoor...
+2026-04-28 03:32:03,016 - Epoch: 14, 1/278: VFL loss: 0.1015, total loss: 0.0906, anchor loss: 0.0796, VFL train accuracy: 0.9609
+2026-04-28 03:32:03,271 - Epoch: 14, 11/278: VFL loss: 0.0857, total loss: 0.0904, anchor loss: 0.0952, VFL train accuracy: 0.9673
+2026-04-28 03:32:03,483 - Epoch: 14, 21/278: VFL loss: 0.0869, total loss: 0.0916, anchor loss: 0.0963, VFL train accuracy: 0.9654
+2026-04-28 03:32:03,695 - Epoch: 14, 31/278: VFL loss: 0.0884, total loss: 0.0925, anchor loss: 0.0967, VFL train accuracy: 0.9650
+2026-04-28 03:32:03,905 - Epoch: 14, 41/278: VFL loss: 0.0857, total loss: 0.0903, anchor loss: 0.0950, VFL train accuracy: 0.9664
+2026-04-28 03:32:04,123 - Epoch: 14, 51/278: VFL loss: 0.0876, total loss: 0.0914, anchor loss: 0.0952, VFL train accuracy: 0.9659
+2026-04-28 03:32:04,329 - Epoch: 14, 61/278: VFL loss: 0.0891, total loss: 0.0923, anchor loss: 0.0954, VFL train accuracy: 0.9650
+2026-04-28 03:32:04,539 - Epoch: 14, 71/278: VFL loss: 0.0898, total loss: 0.0923, anchor loss: 0.0949, VFL train accuracy: 0.9650
+2026-04-28 03:32:04,749 - Epoch: 14, 81/278: VFL loss: 0.0897, total loss: 0.0926, anchor loss: 0.0955, VFL train accuracy: 0.9653
+2026-04-28 03:32:04,956 - Epoch: 14, 91/278: VFL loss: 0.0898, total loss: 0.0930, anchor loss: 0.0961, VFL train accuracy: 0.9650
+2026-04-28 03:32:05,165 - Epoch: 14, 101/278: VFL loss: 0.0911, total loss: 0.0935, anchor loss: 0.0959, VFL train accuracy: 0.9650
+2026-04-28 03:32:05,374 - Epoch: 14, 111/278: VFL loss: 0.0922, total loss: 0.0941, anchor loss: 0.0961, VFL train accuracy: 0.9648
+2026-04-28 03:32:05,584 - Epoch: 14, 121/278: VFL loss: 0.0922, total loss: 0.0941, anchor loss: 0.0960, VFL train accuracy: 0.9647
+2026-04-28 03:32:05,794 - Epoch: 14, 131/278: VFL loss: 0.0921, total loss: 0.0939, anchor loss: 0.0957, VFL train accuracy: 0.9647
+2026-04-28 03:32:06,006 - Epoch: 14, 141/278: VFL loss: 0.0928, total loss: 0.0944, anchor loss: 0.0960, VFL train accuracy: 0.9644
+2026-04-28 03:32:06,235 - Epoch: 14, 151/278: VFL loss: 0.0928, total loss: 0.0946, anchor loss: 0.0964, VFL train accuracy: 0.9646
+2026-04-28 03:32:06,463 - Epoch: 14, 161/278: VFL loss: 0.0928, total loss: 0.0946, anchor loss: 0.0964, VFL train accuracy: 0.9646
+2026-04-28 03:32:06,671 - Epoch: 14, 171/278: VFL loss: 0.0927, total loss: 0.0945, anchor loss: 0.0964, VFL train accuracy: 0.9646
+2026-04-28 03:32:06,877 - Epoch: 14, 181/278: VFL loss: 0.0934, total loss: 0.0951, anchor loss: 0.0967, VFL train accuracy: 0.9645
+2026-04-28 03:32:07,089 - Epoch: 14, 191/278: VFL loss: 0.0935, total loss: 0.0950, anchor loss: 0.0966, VFL train accuracy: 0.9646
+2026-04-28 03:32:07,295 - Epoch: 14, 201/278: VFL loss: 0.0934, total loss: 0.0949, anchor loss: 0.0965, VFL train accuracy: 0.9646
+2026-04-28 03:32:07,534 - Epoch: 14, 211/278: VFL loss: 0.0936, total loss: 0.0949, anchor loss: 0.0962, VFL train accuracy: 0.9646
+2026-04-28 03:32:07,768 - Epoch: 14, 221/278: VFL loss: 0.0935, total loss: 0.0949, anchor loss: 0.0963, VFL train accuracy: 0.9645
+2026-04-28 03:32:07,985 - Epoch: 14, 231/278: VFL loss: 0.0937, total loss: 0.0949, anchor loss: 0.0961, VFL train accuracy: 0.9645
+2026-04-28 03:32:08,208 - Epoch: 14, 241/278: VFL loss: 0.0936, total loss: 0.0950, anchor loss: 0.0964, VFL train accuracy: 0.9645
+2026-04-28 03:32:08,419 - Epoch: 14, 251/278: VFL loss: 0.0933, total loss: 0.0947, anchor loss: 0.0962, VFL train accuracy: 0.9646
+2026-04-28 03:32:08,629 - Epoch: 14, 261/278: VFL loss: 0.0933, total loss: 0.0948, anchor loss: 0.0963, VFL train accuracy: 0.9646
+2026-04-28 03:32:08,843 - Epoch: 14, 271/278: VFL loss: 0.0936, total loss: 0.0949, anchor loss: 0.0962, VFL train accuracy: 0.9647
+2026-04-28 03:32:09,022 - => Recorded Stage 2 client anchor losses for epoch 14 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.13466, 1: 0.153378, 2: 1.2e-05}
+2026-04-28 03:32:09,024 - => Stage 2 EMA anchor update skipped at epoch 14 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:32:09,025 - => Stage 2 Epoch 14 Training Summary: VFL loss: 0.0939, total loss: 0.0953, anchor loss: 0.0966, VFL train accuracy: 0.9647
+2026-04-28 03:32:09,026 - => Test ASR...
+2026-04-28 03:32:09,033 - =>Add Trigger to Test Data
+2026-04-28 03:32:09,766 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:32:13,078 - => Test Epoch: 14, main task samples: 17730, attack samples: 17730, test loss: 0.1104, clean acc: 0.8965, Top-2: 1.0000, ASR: 0.0936, RAC: 0.9217, test target accuracy: 0.9703, stage3 final accuracy: 0.8965, stage3 final target accuracy: 0.9298, stage3 final asr: 0.0936, anchor loss: 0.0960
+2026-04-28 03:32:13,079 - => Stage 3 Detection Summary: recall: 0.8966, precision: 0.7313, f1: 0.8055, false positive rate: 0.0963, correction rate: 0.9989
+2026-04-28 03:32:13,079 - => Stage 3 Debug (clean): suspicious=1708/17730, correction_applied=1664, prediction_changed=1664, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=44
+2026-04-28 03:32:13,080 - => Stage 3 Debug (poison-valid): suspicious=4741/6130, correction_applied=4736, prediction_changed=4736, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=5
+2026-04-28 03:32:13,080 - => Stage 3 Debug (attack-success): suspicious=4716/5260, correction_applied=4711, prediction_changed=4711, corrected_to_true=4711
+2026-04-28 03:32:13,081 - => Stage 3 Effective Support Avg: clean(all)=1.8647, clean_suspicious(false_positive)=0.5960, clean_correction_applied=0.5853, poison_valid(all)=0.5328, poison_valid_suspicious=0.1029, poison_valid_correction_applied=0.1020, attack_success(all)=0.2949, attack_success_suspicious=0.0982
+2026-04-28 03:32:13,081 - => Stage 2 checkpoint score: mean(clean_acc=0.8965, recall=0.8966, correction_rate=0.9989) = 0.9307
+2026-04-28 03:32:13,119 - => End Epoch: 14, early stop epochs: 3, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:32:13,120 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:32:13,152 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:32:13,160 - =>Add Trigger to Train Data
+2026-04-28 03:32:13,828 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:32:13,833 - => Start Training for Injecting Backdoor...
+2026-04-28 03:32:13,900 - Epoch: 15, 1/278: VFL loss: 0.0826, total loss: 0.0866, anchor loss: 0.0905, VFL train accuracy: 0.9805
+2026-04-28 03:32:14,183 - Epoch: 15, 11/278: VFL loss: 0.1197, total loss: 0.1116, anchor loss: 0.1036, VFL train accuracy: 0.9570
+2026-04-28 03:32:14,418 - Epoch: 15, 21/278: VFL loss: 0.1146, total loss: 0.1086, anchor loss: 0.1027, VFL train accuracy: 0.9578
+2026-04-28 03:32:14,654 - Epoch: 15, 31/278: VFL loss: 0.1094, total loss: 0.1052, anchor loss: 0.1009, VFL train accuracy: 0.9589
+2026-04-28 03:32:14,893 - Epoch: 15, 41/278: VFL loss: 0.1072, total loss: 0.1038, anchor loss: 0.1005, VFL train accuracy: 0.9593
+2026-04-28 03:32:15,135 - Epoch: 15, 51/278: VFL loss: 0.1070, total loss: 0.1040, anchor loss: 0.1009, VFL train accuracy: 0.9600
+2026-04-28 03:32:15,373 - Epoch: 15, 61/278: VFL loss: 0.1060, total loss: 0.1037, anchor loss: 0.1015, VFL train accuracy: 0.9602
+2026-04-28 03:32:15,631 - Epoch: 15, 71/278: VFL loss: 0.1050, total loss: 0.1034, anchor loss: 0.1019, VFL train accuracy: 0.9604
+2026-04-28 03:32:15,873 - Epoch: 15, 81/278: VFL loss: 0.1037, total loss: 0.1024, anchor loss: 0.1011, VFL train accuracy: 0.9610
+2026-04-28 03:32:16,115 - Epoch: 15, 91/278: VFL loss: 0.1024, total loss: 0.1013, anchor loss: 0.1002, VFL train accuracy: 0.9615
+2026-04-28 03:32:16,356 - Epoch: 15, 101/278: VFL loss: 0.1027, total loss: 0.1011, anchor loss: 0.0994, VFL train accuracy: 0.9613
+2026-04-28 03:32:16,597 - Epoch: 15, 111/278: VFL loss: 0.1023, total loss: 0.1007, anchor loss: 0.0991, VFL train accuracy: 0.9611
+2026-04-28 03:32:16,843 - Epoch: 15, 121/278: VFL loss: 0.1013, total loss: 0.1000, anchor loss: 0.0986, VFL train accuracy: 0.9614
+2026-04-28 03:32:17,083 - Epoch: 15, 131/278: VFL loss: 0.1002, total loss: 0.0990, anchor loss: 0.0978, VFL train accuracy: 0.9619
+2026-04-28 03:32:17,322 - Epoch: 15, 141/278: VFL loss: 0.0997, total loss: 0.0986, anchor loss: 0.0975, VFL train accuracy: 0.9623
+2026-04-28 03:32:17,562 - Epoch: 15, 151/278: VFL loss: 0.0997, total loss: 0.0986, anchor loss: 0.0976, VFL train accuracy: 0.9623
+2026-04-28 03:32:17,820 - Epoch: 15, 161/278: VFL loss: 0.1011, total loss: 0.0994, anchor loss: 0.0977, VFL train accuracy: 0.9620
+2026-04-28 03:32:18,061 - Epoch: 15, 171/278: VFL loss: 0.1007, total loss: 0.0991, anchor loss: 0.0975, VFL train accuracy: 0.9619
+2026-04-28 03:32:18,419 - Epoch: 15, 181/278: VFL loss: 0.1011, total loss: 0.0994, anchor loss: 0.0976, VFL train accuracy: 0.9617
+2026-04-28 03:32:18,662 - Epoch: 15, 191/278: VFL loss: 0.1010, total loss: 0.0993, anchor loss: 0.0975, VFL train accuracy: 0.9618
+2026-04-28 03:32:18,905 - Epoch: 15, 201/278: VFL loss: 0.1009, total loss: 0.0990, anchor loss: 0.0971, VFL train accuracy: 0.9620
+2026-04-28 03:32:19,154 - Epoch: 15, 211/278: VFL loss: 0.1010, total loss: 0.0991, anchor loss: 0.0972, VFL train accuracy: 0.9619
+2026-04-28 03:32:19,393 - Epoch: 15, 221/278: VFL loss: 0.1006, total loss: 0.0988, anchor loss: 0.0971, VFL train accuracy: 0.9620
+2026-04-28 03:32:19,636 - Epoch: 15, 231/278: VFL loss: 0.1009, total loss: 0.0990, anchor loss: 0.0971, VFL train accuracy: 0.9618
+2026-04-28 03:32:19,876 - Epoch: 15, 241/278: VFL loss: 0.1003, total loss: 0.0986, anchor loss: 0.0968, VFL train accuracy: 0.9623
+2026-04-28 03:32:20,116 - Epoch: 15, 251/278: VFL loss: 0.0999, total loss: 0.0983, anchor loss: 0.0968, VFL train accuracy: 0.9623
+2026-04-28 03:32:20,357 - Epoch: 15, 261/278: VFL loss: 0.1002, total loss: 0.0985, anchor loss: 0.0969, VFL train accuracy: 0.9622
+2026-04-28 03:32:20,595 - Epoch: 15, 271/278: VFL loss: 0.0997, total loss: 0.0982, anchor loss: 0.0967, VFL train accuracy: 0.9624
+2026-04-28 03:32:20,787 - => Recorded Stage 2 client anchor losses for epoch 15 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.135405, 1: 0.1546, 2: 2.2e-05}
+2026-04-28 03:32:20,790 - => Stage 2 EMA anchor update skipped at epoch 15 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:32:20,791 - => Stage 2 Epoch 15 Training Summary: VFL loss: 0.0996, total loss: 0.0979, anchor loss: 0.0963, VFL train accuracy: 0.9622
+2026-04-28 03:32:20,791 - => Test ASR...
+2026-04-28 03:32:20,799 - =>Add Trigger to Test Data
+2026-04-28 03:32:21,529 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:32:24,817 - => Test Epoch: 15, main task samples: 17730, attack samples: 17730, test loss: 0.1111, clean acc: 0.8964, Top-2: 1.0000, ASR: 0.0772, RAC: 0.9231, test target accuracy: 0.9684, stage3 final accuracy: 0.8964, stage3 final target accuracy: 0.9232, stage3 final asr: 0.0772, anchor loss: 0.0949
+2026-04-28 03:32:24,818 - => Stage 3 Detection Summary: recall: 0.9179, precision: 0.7377, f1: 0.8180, false positive rate: 0.0985, correction rate: 0.9988
+2026-04-28 03:32:24,818 - => Stage 3 Debug (clean): suspicious=1746/17730, correction_applied=1704, prediction_changed=1704, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=42
+2026-04-28 03:32:24,819 - => Stage 3 Debug (poison-valid): suspicious=4995/6130, correction_applied=4989, prediction_changed=4989, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=6
+2026-04-28 03:32:24,820 - => Stage 3 Debug (attack-success): suspicious=4973/5418, correction_applied=4967, prediction_changed=4967, corrected_to_true=4967
+2026-04-28 03:32:24,820 - => Stage 3 Effective Support Avg: clean(all)=1.8636, clean_suspicious(false_positive)=0.6151, clean_correction_applied=0.6056, poison_valid(all)=0.4520, poison_valid_suspicious=0.1003, poison_valid_correction_applied=0.0992, attack_success(all)=0.2527, attack_success_suspicious=0.0963
+2026-04-28 03:32:24,822 - => Stage 2 checkpoint score: mean(clean_acc=0.8964, recall=0.9179, correction_rate=0.9988) = 0.9377
+2026-04-28 03:32:24,862 - => End Epoch: 15, early stop epochs: 4, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:32:24,863 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:32:24,895 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:32:24,904 - =>Add Trigger to Train Data
+2026-04-28 03:32:25,572 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:32:25,577 - => Start Training for Injecting Backdoor...
+2026-04-28 03:32:25,657 - Epoch: 16, 1/278: VFL loss: 0.0784, total loss: 0.0819, anchor loss: 0.0854, VFL train accuracy: 0.9805
+2026-04-28 03:32:25,924 - Epoch: 16, 11/278: VFL loss: 0.0860, total loss: 0.0887, anchor loss: 0.0913, VFL train accuracy: 0.9677
+2026-04-28 03:32:26,171 - Epoch: 16, 21/278: VFL loss: 0.0915, total loss: 0.0934, anchor loss: 0.0954, VFL train accuracy: 0.9665
+2026-04-28 03:32:26,421 - Epoch: 16, 31/278: VFL loss: 0.0903, total loss: 0.0944, anchor loss: 0.0985, VFL train accuracy: 0.9662
+2026-04-28 03:32:26,657 - Epoch: 16, 41/278: VFL loss: 0.0902, total loss: 0.0941, anchor loss: 0.0981, VFL train accuracy: 0.9665
+2026-04-28 03:32:26,898 - Epoch: 16, 51/278: VFL loss: 0.0897, total loss: 0.0933, anchor loss: 0.0970, VFL train accuracy: 0.9661
+2026-04-28 03:32:27,134 - Epoch: 16, 61/278: VFL loss: 0.0911, total loss: 0.0942, anchor loss: 0.0972, VFL train accuracy: 0.9662
+2026-04-28 03:32:27,373 - Epoch: 16, 71/278: VFL loss: 0.0907, total loss: 0.0938, anchor loss: 0.0968, VFL train accuracy: 0.9663
+2026-04-28 03:32:27,612 - Epoch: 16, 81/278: VFL loss: 0.0902, total loss: 0.0931, anchor loss: 0.0961, VFL train accuracy: 0.9666
+2026-04-28 03:32:27,845 - Epoch: 16, 91/278: VFL loss: 0.0915, total loss: 0.0939, anchor loss: 0.0963, VFL train accuracy: 0.9659
+2026-04-28 03:32:28,086 - Epoch: 16, 101/278: VFL loss: 0.0911, total loss: 0.0937, anchor loss: 0.0964, VFL train accuracy: 0.9660
+2026-04-28 03:32:28,331 - Epoch: 16, 111/278: VFL loss: 0.0925, total loss: 0.0942, anchor loss: 0.0959, VFL train accuracy: 0.9655
+2026-04-28 03:32:28,569 - Epoch: 16, 121/278: VFL loss: 0.0926, total loss: 0.0939, anchor loss: 0.0952, VFL train accuracy: 0.9657
+2026-04-28 03:32:28,808 - Epoch: 16, 131/278: VFL loss: 0.0937, total loss: 0.0945, anchor loss: 0.0953, VFL train accuracy: 0.9653
+2026-04-28 03:32:29,050 - Epoch: 16, 141/278: VFL loss: 0.0941, total loss: 0.0947, anchor loss: 0.0954, VFL train accuracy: 0.9651
+2026-04-28 03:32:29,282 - Epoch: 16, 151/278: VFL loss: 0.0929, total loss: 0.0941, anchor loss: 0.0953, VFL train accuracy: 0.9654
+2026-04-28 03:32:29,528 - Epoch: 16, 161/278: VFL loss: 0.0927, total loss: 0.0940, anchor loss: 0.0953, VFL train accuracy: 0.9653
+2026-04-28 03:32:29,768 - Epoch: 16, 171/278: VFL loss: 0.0920, total loss: 0.0935, anchor loss: 0.0951, VFL train accuracy: 0.9654
+2026-04-28 03:32:30,009 - Epoch: 16, 181/278: VFL loss: 0.0930, total loss: 0.0943, anchor loss: 0.0956, VFL train accuracy: 0.9650
+2026-04-28 03:32:30,249 - Epoch: 16, 191/278: VFL loss: 0.0927, total loss: 0.0942, anchor loss: 0.0957, VFL train accuracy: 0.9652
+2026-04-28 03:32:30,491 - Epoch: 16, 201/278: VFL loss: 0.0931, total loss: 0.0946, anchor loss: 0.0961, VFL train accuracy: 0.9650
+2026-04-28 03:32:30,732 - Epoch: 16, 211/278: VFL loss: 0.0929, total loss: 0.0945, anchor loss: 0.0961, VFL train accuracy: 0.9651
+2026-04-28 03:32:30,972 - Epoch: 16, 221/278: VFL loss: 0.0925, total loss: 0.0943, anchor loss: 0.0961, VFL train accuracy: 0.9652
+2026-04-28 03:32:31,213 - Epoch: 16, 231/278: VFL loss: 0.0930, total loss: 0.0945, anchor loss: 0.0961, VFL train accuracy: 0.9650
+2026-04-28 03:32:31,453 - Epoch: 16, 241/278: VFL loss: 0.0927, total loss: 0.0942, anchor loss: 0.0958, VFL train accuracy: 0.9653
+2026-04-28 03:32:31,692 - Epoch: 16, 251/278: VFL loss: 0.0924, total loss: 0.0940, anchor loss: 0.0956, VFL train accuracy: 0.9655
+2026-04-28 03:32:31,931 - Epoch: 16, 261/278: VFL loss: 0.0923, total loss: 0.0940, anchor loss: 0.0957, VFL train accuracy: 0.9656
+2026-04-28 03:32:32,170 - Epoch: 16, 271/278: VFL loss: 0.0926, total loss: 0.0942, anchor loss: 0.0957, VFL train accuracy: 0.9656
+2026-04-28 03:32:32,361 - => Recorded Stage 2 client anchor losses for epoch 16 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.134587, 1: 0.153045, 2: 2.4e-05}
+2026-04-28 03:32:32,363 - => Stage 2 EMA anchor update skipped at epoch 16 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:32:32,364 - => Stage 2 Epoch 16 Training Summary: VFL loss: 0.0927, total loss: 0.0942, anchor loss: 0.0957, VFL train accuracy: 0.9655
+2026-04-28 03:32:32,364 - => Test ASR...
+2026-04-28 03:32:32,370 - =>Add Trigger to Test Data
+2026-04-28 03:32:33,081 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:32:36,022 - => Test Epoch: 16, main task samples: 17730, attack samples: 17730, test loss: 0.1141, clean acc: 0.8939, Top-2: 1.0000, ASR: 0.0692, RAC: 0.9242, test target accuracy: 0.9594, stage3 final accuracy: 0.8939, stage3 final target accuracy: 0.9207, stage3 final asr: 0.0692, anchor loss: 0.0962
+2026-04-28 03:32:36,023 - => Stage 3 Detection Summary: recall: 0.9258, precision: 0.7333, f1: 0.8184, false positive rate: 0.1053, correction rate: 0.9992
+2026-04-28 03:32:36,023 - => Stage 3 Debug (clean): suspicious=1867/17730, correction_applied=1844, prediction_changed=1844, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=23
+2026-04-28 03:32:36,023 - => Stage 3 Debug (poison-valid): suspicious=5160/6130, correction_applied=5156, prediction_changed=5156, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=4
+2026-04-28 03:32:36,024 - => Stage 3 Debug (attack-success): suspicious=5153/5566, correction_applied=5149, prediction_changed=5149, corrected_to_true=5149
+2026-04-28 03:32:36,024 - => Stage 3 Effective Support Avg: clean(all)=1.8552, clean_suspicious(false_positive)=0.6251, clean_correction_applied=0.6204, poison_valid(all)=0.4073, poison_valid_suspicious=0.1079, poison_valid_correction_applied=0.1073, attack_success(all)=0.2472, attack_success_suspicious=0.1067
+2026-04-28 03:32:36,025 - => Stage 2 checkpoint score: mean(clean_acc=0.8939, recall=0.9258, correction_rate=0.9992) = 0.9396
+2026-04-28 03:32:36,062 - => End Epoch: 16, early stop epochs: 5, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:32:36,063 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:32:36,096 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:32:36,104 - =>Add Trigger to Train Data
+2026-04-28 03:32:36,770 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:32:36,774 - => Start Training for Injecting Backdoor...
+2026-04-28 03:32:36,843 - Epoch: 17, 1/278: VFL loss: 0.1197, total loss: 0.1099, anchor loss: 0.1000, VFL train accuracy: 0.9453
+2026-04-28 03:32:37,130 - Epoch: 17, 11/278: VFL loss: 0.1093, total loss: 0.1065, anchor loss: 0.1038, VFL train accuracy: 0.9602
+2026-04-28 03:32:37,363 - Epoch: 17, 21/278: VFL loss: 0.1015, total loss: 0.1019, anchor loss: 0.1024, VFL train accuracy: 0.9611
+2026-04-28 03:32:37,612 - Epoch: 17, 31/278: VFL loss: 0.1020, total loss: 0.1029, anchor loss: 0.1039, VFL train accuracy: 0.9604
+2026-04-28 03:32:37,847 - Epoch: 17, 41/278: VFL loss: 0.0988, total loss: 0.0995, anchor loss: 0.1002, VFL train accuracy: 0.9632
+2026-04-28 03:32:38,084 - Epoch: 17, 51/278: VFL loss: 0.0974, total loss: 0.0978, anchor loss: 0.0983, VFL train accuracy: 0.9629
+2026-04-28 03:32:38,323 - Epoch: 17, 61/278: VFL loss: 0.0978, total loss: 0.0979, anchor loss: 0.0980, VFL train accuracy: 0.9629
+2026-04-28 03:32:38,574 - Epoch: 17, 71/278: VFL loss: 0.0989, total loss: 0.0986, anchor loss: 0.0984, VFL train accuracy: 0.9629
+2026-04-28 03:32:38,815 - Epoch: 17, 81/278: VFL loss: 0.0997, total loss: 0.0994, anchor loss: 0.0992, VFL train accuracy: 0.9623
+2026-04-28 03:32:39,049 - Epoch: 17, 91/278: VFL loss: 0.0984, total loss: 0.0985, anchor loss: 0.0987, VFL train accuracy: 0.9630
+2026-04-28 03:32:39,286 - Epoch: 17, 101/278: VFL loss: 0.0990, total loss: 0.0987, anchor loss: 0.0985, VFL train accuracy: 0.9631
+2026-04-28 03:32:39,525 - Epoch: 17, 111/278: VFL loss: 0.0975, total loss: 0.0976, anchor loss: 0.0976, VFL train accuracy: 0.9635
+2026-04-28 03:32:39,763 - Epoch: 17, 121/278: VFL loss: 0.0968, total loss: 0.0969, anchor loss: 0.0970, VFL train accuracy: 0.9636
+2026-04-28 03:32:40,022 - Epoch: 17, 131/278: VFL loss: 0.0960, total loss: 0.0961, anchor loss: 0.0963, VFL train accuracy: 0.9639
+2026-04-28 03:32:40,266 - Epoch: 17, 141/278: VFL loss: 0.0961, total loss: 0.0960, anchor loss: 0.0959, VFL train accuracy: 0.9638
+2026-04-28 03:32:40,506 - Epoch: 17, 151/278: VFL loss: 0.0967, total loss: 0.0963, anchor loss: 0.0959, VFL train accuracy: 0.9636
+2026-04-28 03:32:40,749 - Epoch: 17, 161/278: VFL loss: 0.0965, total loss: 0.0962, anchor loss: 0.0959, VFL train accuracy: 0.9636
+2026-04-28 03:32:41,006 - Epoch: 17, 171/278: VFL loss: 0.0965, total loss: 0.0964, anchor loss: 0.0963, VFL train accuracy: 0.9635
+2026-04-28 03:32:41,253 - Epoch: 17, 181/278: VFL loss: 0.0968, total loss: 0.0965, anchor loss: 0.0963, VFL train accuracy: 0.9633
+2026-04-28 03:32:41,505 - Epoch: 17, 191/278: VFL loss: 0.0962, total loss: 0.0961, anchor loss: 0.0960, VFL train accuracy: 0.9637
+2026-04-28 03:32:41,752 - Epoch: 17, 201/278: VFL loss: 0.0966, total loss: 0.0963, anchor loss: 0.0959, VFL train accuracy: 0.9636
+2026-04-28 03:32:42,008 - Epoch: 17, 211/278: VFL loss: 0.0964, total loss: 0.0961, anchor loss: 0.0958, VFL train accuracy: 0.9637
+2026-04-28 03:32:42,258 - Epoch: 17, 221/278: VFL loss: 0.0970, total loss: 0.0965, anchor loss: 0.0960, VFL train accuracy: 0.9634
+2026-04-28 03:32:42,506 - Epoch: 17, 231/278: VFL loss: 0.0970, total loss: 0.0965, anchor loss: 0.0961, VFL train accuracy: 0.9634
+2026-04-28 03:32:42,798 - Epoch: 17, 241/278: VFL loss: 0.0964, total loss: 0.0961, anchor loss: 0.0959, VFL train accuracy: 0.9636
+2026-04-28 03:32:43,046 - Epoch: 17, 251/278: VFL loss: 0.0959, total loss: 0.0958, anchor loss: 0.0958, VFL train accuracy: 0.9638
+2026-04-28 03:32:43,344 - Epoch: 17, 261/278: VFL loss: 0.0960, total loss: 0.0959, anchor loss: 0.0958, VFL train accuracy: 0.9639
+2026-04-28 03:32:43,625 - Epoch: 17, 271/278: VFL loss: 0.0959, total loss: 0.0959, anchor loss: 0.0960, VFL train accuracy: 0.9640
+2026-04-28 03:32:43,828 - => Recorded Stage 2 client anchor losses for epoch 17 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.135159, 1: 0.152817, 2: 1.3e-05}
+2026-04-28 03:32:43,830 - => Stage 2 EMA anchor update skipped at epoch 17 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:32:43,830 - => Stage 2 Epoch 17 Training Summary: VFL loss: 0.0953, total loss: 0.0957, anchor loss: 0.0961, VFL train accuracy: 0.9640
+2026-04-28 03:32:43,830 - => Test ASR...
+2026-04-28 03:32:43,835 - =>Add Trigger to Test Data
+2026-04-28 03:32:44,551 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:32:47,947 - => Test Epoch: 17, main task samples: 17730, attack samples: 17730, test loss: 0.1128, clean acc: 0.8990, Top-2: 1.0000, ASR: 0.0752, RAC: 0.9227, test target accuracy: 0.9597, stage3 final accuracy: 0.8990, stage3 final target accuracy: 0.9216, stage3 final asr: 0.0752, anchor loss: 0.0945
+2026-04-28 03:32:47,948 - => Stage 3 Detection Summary: recall: 0.9259, precision: 0.7356, f1: 0.8198, false positive rate: 0.1010, correction rate: 0.9923
+2026-04-28 03:32:47,948 - => Stage 3 Debug (clean): suspicious=1791/17730, correction_applied=1752, prediction_changed=1752, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=39
+2026-04-28 03:32:47,948 - => Stage 3 Debug (poison-valid): suspicious=5054/6130, correction_applied=5015, prediction_changed=5015, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=39
+2026-04-28 03:32:47,949 - => Stage 3 Debug (attack-success): suspicious=5035/5438, correction_applied=4996, prediction_changed=4996, corrected_to_true=4996
+2026-04-28 03:32:47,949 - => Stage 3 Effective Support Avg: clean(all)=1.8543, clean_suspicious(false_positive)=0.5572, clean_correction_applied=0.5474, poison_valid(all)=0.4287, poison_valid_suspicious=0.0942, poison_valid_correction_applied=0.0871, attack_success(all)=0.2323, attack_success_suspicious=0.0908
+2026-04-28 03:32:47,950 - => Stage 2 checkpoint score: mean(clean_acc=0.8990, recall=0.9259, correction_rate=0.9923) = 0.9390
+2026-04-28 03:32:47,987 - => End Epoch: 17, early stop epochs: 6, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:32:47,988 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:32:48,045 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:32:48,055 - =>Add Trigger to Train Data
+2026-04-28 03:32:48,740 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:32:48,744 - => Start Training for Injecting Backdoor...
+2026-04-28 03:32:48,792 - Epoch: 18, 1/278: VFL loss: 0.0868, total loss: 0.0902, anchor loss: 0.0935, VFL train accuracy: 0.9688
+2026-04-28 03:32:49,084 - Epoch: 18, 11/278: VFL loss: 0.0914, total loss: 0.0957, anchor loss: 0.1000, VFL train accuracy: 0.9688
+2026-04-28 03:32:49,340 - Epoch: 18, 21/278: VFL loss: 0.0957, total loss: 0.0970, anchor loss: 0.0983, VFL train accuracy: 0.9637
+2026-04-28 03:32:49,609 - Epoch: 18, 31/278: VFL loss: 0.0943, total loss: 0.0957, anchor loss: 0.0971, VFL train accuracy: 0.9651
+2026-04-28 03:32:49,858 - Epoch: 18, 41/278: VFL loss: 0.0921, total loss: 0.0944, anchor loss: 0.0967, VFL train accuracy: 0.9655
+2026-04-28 03:32:50,107 - Epoch: 18, 51/278: VFL loss: 0.0906, total loss: 0.0938, anchor loss: 0.0970, VFL train accuracy: 0.9658
+2026-04-28 03:32:50,359 - Epoch: 18, 61/278: VFL loss: 0.0914, total loss: 0.0944, anchor loss: 0.0974, VFL train accuracy: 0.9657
+2026-04-28 03:32:50,610 - Epoch: 18, 71/278: VFL loss: 0.0928, total loss: 0.0953, anchor loss: 0.0977, VFL train accuracy: 0.9652
+2026-04-28 03:32:50,878 - Epoch: 18, 81/278: VFL loss: 0.0925, total loss: 0.0947, anchor loss: 0.0969, VFL train accuracy: 0.9651
+2026-04-28 03:32:51,131 - Epoch: 18, 91/278: VFL loss: 0.0938, total loss: 0.0957, anchor loss: 0.0976, VFL train accuracy: 0.9643
+2026-04-28 03:32:51,397 - Epoch: 18, 101/278: VFL loss: 0.0926, total loss: 0.0947, anchor loss: 0.0969, VFL train accuracy: 0.9648
+2026-04-28 03:32:51,647 - Epoch: 18, 111/278: VFL loss: 0.0928, total loss: 0.0948, anchor loss: 0.0968, VFL train accuracy: 0.9650
+2026-04-28 03:32:51,895 - Epoch: 18, 121/278: VFL loss: 0.0917, total loss: 0.0940, anchor loss: 0.0962, VFL train accuracy: 0.9656
+2026-04-28 03:32:52,144 - Epoch: 18, 131/278: VFL loss: 0.0904, total loss: 0.0928, anchor loss: 0.0952, VFL train accuracy: 0.9659
+2026-04-28 03:32:52,396 - Epoch: 18, 141/278: VFL loss: 0.0904, total loss: 0.0928, anchor loss: 0.0953, VFL train accuracy: 0.9661
+2026-04-28 03:32:52,640 - Epoch: 18, 151/278: VFL loss: 0.0910, total loss: 0.0931, anchor loss: 0.0952, VFL train accuracy: 0.9658
+2026-04-28 03:32:52,886 - Epoch: 18, 161/278: VFL loss: 0.0913, total loss: 0.0930, anchor loss: 0.0948, VFL train accuracy: 0.9660
+2026-04-28 03:32:53,145 - Epoch: 18, 171/278: VFL loss: 0.0911, total loss: 0.0928, anchor loss: 0.0945, VFL train accuracy: 0.9660
+2026-04-28 03:32:53,395 - Epoch: 18, 181/278: VFL loss: 0.0920, total loss: 0.0934, anchor loss: 0.0948, VFL train accuracy: 0.9656
+2026-04-28 03:32:53,651 - Epoch: 18, 191/278: VFL loss: 0.0917, total loss: 0.0933, anchor loss: 0.0949, VFL train accuracy: 0.9658
+2026-04-28 03:32:53,901 - Epoch: 18, 201/278: VFL loss: 0.0923, total loss: 0.0938, anchor loss: 0.0953, VFL train accuracy: 0.9655
+2026-04-28 03:32:54,145 - Epoch: 18, 211/278: VFL loss: 0.0925, total loss: 0.0939, anchor loss: 0.0953, VFL train accuracy: 0.9655
+2026-04-28 03:32:54,413 - Epoch: 18, 221/278: VFL loss: 0.0921, total loss: 0.0937, anchor loss: 0.0953, VFL train accuracy: 0.9656
+2026-04-28 03:32:54,657 - Epoch: 18, 231/278: VFL loss: 0.0921, total loss: 0.0937, anchor loss: 0.0954, VFL train accuracy: 0.9656
+2026-04-28 03:32:54,911 - Epoch: 18, 241/278: VFL loss: 0.0915, total loss: 0.0934, anchor loss: 0.0953, VFL train accuracy: 0.9658
+2026-04-28 03:32:55,162 - Epoch: 18, 251/278: VFL loss: 0.0921, total loss: 0.0938, anchor loss: 0.0955, VFL train accuracy: 0.9656
+2026-04-28 03:32:55,405 - Epoch: 18, 261/278: VFL loss: 0.0922, total loss: 0.0939, anchor loss: 0.0955, VFL train accuracy: 0.9655
+2026-04-28 03:32:55,674 - Epoch: 18, 271/278: VFL loss: 0.0921, total loss: 0.0939, anchor loss: 0.0957, VFL train accuracy: 0.9656
+2026-04-28 03:32:55,874 - => Recorded Stage 2 client anchor losses for epoch 18 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.13399, 1: 0.152464, 2: 1.3e-05}
+2026-04-28 03:32:55,877 - => Stage 2 EMA anchor update skipped at epoch 18 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:32:55,877 - => Stage 2 Epoch 18 Training Summary: VFL loss: 0.0916, total loss: 0.0935, anchor loss: 0.0955, VFL train accuracy: 0.9656
+2026-04-28 03:32:55,878 - => Test ASR...
+2026-04-28 03:32:55,884 - =>Add Trigger to Test Data
+2026-04-28 03:32:56,560 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:32:59,469 - => Test Epoch: 18, main task samples: 17730, attack samples: 17730, test loss: 0.1122, clean acc: 0.8964, Top-2: 1.0000, ASR: 0.0736, RAC: 0.9201, test target accuracy: 0.9632, stage3 final accuracy: 0.8964, stage3 final target accuracy: 0.9168, stage3 final asr: 0.0736, anchor loss: 0.0948
+2026-04-28 03:32:59,470 - => Stage 3 Detection Summary: recall: 0.9229, precision: 0.7480, f1: 0.8263, false positive rate: 0.1012, correction rate: 0.9989
+2026-04-28 03:32:59,470 - => Stage 3 Debug (clean): suspicious=1795/17730, correction_applied=1783, prediction_changed=1783, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=12
+2026-04-28 03:32:59,470 - => Stage 3 Debug (poison-valid): suspicious=5327/6130, correction_applied=5321, prediction_changed=5321, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=6
+2026-04-28 03:32:59,471 - => Stage 3 Debug (attack-success): suspicious=5327/5772, correction_applied=5321, prediction_changed=5321, corrected_to_true=5321
+2026-04-28 03:32:59,471 - => Stage 3 Effective Support Avg: clean(all)=1.8538, clean_suspicious(false_positive)=0.5554, clean_correction_applied=0.5524, poison_valid(all)=0.3341, poison_valid_suspicious=0.0830, poison_valid_correction_applied=0.0819, attack_success(all)=0.2308, attack_success_suspicious=0.0830
+2026-04-28 03:32:59,471 - => Stage 2 checkpoint score: mean(clean_acc=0.8964, recall=0.9229, correction_rate=0.9989) = 0.9394
+2026-04-28 03:32:59,507 - => End Epoch: 18, early stop epochs: 7, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:32:59,508 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:32:59,541 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:32:59,550 - =>Add Trigger to Train Data
+2026-04-28 03:33:00,271 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:33:00,273 - => Start Training for Injecting Backdoor...
+2026-04-28 03:33:00,329 - Epoch: 19, 1/278: VFL loss: 0.0794, total loss: 0.0828, anchor loss: 0.0862, VFL train accuracy: 0.9727
+2026-04-28 03:33:00,625 - Epoch: 19, 11/278: VFL loss: 0.1011, total loss: 0.1006, anchor loss: 0.1001, VFL train accuracy: 0.9652
+2026-04-28 03:33:00,880 - Epoch: 19, 21/278: VFL loss: 0.0941, total loss: 0.0960, anchor loss: 0.0980, VFL train accuracy: 0.9656
+2026-04-28 03:33:01,130 - Epoch: 19, 31/278: VFL loss: 0.0970, total loss: 0.0966, anchor loss: 0.0962, VFL train accuracy: 0.9642
+2026-04-28 03:33:01,376 - Epoch: 19, 41/278: VFL loss: 0.0964, total loss: 0.0962, anchor loss: 0.0959, VFL train accuracy: 0.9650
+2026-04-28 03:33:01,629 - Epoch: 19, 51/278: VFL loss: 0.0941, total loss: 0.0942, anchor loss: 0.0944, VFL train accuracy: 0.9662
+2026-04-28 03:33:01,878 - Epoch: 19, 61/278: VFL loss: 0.0945, total loss: 0.0943, anchor loss: 0.0941, VFL train accuracy: 0.9656
+2026-04-28 03:33:02,135 - Epoch: 19, 71/278: VFL loss: 0.0927, total loss: 0.0935, anchor loss: 0.0942, VFL train accuracy: 0.9659
+2026-04-28 03:33:02,385 - Epoch: 19, 81/278: VFL loss: 0.0913, total loss: 0.0924, anchor loss: 0.0934, VFL train accuracy: 0.9661
+2026-04-28 03:33:02,633 - Epoch: 19, 91/278: VFL loss: 0.0920, total loss: 0.0933, anchor loss: 0.0945, VFL train accuracy: 0.9660
+2026-04-28 03:33:02,883 - Epoch: 19, 101/278: VFL loss: 0.0924, total loss: 0.0933, anchor loss: 0.0942, VFL train accuracy: 0.9657
+2026-04-28 03:33:03,138 - Epoch: 19, 111/278: VFL loss: 0.0919, total loss: 0.0932, anchor loss: 0.0945, VFL train accuracy: 0.9656
+2026-04-28 03:33:03,385 - Epoch: 19, 121/278: VFL loss: 0.0923, total loss: 0.0937, anchor loss: 0.0951, VFL train accuracy: 0.9654
+2026-04-28 03:33:03,646 - Epoch: 19, 131/278: VFL loss: 0.0924, total loss: 0.0935, anchor loss: 0.0946, VFL train accuracy: 0.9654
+2026-04-28 03:33:03,901 - Epoch: 19, 141/278: VFL loss: 0.0934, total loss: 0.0943, anchor loss: 0.0952, VFL train accuracy: 0.9650
+2026-04-28 03:33:04,166 - Epoch: 19, 151/278: VFL loss: 0.0931, total loss: 0.0940, anchor loss: 0.0948, VFL train accuracy: 0.9652
+2026-04-28 03:33:04,425 - Epoch: 19, 161/278: VFL loss: 0.0930, total loss: 0.0939, anchor loss: 0.0947, VFL train accuracy: 0.9652
+2026-04-28 03:33:04,674 - Epoch: 19, 171/278: VFL loss: 0.0934, total loss: 0.0942, anchor loss: 0.0949, VFL train accuracy: 0.9650
+2026-04-28 03:33:04,919 - Epoch: 19, 181/278: VFL loss: 0.0936, total loss: 0.0942, anchor loss: 0.0948, VFL train accuracy: 0.9650
+2026-04-28 03:33:05,191 - Epoch: 19, 191/278: VFL loss: 0.0937, total loss: 0.0942, anchor loss: 0.0947, VFL train accuracy: 0.9649
+2026-04-28 03:33:05,448 - Epoch: 19, 201/278: VFL loss: 0.0943, total loss: 0.0947, anchor loss: 0.0951, VFL train accuracy: 0.9647
+2026-04-28 03:33:05,695 - Epoch: 19, 211/278: VFL loss: 0.0940, total loss: 0.0946, anchor loss: 0.0951, VFL train accuracy: 0.9645
+2026-04-28 03:33:05,952 - Epoch: 19, 221/278: VFL loss: 0.0948, total loss: 0.0952, anchor loss: 0.0956, VFL train accuracy: 0.9643
+2026-04-28 03:33:06,204 - Epoch: 19, 231/278: VFL loss: 0.0948, total loss: 0.0952, anchor loss: 0.0956, VFL train accuracy: 0.9644
+2026-04-28 03:33:06,447 - Epoch: 19, 241/278: VFL loss: 0.0943, total loss: 0.0948, anchor loss: 0.0952, VFL train accuracy: 0.9646
+2026-04-28 03:33:06,702 - Epoch: 19, 251/278: VFL loss: 0.0943, total loss: 0.0948, anchor loss: 0.0953, VFL train accuracy: 0.9646
+2026-04-28 03:33:06,955 - Epoch: 19, 261/278: VFL loss: 0.0944, total loss: 0.0949, anchor loss: 0.0953, VFL train accuracy: 0.9646
+2026-04-28 03:33:07,209 - Epoch: 19, 271/278: VFL loss: 0.0944, total loss: 0.0949, anchor loss: 0.0953, VFL train accuracy: 0.9646
+2026-04-28 03:33:07,408 - => Recorded Stage 2 client anchor losses for epoch 19 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.133292, 1: 0.153166, 2: 1.9e-05}
+2026-04-28 03:33:07,410 - => Stage 2 EMA anchor update skipped at epoch 19 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:33:07,411 - => Stage 2 Epoch 19 Training Summary: VFL loss: 0.0942, total loss: 0.0947, anchor loss: 0.0952, VFL train accuracy: 0.9647
+2026-04-28 03:33:07,411 - => Test ASR...
+2026-04-28 03:33:07,418 - =>Add Trigger to Test Data
+2026-04-28 03:33:08,148 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:33:11,436 - => Test Epoch: 19, main task samples: 17730, attack samples: 17730, test loss: 0.1080, clean acc: 0.8944, Top-2: 1.0000, ASR: 0.0847, RAC: 0.9198, test target accuracy: 0.9705, stage3 final accuracy: 0.8944, stage3 final target accuracy: 0.9222, stage3 final asr: 0.0847, anchor loss: 0.0951
+2026-04-28 03:33:11,436 - => Stage 3 Detection Summary: recall: 0.9102, precision: 0.7343, f1: 0.8128, false positive rate: 0.0975, correction rate: 0.9963
+2026-04-28 03:33:11,437 - => Stage 3 Debug (clean): suspicious=1729/17730, correction_applied=1701, prediction_changed=1701, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=28
+2026-04-28 03:33:11,437 - => Stage 3 Debug (poison-valid): suspicious=4865/6130, correction_applied=4847, prediction_changed=4847, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=18
+2026-04-28 03:33:11,437 - => Stage 3 Debug (attack-success): suspicious=4842/5320, correction_applied=4824, prediction_changed=4824, corrected_to_true=4824
+2026-04-28 03:33:11,438 - => Stage 3 Effective Support Avg: clean(all)=1.8675, clean_suspicious(false_positive)=0.6414, clean_correction_applied=0.6355, poison_valid(all)=0.4961, poison_valid_suspicious=0.1050, poison_valid_correction_applied=0.1017, attack_success(all)=0.2714, attack_success_suspicious=0.1008
+2026-04-28 03:33:11,438 - => Stage 2 checkpoint score: mean(clean_acc=0.8944, recall=0.9102, correction_rate=0.9963) = 0.9336
+2026-04-28 03:33:11,476 - => End Epoch: 19, early stop epochs: 8, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:33:11,477 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:33:11,509 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:33:11,518 - =>Add Trigger to Train Data
+2026-04-28 03:33:12,191 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:33:12,196 - => Start Training for Injecting Backdoor...
+2026-04-28 03:33:12,277 - Epoch: 20, 1/278: VFL loss: 0.1375, total loss: 0.1330, anchor loss: 0.1285, VFL train accuracy: 0.9375
+2026-04-28 03:33:12,551 - Epoch: 20, 11/278: VFL loss: 0.0954, total loss: 0.0991, anchor loss: 0.1027, VFL train accuracy: 0.9634
+2026-04-28 03:33:12,800 - Epoch: 20, 21/278: VFL loss: 0.0926, total loss: 0.0954, anchor loss: 0.0983, VFL train accuracy: 0.9650
+2026-04-28 03:33:13,069 - Epoch: 20, 31/278: VFL loss: 0.0920, total loss: 0.0948, anchor loss: 0.0976, VFL train accuracy: 0.9653
+2026-04-28 03:33:13,324 - Epoch: 20, 41/278: VFL loss: 0.0899, total loss: 0.0931, anchor loss: 0.0963, VFL train accuracy: 0.9660
+2026-04-28 03:33:13,583 - Epoch: 20, 51/278: VFL loss: 0.0900, total loss: 0.0934, anchor loss: 0.0968, VFL train accuracy: 0.9655
+2026-04-28 03:33:13,828 - Epoch: 20, 61/278: VFL loss: 0.0880, total loss: 0.0922, anchor loss: 0.0963, VFL train accuracy: 0.9668
+2026-04-28 03:33:14,101 - Epoch: 20, 71/278: VFL loss: 0.0894, total loss: 0.0927, anchor loss: 0.0960, VFL train accuracy: 0.9667
+2026-04-28 03:33:14,356 - Epoch: 20, 81/278: VFL loss: 0.0893, total loss: 0.0926, anchor loss: 0.0960, VFL train accuracy: 0.9671
+2026-04-28 03:33:14,615 - Epoch: 20, 91/278: VFL loss: 0.0895, total loss: 0.0927, anchor loss: 0.0959, VFL train accuracy: 0.9671
+2026-04-28 03:33:14,990 - Epoch: 20, 101/278: VFL loss: 0.0899, total loss: 0.0926, anchor loss: 0.0952, VFL train accuracy: 0.9669
+2026-04-28 03:33:15,236 - Epoch: 20, 111/278: VFL loss: 0.0891, total loss: 0.0916, anchor loss: 0.0941, VFL train accuracy: 0.9669
+2026-04-28 03:33:15,491 - Epoch: 20, 121/278: VFL loss: 0.0897, total loss: 0.0920, anchor loss: 0.0943, VFL train accuracy: 0.9666
+2026-04-28 03:33:15,741 - Epoch: 20, 131/278: VFL loss: 0.0901, total loss: 0.0921, anchor loss: 0.0941, VFL train accuracy: 0.9666
+2026-04-28 03:33:15,987 - Epoch: 20, 141/278: VFL loss: 0.0894, total loss: 0.0917, anchor loss: 0.0940, VFL train accuracy: 0.9667
+2026-04-28 03:33:16,249 - Epoch: 20, 151/278: VFL loss: 0.0890, total loss: 0.0913, anchor loss: 0.0937, VFL train accuracy: 0.9668
+2026-04-28 03:33:16,493 - Epoch: 20, 161/278: VFL loss: 0.0892, total loss: 0.0919, anchor loss: 0.0945, VFL train accuracy: 0.9667
+2026-04-28 03:33:16,748 - Epoch: 20, 171/278: VFL loss: 0.0900, total loss: 0.0924, anchor loss: 0.0947, VFL train accuracy: 0.9662
+2026-04-28 03:33:17,003 - Epoch: 20, 181/278: VFL loss: 0.0907, total loss: 0.0927, anchor loss: 0.0946, VFL train accuracy: 0.9659
+2026-04-28 03:33:17,247 - Epoch: 20, 191/278: VFL loss: 0.0914, total loss: 0.0933, anchor loss: 0.0951, VFL train accuracy: 0.9656
+2026-04-28 03:33:17,502 - Epoch: 20, 201/278: VFL loss: 0.0915, total loss: 0.0933, anchor loss: 0.0952, VFL train accuracy: 0.9655
+2026-04-28 03:33:17,753 - Epoch: 20, 211/278: VFL loss: 0.0913, total loss: 0.0932, anchor loss: 0.0950, VFL train accuracy: 0.9656
+2026-04-28 03:33:18,009 - Epoch: 20, 221/278: VFL loss: 0.0916, total loss: 0.0932, anchor loss: 0.0949, VFL train accuracy: 0.9657
+2026-04-28 03:33:18,259 - Epoch: 20, 231/278: VFL loss: 0.0910, total loss: 0.0929, anchor loss: 0.0948, VFL train accuracy: 0.9659
+2026-04-28 03:33:18,503 - Epoch: 20, 241/278: VFL loss: 0.0909, total loss: 0.0928, anchor loss: 0.0948, VFL train accuracy: 0.9659
+2026-04-28 03:33:18,771 - Epoch: 20, 251/278: VFL loss: 0.0913, total loss: 0.0932, anchor loss: 0.0951, VFL train accuracy: 0.9658
+2026-04-28 03:33:19,018 - Epoch: 20, 261/278: VFL loss: 0.0914, total loss: 0.0931, anchor loss: 0.0948, VFL train accuracy: 0.9658
+2026-04-28 03:33:19,271 - Epoch: 20, 271/278: VFL loss: 0.0912, total loss: 0.0930, anchor loss: 0.0947, VFL train accuracy: 0.9660
+2026-04-28 03:33:19,466 - => Recorded Stage 2 client anchor losses for epoch 20 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.13278, 1: 0.151471, 2: 1.4e-05}
+2026-04-28 03:33:19,468 - => Stage 2 EMA anchor update skipped at epoch 20 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:33:19,468 - => Stage 2 Epoch 20 Training Summary: VFL loss: 0.0908, total loss: 0.0926, anchor loss: 0.0944, VFL train accuracy: 0.9660
+2026-04-28 03:33:19,468 - => Test ASR...
+2026-04-28 03:33:19,473 - =>Add Trigger to Test Data
+2026-04-28 03:33:20,189 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:33:23,486 - => Test Epoch: 20, main task samples: 17730, attack samples: 17730, test loss: 0.1108, clean acc: 0.8968, Top-2: 1.0000, ASR: 0.0821, RAC: 0.9237, test target accuracy: 0.9658, stage3 final accuracy: 0.8968, stage3 final target accuracy: 0.9268, stage3 final asr: 0.0821, anchor loss: 0.0948
+2026-04-28 03:33:23,487 - => Stage 3 Detection Summary: recall: 0.9188, precision: 0.7304, f1: 0.8139, false positive rate: 0.1064, correction rate: 0.9914
+2026-04-28 03:33:23,487 - => Stage 3 Debug (clean): suspicious=1886/17730, correction_applied=1837, prediction_changed=1837, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=49
+2026-04-28 03:33:23,488 - => Stage 3 Debug (poison-valid): suspicious=5133/6130, correction_applied=5089, prediction_changed=5089, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=44
+2026-04-28 03:33:23,488 - => Stage 3 Debug (attack-success): suspicious=5127/5580, correction_applied=5083, prediction_changed=5083, corrected_to_true=5083
+2026-04-28 03:33:23,488 - => Stage 3 Effective Support Avg: clean(all)=1.8465, clean_suspicious(false_positive)=0.5573, clean_correction_applied=0.5476, poison_valid(all)=0.4093, poison_valid_suspicious=0.1003, poison_valid_correction_applied=0.0931, attack_success(all)=0.2536, attack_success_suspicious=0.0993
+2026-04-28 03:33:23,489 - => Stage 2 checkpoint score: mean(clean_acc=0.8968, recall=0.9188, correction_rate=0.9914) = 0.9357
+2026-04-28 03:33:23,529 - => End Epoch: 20, early stop epochs: 9, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:33:23,530 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967
+2026-04-28 03:33:23,562 - => LFBA current anchor-derived target label: 0
+2026-04-28 03:33:23,571 - =>Add Trigger to Train Data
+2026-04-28 03:33:24,242 - Add Trigger to 17729 Bad Samples, 53188 Clean Samples (0.25)
+2026-04-28 03:33:24,247 - => Start Training for Injecting Backdoor...
+2026-04-28 03:33:24,309 - Epoch: 21, 1/278: VFL loss: 0.0613, total loss: 0.0617, anchor loss: 0.0621, VFL train accuracy: 0.9805
+2026-04-28 03:33:24,597 - Epoch: 21, 11/278: VFL loss: 0.0891, total loss: 0.0896, anchor loss: 0.0901, VFL train accuracy: 0.9666
+2026-04-28 03:33:24,868 - Epoch: 21, 21/278: VFL loss: 0.0897, total loss: 0.0913, anchor loss: 0.0928, VFL train accuracy: 0.9656
+2026-04-28 03:33:25,142 - Epoch: 21, 31/278: VFL loss: 0.0950, total loss: 0.0949, anchor loss: 0.0948, VFL train accuracy: 0.9637
+2026-04-28 03:33:25,397 - Epoch: 21, 41/278: VFL loss: 0.0928, total loss: 0.0930, anchor loss: 0.0933, VFL train accuracy: 0.9654
+2026-04-28 03:33:25,644 - Epoch: 21, 51/278: VFL loss: 0.0900, total loss: 0.0908, anchor loss: 0.0915, VFL train accuracy: 0.9663
+2026-04-28 03:33:25,936 - Epoch: 21, 61/278: VFL loss: 0.0909, total loss: 0.0918, anchor loss: 0.0926, VFL train accuracy: 0.9659
+2026-04-28 03:33:26,186 - Epoch: 21, 71/278: VFL loss: 0.0927, total loss: 0.0931, anchor loss: 0.0936, VFL train accuracy: 0.9651
+2026-04-28 03:33:26,442 - Epoch: 21, 81/278: VFL loss: 0.0911, total loss: 0.0922, anchor loss: 0.0933, VFL train accuracy: 0.9658
+2026-04-28 03:33:26,691 - Epoch: 21, 91/278: VFL loss: 0.0914, total loss: 0.0926, anchor loss: 0.0937, VFL train accuracy: 0.9657
+2026-04-28 03:33:26,948 - Epoch: 21, 101/278: VFL loss: 0.0905, total loss: 0.0920, anchor loss: 0.0936, VFL train accuracy: 0.9661
+2026-04-28 03:33:27,201 - Epoch: 21, 111/278: VFL loss: 0.0891, total loss: 0.0915, anchor loss: 0.0938, VFL train accuracy: 0.9665
+2026-04-28 03:33:27,455 - Epoch: 21, 121/278: VFL loss: 0.0893, total loss: 0.0917, anchor loss: 0.0941, VFL train accuracy: 0.9661
+2026-04-28 03:33:27,706 - Epoch: 21, 131/278: VFL loss: 0.0893, total loss: 0.0916, anchor loss: 0.0939, VFL train accuracy: 0.9662
+2026-04-28 03:33:27,953 - Epoch: 21, 141/278: VFL loss: 0.0882, total loss: 0.0909, anchor loss: 0.0937, VFL train accuracy: 0.9665
+2026-04-28 03:33:28,210 - Epoch: 21, 151/278: VFL loss: 0.0882, total loss: 0.0908, anchor loss: 0.0933, VFL train accuracy: 0.9667
+2026-04-28 03:33:28,458 - Epoch: 21, 161/278: VFL loss: 0.0880, total loss: 0.0907, anchor loss: 0.0934, VFL train accuracy: 0.9670
+2026-04-28 03:33:28,705 - Epoch: 21, 171/278: VFL loss: 0.0878, total loss: 0.0906, anchor loss: 0.0934, VFL train accuracy: 0.9671
+2026-04-28 03:33:28,961 - Epoch: 21, 181/278: VFL loss: 0.0884, total loss: 0.0912, anchor loss: 0.0939, VFL train accuracy: 0.9668
+2026-04-28 03:33:29,213 - Epoch: 21, 191/278: VFL loss: 0.0884, total loss: 0.0913, anchor loss: 0.0941, VFL train accuracy: 0.9668
+2026-04-28 03:33:29,465 - Epoch: 21, 201/278: VFL loss: 0.0883, total loss: 0.0911, anchor loss: 0.0939, VFL train accuracy: 0.9667
+2026-04-28 03:33:29,716 - Epoch: 21, 211/278: VFL loss: 0.0890, total loss: 0.0915, anchor loss: 0.0940, VFL train accuracy: 0.9664
+2026-04-28 03:33:29,969 - Epoch: 21, 221/278: VFL loss: 0.0888, total loss: 0.0914, anchor loss: 0.0941, VFL train accuracy: 0.9666
+2026-04-28 03:33:30,223 - Epoch: 21, 231/278: VFL loss: 0.0888, total loss: 0.0914, anchor loss: 0.0940, VFL train accuracy: 0.9667
+2026-04-28 03:33:30,473 - Epoch: 21, 241/278: VFL loss: 0.0889, total loss: 0.0914, anchor loss: 0.0939, VFL train accuracy: 0.9669
+2026-04-28 03:33:30,727 - Epoch: 21, 251/278: VFL loss: 0.0885, total loss: 0.0910, anchor loss: 0.0935, VFL train accuracy: 0.9671
+2026-04-28 03:33:30,980 - Epoch: 21, 261/278: VFL loss: 0.0883, total loss: 0.0909, anchor loss: 0.0936, VFL train accuracy: 0.9673
+2026-04-28 03:33:31,224 - Epoch: 21, 271/278: VFL loss: 0.0879, total loss: 0.0906, anchor loss: 0.0934, VFL train accuracy: 0.9674
+2026-04-28 03:33:31,426 - => Recorded Stage 2 client anchor losses for epoch 21 to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/PHISHING/stage2\stage2_final_epoch_client_anchor_losses.json': {0: 0.130458, 1: 0.149889, 2: 8e-06}
+2026-04-28 03:33:31,428 - => Stage 2 EMA anchor update skipped at epoch 21 because momentum=1.0000 disables EMA; eligible classes per client {0: 2, 1: 2, 2: 2}
+2026-04-28 03:33:31,428 - => Stage 2 Epoch 21 Training Summary: VFL loss: 0.0875, total loss: 0.0906, anchor loss: 0.0937, VFL train accuracy: 0.9674
+2026-04-28 03:33:31,429 - => Test ASR...
+2026-04-28 03:33:31,436 - =>Add Trigger to Test Data
+2026-04-28 03:33:32,165 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-28 03:33:35,096 - => Test Epoch: 21, main task samples: 17730, attack samples: 17730, test loss: 0.1059, clean acc: 0.8979, Top-2: 1.0000, ASR: 0.0706, RAC: 0.9230, test target accuracy: 0.9672, stage3 final accuracy: 0.8979, stage3 final target accuracy: 0.9197, stage3 final asr: 0.0706, anchor loss: 0.0937
+2026-04-28 03:33:35,097 - => Stage 3 Detection Summary: recall: 0.9261, precision: 0.7467, f1: 0.8268, false positive rate: 0.0975, correction rate: 0.9975
+2026-04-28 03:33:35,098 - => Stage 3 Debug (clean): suspicious=1729/17730, correction_applied=1714, prediction_changed=1714, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=15
+2026-04-28 03:33:35,098 - => Stage 3 Debug (poison-valid): suspicious=5139/6130, correction_applied=5126, prediction_changed=5126, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=13
+2026-04-28 03:33:35,099 - => Stage 3 Debug (attack-success): suspicious=5128/5537, correction_applied=5115, prediction_changed=5115, corrected_to_true=5115
+2026-04-28 03:33:35,100 - => Stage 3 Effective Support Avg: clean(all)=1.8610, clean_suspicious(false_positive)=0.5749, clean_correction_applied=0.5729, poison_valid(all)=0.3992, poison_valid_suspicious=0.0905, poison_valid_correction_applied=0.0882, attack_success(all)=0.2297, attack_success_suspicious=0.0885
+2026-04-28 03:33:35,101 - => Stage 2 checkpoint score: mean(clean_acc=0.8979, recall=0.9261, correction_rate=0.9975) = 0.9405
+2026-04-28 03:33:35,141 - => End Epoch: 21, early stop epochs: 10, best epoch: 11, best clean acc: 0.8955, best Top-2: 1.0000, best ASR: 0.0587, best RAC: 0.9225, anchor loss: 0.0976, best checkpoint score: 0.9440
+2026-04-28 03:33:35,141 - => Stage 3 Detection Summary: recall: 0.9399, precision: 0.7131, f1: 0.8109, false positive rate: 0.1085, correction rate: 0.9967

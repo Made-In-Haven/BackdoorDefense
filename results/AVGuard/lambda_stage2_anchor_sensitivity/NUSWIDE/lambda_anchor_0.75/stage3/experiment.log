@@ -1,0 +1,30 @@
+2026-04-20 13:07:38,346 - Namespace(config='', data_dir='./dataset/data_raw/', dataset='NUSWIDE', device=0, results_dir='./results/AVGuard/lambda_anchor_sensitivity/NUSWIDE/lambda_anchor_0.75/stage3', seed=100, epoch=100, batch_size=256, client_num=3, pretrained_checkpoint=None, test_checkpoint='./results/AVGuard/lambda_anchor_sensitivity/NUSWIDE/lambda_anchor_0.75/stage2/best_checkpoint.pth.tar', resume_latest=False, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.1, poison_dimensions=10, trigger_feature_clip=1.0, attack_client_num=2, feature_extractor='', select_rate=0.3, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=33930, pretrain_stage=0, mode='test', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=False, enable_anchor_loss=True, lambda_anchor=0.75, lambda_stage1_anchor=0.3, anchor_pretrain_epochs=5, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=1.0, anchor_margin=0.0, anchor_bank_path='./results/AVGuard/lambda_anchor_sensitivity/NUSWIDE/stage1/anchor_bank.pt', anchor_stage1_dir='./results/AVGuard/lambda_anchor_sensitivity/NUSWIDE/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, gamma=2.0, theta_supp=0.15, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='NUSWIDE', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0.0)
+2026-04-20 13:07:38,348 - => Defense scheme: AVGuard
+2026-04-20 13:07:38,349 - => LFBA poison-set source: gradient
+2026-04-20 13:07:38,349 - => Python executable: D:\python3\generative-compression-master1\KAVF\python.exe
+2026-04-20 13:07:38,350 - => Torch version: 2.7.1+cu126, compiled CUDA: 12.6, cuda available: True, visible GPU count: 1
+2026-04-20 13:07:38,350 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4080)
+2026-04-20 13:07:38,350 - => Preparing data...
+2026-04-20 13:08:27,175 - => NUSWIDE total feature dim: 1634, client_num: 3, local output dims: [60, 24, 16]
+2026-04-20 13:08:27,176 - => NUSWIDE fixed feature order: [CH | CM55 | CORR | EDH | WT | Tags1k]
+2026-04-20 13:08:27,176 - => NUSWIDE split: client0 = TEXT[1000]
+2026-04-20 13:08:27,176 - => NUSWIDE split: client1 = CH + CM55 + EDH [362]
+2026-04-20 13:08:27,176 - => NUSWIDE split: client2 = CORR + WT [272]
+2026-04-20 13:08:27,177 - => NUSWIDE attacker client: client2
+2026-04-20 13:08:27,401 - => Resolved LFBA attack target label=3 from training anchor_idx=33930
+2026-04-20 13:08:27,611 - => Loading checkpoint './results/AVGuard/lambda_anchor_sensitivity/NUSWIDE/lambda_anchor_0.75/stage2/best_checkpoint.pth.tar'
+2026-04-20 13:08:27,688 - => checkpoint './results/AVGuard/lambda_anchor_sensitivity/NUSWIDE/lambda_anchor_0.75/stage2/best_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-20 13:08:27,740 - => Loaded checkpoint './results/AVGuard/lambda_anchor_sensitivity/NUSWIDE/lambda_anchor_0.75/stage2/best_checkpoint.pth.tar' (epoch 1, best clean accuracy: 0.7843)
+2026-04-20 13:08:27,741 - => Loading anchor defense state from checkpoint
+2026-04-20 13:08:27,825 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-20 13:08:27,930 - =>Add Trigger to Test Data
+2026-04-20 13:08:32,037 - Add Trigger to 37064 Bad Samples, 9629 Clean Samples (1.00)
+2026-04-20 13:08:32,044 - => Restored LFBA runtime state: cached_features=69966, poison_indexes=0, anchor_label=None
+2026-04-20 13:08:32,045 - => Test ASR...
+2026-04-20 13:08:32,271 - =>Add Trigger to Test Data
+2026-04-20 13:08:36,400 - Add Trigger to 37064 Bad Samples, 9629 Clean Samples (1.00)
+2026-04-20 13:08:50,964 - => Test Epoch: 1, main task samples: 46693, attack samples: 46693, test loss: 0.3428, clean acc: 0.7843, Top-4: 0.9965, ASR: 0.1709, RAC: 0.7218, test target accuracy: 0.8972, stage3 final accuracy: 0.7843, stage3 final target accuracy: 0.7376, stage3 final asr: 0.1709, anchor loss: 0.5265
+2026-04-20 13:08:50,966 - => Stage 3 Detection Summary: recall: 0.8159, precision: 0.5582, f1: 0.6629, false positive rate: 0.1796, correction rate: 0.6217
+2026-04-20 13:08:50,966 - => Stage 3 Debug (clean): suspicious=8387/46693, correction_applied=8384, prediction_changed=8384, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=3
+2026-04-20 13:08:50,966 - => Stage 3 Debug (poison-valid): suspicious=18225/37064, correction_applied=18225, prediction_changed=18225, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=0
+2026-04-20 13:08:50,967 - => Stage 3 Debug (attack-success): suspicious=14855/18208, correction_applied=14855, prediction_changed=14855, corrected_to_true=11320

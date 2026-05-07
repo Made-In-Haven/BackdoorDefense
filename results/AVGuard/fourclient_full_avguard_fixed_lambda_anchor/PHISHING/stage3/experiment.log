@@ -1,0 +1,26 @@
+2026-04-21 10:13:13,518 - Namespace(config='', data_dir='./dataset/data_raw/', dataset='PHISHING', device=0, results_dir='./results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/PHISHING/stage3', seed=100, epoch=100, batch_size=256, client_num=4, pretrained_checkpoint=None, test_checkpoint='./results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/PHISHING/stage2/best_checkpoint.pth.tar', resume_latest=False, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.25, poison_dimensions=20, trigger_feature_clip=1.0, attack_client_num=3, feature_extractor='', select_rate=0.3, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=1000, pretrain_stage=0, mode='test', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=False, enable_anchor_loss=True, lambda_anchor=0.5, lambda_stage1_anchor=0.7, anchor_pretrain_epochs=5, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=1.0, anchor_margin=0.0, anchor_bank_path='./results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/PHISHING/stage1/anchor_artifact.pt', anchor_stage1_dir='./results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/PHISHING/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, gamma=2.0, theta_supp=0.15, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='PHISHING', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0.0)
+2026-04-21 10:13:13,520 - => Defense scheme: AVGuard
+2026-04-21 10:13:13,521 - => LFBA poison-set source: gradient
+2026-04-21 10:13:13,521 - => Python executable: D:\python3\generative-compression-master1\KAVF\python.exe
+2026-04-21 10:13:13,521 - => Torch version: 2.7.1+cu126, compiled CUDA: 12.6, cuda available: True, visible GPU count: 1
+2026-04-21 10:13:13,522 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4080)
+2026-04-21 10:13:13,522 - => Preparing data...
+2026-04-21 10:13:15,481 - => PHISHING file: ./dataset/data_raw/Phishing\PHISHING_full.csv
+2026-04-21 10:13:15,482 - => PHISHING feature dim: 111, train samples: 70917, test samples: 17730
+2026-04-21 10:13:15,487 - => Resolved LFBA attack target label=0 from training anchor_idx=1000
+2026-04-21 10:13:15,577 - => Loading checkpoint './results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/PHISHING/stage2/best_checkpoint.pth.tar'
+2026-04-21 10:13:15,649 - => checkpoint './results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/PHISHING/stage2/best_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-21 10:13:15,693 - => Loaded checkpoint './results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/PHISHING/stage2/best_checkpoint.pth.tar' (epoch 20, best clean accuracy: 0.9133)
+2026-04-21 10:13:15,693 - => Loading anchor defense state from checkpoint
+2026-04-21 10:13:15,772 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-21 10:13:15,775 - =>Add Trigger to Test Data
+2026-04-21 10:13:16,425 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-21 10:13:16,428 - => Restored LFBA runtime state: cached_features=70917, poison_indexes=17729, anchor_label=0
+2026-04-21 10:13:16,429 - => Test ASR...
+2026-04-21 10:13:16,436 - =>Add Trigger to Test Data
+2026-04-21 10:13:17,053 - Add Trigger to 6130 Bad Samples, 11600 Clean Samples (1.00)
+2026-04-21 10:13:20,345 - => Test Epoch: 20, main task samples: 17730, attack samples: 17730, test loss: 0.1199, clean acc: 0.9109, Top-2: 1.0000, ASR: 0.1007, RAC: 0.9138, test target accuracy: 0.9523, stage3 final accuracy: 0.9109, stage3 final target accuracy: 0.9215, stage3 final asr: 0.1007, anchor loss: 0.1890
+2026-04-21 10:13:20,346 - => Stage 3 Detection Summary: recall: 0.8894, precision: 0.7455, f1: 0.8111, false positive rate: 0.0902, correction rate: 0.8894
+2026-04-21 10:13:20,346 - => Stage 3 Debug (clean): suspicious=1600/17730, correction_applied=1598, prediction_changed=1598, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=2
+2026-04-21 10:13:20,346 - => Stage 3 Debug (poison-valid): suspicious=4784/6130, correction_applied=4784, prediction_changed=4784, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=0
+2026-04-21 10:13:20,347 - => Stage 3 Debug (attack-success): suspicious=4759/5351, correction_applied=4759, prediction_changed=4759, corrected_to_true=4759

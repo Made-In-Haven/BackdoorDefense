@@ -1,0 +1,27 @@
+2026-04-20 18:47:11,016 - Namespace(config='', data_dir='./dataset/', dataset='IEEE_CIS_FRAUD', device=0, results_dir='./results/AVGuard/lambda_anchor_sensitivity/IEEE_CIS_FRAUD/lambda_anchor_0.25/stage3', seed=100, epoch=100, batch_size=256, client_num=3, pretrained_checkpoint=None, test_checkpoint='./results/AVGuard/lambda_anchor_sensitivity/IEEE_CIS_FRAUD/lambda_anchor_0.25/stage2/best_checkpoint.pth.tar', resume_latest=False, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.25, poison_dimensions=30, trigger_feature_clip=1.0, attack_client_num=2, feature_extractor='', select_rate=0.3, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=1001, pretrain_stage=0, mode='test', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=False, enable_anchor_loss=True, lambda_anchor=0.25, lambda_stage1_anchor=0.5, anchor_pretrain_epochs=5, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=1.0, anchor_margin=0.0, anchor_bank_path='./results/AVGuard/lambda_anchor_sensitivity/IEEE_CIS_FRAUD/stage1/anchor_artifact.pt', anchor_stage1_dir='./results/AVGuard/lambda_anchor_sensitivity/IEEE_CIS_FRAUD/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, gamma=2.0, theta_supp=0.15, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='IEEE-CIS-FRAUD', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0.0)
+2026-04-20 18:47:11,019 - => Canonicalized dataset name from 'IEEE-CIS-FRAUD' to 'IEEE_CIS_FRAUD'; legacy NUS-WIDE aliases now share the unified NUSWIDE entry
+2026-04-20 18:47:11,019 - => Defense scheme: AVGuard
+2026-04-20 18:47:11,019 - => LFBA poison-set source: gradient
+2026-04-20 18:47:11,020 - => Python executable: D:\python3\generative-compression-master1\KAVF\python.exe
+2026-04-20 18:47:11,020 - => Torch version: 2.7.1+cu126, compiled CUDA: 12.6, cuda available: True, visible GPU count: 1
+2026-04-20 18:47:11,020 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4080)
+2026-04-20 18:47:11,021 - => Preparing data...
+2026-04-20 18:47:12,062 - => IEEE-CIS-Fraud directory: ./dataset/data_raw\processed\IEEE-CIS-Fraud
+2026-04-20 18:47:12,062 - => IEEE-CIS-Fraud feature dim: 432, train samples: 49591, test samples: 12398
+2026-04-20 18:47:12,074 - => Resolved LFBA attack target label=1 from training anchor_idx=1001
+2026-04-20 18:47:12,165 - => Loading checkpoint './results/AVGuard/lambda_anchor_sensitivity/IEEE_CIS_FRAUD/lambda_anchor_0.25/stage2/best_checkpoint.pth.tar'
+2026-04-20 18:47:12,241 - => checkpoint './results/AVGuard/lambda_anchor_sensitivity/IEEE_CIS_FRAUD/lambda_anchor_0.25/stage2/best_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-20 18:47:12,289 - => Loaded checkpoint './results/AVGuard/lambda_anchor_sensitivity/IEEE_CIS_FRAUD/lambda_anchor_0.25/stage2/best_checkpoint.pth.tar' (epoch 5, best clean accuracy: 0.8284)
+2026-04-20 18:47:12,289 - => Loading anchor defense state from checkpoint
+2026-04-20 18:47:12,382 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-20 18:47:12,390 - =>Add Trigger to Test Data
+2026-04-20 18:47:13,271 - Add Trigger to 8265 Bad Samples, 4133 Clean Samples (1.00)
+2026-04-20 18:47:13,277 - => Restored LFBA runtime state: cached_features=49591, poison_indexes=12397, anchor_label=1
+2026-04-20 18:47:13,277 - => Test ASR...
+2026-04-20 18:47:13,293 - =>Add Trigger to Test Data
+2026-04-20 18:47:14,161 - Add Trigger to 8265 Bad Samples, 4133 Clean Samples (1.00)
+2026-04-20 18:47:16,507 - => Test Epoch: 5, main task samples: 12398, attack samples: 12398, test loss: 0.3559, clean acc: 0.8284, Top-2: 1.0000, ASR: 0.0959, RAC: 0.7891, test target accuracy: 0.6446, stage3 final accuracy: 0.8284, stage3 final target accuracy: 0.5592, stage3 final asr: 0.0959, anchor loss: 0.2415
+2026-04-20 18:47:16,508 - => Stage 3 Detection Summary: recall: 0.9037, precision: 0.8847, f1: 0.8941, false positive rate: 0.0782, correction rate: 0.9037
+2026-04-20 18:47:16,509 - => Stage 3 Debug (clean): suspicious=970/12398, correction_applied=969, prediction_changed=969, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=1
+2026-04-20 18:47:16,509 - => Stage 3 Debug (poison-valid): suspicious=7444/8265, correction_applied=7444, prediction_changed=7444, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=0
+2026-04-20 18:47:16,509 - => Stage 3 Debug (attack-success): suspicious=7444/8237, correction_applied=7444, prediction_changed=7444, corrected_to_true=7444

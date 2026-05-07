@@ -1,0 +1,90 @@
+2026-04-28 19:20:08,908 - Namespace(config='', data_dir='./dataset/data_raw/', dataset='NUSWIDE', device=0, results_dir='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1', seed=100, epoch=100, batch_size=256, client_num=3, pretrained_checkpoint='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1\\latest_checkpoint.pth.tar', test_checkpoint=None, resume_latest=True, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.1, poison_dimensions=10, trigger_feature_clip=1.0, attack_client_num=2, feature_extractor='', select_rate=0.3, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=33930, pretrain_stage=0, mode='pretrain_anchor', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=True, enable_anchor_loss=True, lambda_anchor=0.5, lambda_stage1_anchor=0.3, anchor_pretrain_epochs=20, anchor_pretrain_early_stop=10, anchor_pretrain_min_delta=0.0001, anchor_scale=1, anchor_margin=0, anchor_bank_path='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1/anchor_bank.pt', anchor_stage1_dir='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, disable_stage3_eval=False, gamma=2.0, theta_supp=0.15, stage3_required_support_count=2, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='NUSWIDE', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0)
+2026-04-28 19:20:08,910 - => Defense scheme: AVGuard
+2026-04-28 19:20:08,911 - => LFBA poison-set source: gradient
+2026-04-28 19:20:08,912 - => Python executable: D:\python3\generative-compression-master1\KAVF\python.exe
+2026-04-28 19:20:08,912 - => Torch version: 2.7.1+cu126, compiled CUDA: 12.6, cuda available: True, visible GPU count: 1
+2026-04-28 19:20:08,912 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4080)
+2026-04-28 19:20:08,913 - => Preparing data...
+2026-04-28 19:21:01,681 - => NUSWIDE total feature dim: 1634, client_num: 3, local output dims: [60, 24, 16]
+2026-04-28 19:21:01,682 - => NUSWIDE fixed feature order: [CH | CM55 | CORR | EDH | WT | Tags1k]
+2026-04-28 19:21:01,682 - => NUSWIDE split: client0 = TEXT[1000]
+2026-04-28 19:21:01,682 - => NUSWIDE split: client1 = CH + CM55 + EDH [362]
+2026-04-28 19:21:01,683 - => NUSWIDE split: client2 = CORR + WT [272]
+2026-04-28 19:21:01,683 - => NUSWIDE attacker client: client2
+2026-04-28 19:21:01,920 - => Resolved LFBA attack target label=3 from training anchor_idx=33930
+2026-04-28 19:21:02,171 - => No checkpoint found at './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1\latest_checkpoint.pth.tar'
+2026-04-28 19:21:02,172 - => Enter Stage 1: passive local backbones are trained with active-party private two-layer MLP heads
+2026-04-28 19:21:02,172 - => Stage 1 latest checkpoint path: './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1\latest_checkpoint.pth.tar'
+2026-04-28 19:21:03,023 - =>Add Trigger to Train Data
+2026-04-28 19:21:03,436 - Add Trigger to 6996 Bad Samples, 62970 Clean Samples (0.10)
+2026-04-28 19:21:03,537 - =>Add Trigger to Test Data
+2026-04-28 19:21:05,471 - Add Trigger to 46693 Bad Samples, 0 Clean Samples (1.00)
+2026-04-28 19:21:05,562 - => Stage 1 start for passive client 0
+2026-04-28 19:21:05,563 - => Stage 1 early stop for passive client 0: patience=10, min_delta=0.000100
+2026-04-28 19:21:13,574 - => Stage 1 client 0 epoch 1/20, ce loss: 1.1635, train anchor loss: 0.5805, total loss: 1.3376, clean acc: 0.8235, eval anchor loss: 0.3982, backdoor acc: 0.0000
+2026-04-28 19:21:20,936 - => Stage 1 client 0 epoch 2/20, ce loss: 1.0111, train anchor loss: 0.3872, total loss: 1.1273, clean acc: 0.8264, eval anchor loss: 0.4064, backdoor acc: 0.0000
+2026-04-28 19:21:28,856 - => Stage 1 client 0 epoch 3/20, ce loss: 0.9894, train anchor loss: 0.3656, total loss: 1.0991, clean acc: 0.8270, eval anchor loss: 0.4154, backdoor acc: 0.0000
+2026-04-28 19:21:36,587 - => Stage 1 client 0 epoch 4/20, ce loss: 0.9773, train anchor loss: 0.3479, total loss: 1.0816, clean acc: 0.8300, eval anchor loss: 0.4152, backdoor acc: 0.0000
+2026-04-28 19:21:44,429 - => Stage 1 client 0 epoch 5/20, ce loss: 0.9673, train anchor loss: 0.3326, total loss: 1.0670, clean acc: 0.8256, eval anchor loss: 0.4305, backdoor acc: 0.0000
+2026-04-28 19:21:52,210 - => Stage 1 client 0 epoch 6/20, ce loss: 0.9589, train anchor loss: 0.3186, total loss: 1.0545, clean acc: 0.8282, eval anchor loss: 0.4298, backdoor acc: 0.0000
+2026-04-28 19:22:00,207 - => Stage 1 client 0 epoch 7/20, ce loss: 0.9536, train anchor loss: 0.3109, total loss: 1.0469, clean acc: 0.8267, eval anchor loss: 0.4298, backdoor acc: 0.0000
+2026-04-28 19:22:07,974 - => Stage 1 client 0 epoch 8/20, ce loss: 0.9491, train anchor loss: 0.3024, total loss: 1.0398, clean acc: 0.8263, eval anchor loss: 0.4348, backdoor acc: 0.0000
+2026-04-28 19:22:15,757 - => Stage 1 client 0 epoch 9/20, ce loss: 0.9457, train anchor loss: 0.2964, total loss: 1.0346, clean acc: 0.8256, eval anchor loss: 0.4384, backdoor acc: 0.0000
+2026-04-28 19:22:23,598 - => Stage 1 client 0 epoch 10/20, ce loss: 0.9430, train anchor loss: 0.2934, total loss: 1.0310, clean acc: 0.8278, eval anchor loss: 0.4271, backdoor acc: 0.0000
+2026-04-28 19:22:31,300 - => Stage 1 client 0 epoch 11/20, ce loss: 0.9407, train anchor loss: 0.2877, total loss: 1.0270, clean acc: 0.8261, eval anchor loss: 0.4427, backdoor acc: 0.0000
+2026-04-28 19:22:39,109 - => Stage 1 client 0 epoch 12/20, ce loss: 0.9415, train anchor loss: 0.2897, total loss: 1.0284, clean acc: 0.8254, eval anchor loss: 0.4414, backdoor acc: 0.0000
+2026-04-28 19:22:46,885 - => Stage 1 client 0 epoch 13/20, ce loss: 0.9392, train anchor loss: 0.2856, total loss: 1.0249, clean acc: 0.8269, eval anchor loss: 0.4373, backdoor acc: 0.0000
+2026-04-28 19:22:54,499 - => Stage 1 client 0 epoch 14/20, ce loss: 0.9368, train anchor loss: 0.2820, total loss: 1.0214, clean acc: 0.8263, eval anchor loss: 0.4384, backdoor acc: 0.0000
+2026-04-28 19:22:54,531 - => Stage 1 early stop triggered for passive client 0 at epoch 14/20; best clean acc: 0.8300 at epoch 4
+2026-04-28 19:22:54,547 - => Stage 1 final summary for passive client 0: best epoch: 4, clean acc: 0.8300, anchor loss: 0.4152, backdoor acc: 0.0000
+2026-04-28 19:22:54,549 - => Stage 1 start for passive client 1
+2026-04-28 19:22:54,549 - => Stage 1 early stop for passive client 1: patience=10, min_delta=0.000100
+2026-04-28 19:23:02,250 - => Stage 1 client 1 epoch 1/20, ce loss: 1.2811, train anchor loss: 0.7717, total loss: 1.5126, clean acc: 0.6792, eval anchor loss: 0.5009, backdoor acc: 0.0000
+2026-04-28 19:23:09,882 - => Stage 1 client 1 epoch 2/20, ce loss: 1.1822, train anchor loss: 0.4923, total loss: 1.3299, clean acc: 0.6939, eval anchor loss: 0.5174, backdoor acc: 0.0000
+2026-04-28 19:23:17,360 - => Stage 1 client 1 epoch 3/20, ce loss: 1.1485, train anchor loss: 0.4947, total loss: 1.2969, clean acc: 0.7024, eval anchor loss: 0.5358, backdoor acc: 0.0000
+2026-04-28 19:23:24,874 - => Stage 1 client 1 epoch 4/20, ce loss: 1.1233, train anchor loss: 0.4998, total loss: 1.2732, clean acc: 0.7073, eval anchor loss: 0.5535, backdoor acc: 0.0000
+2026-04-28 19:23:32,477 - => Stage 1 client 1 epoch 5/20, ce loss: 1.1068, train anchor loss: 0.4967, total loss: 1.2558, clean acc: 0.7095, eval anchor loss: 0.5671, backdoor acc: 0.0000
+2026-04-28 19:23:39,810 - => Stage 1 client 1 epoch 6/20, ce loss: 1.0923, train anchor loss: 0.4890, total loss: 1.2390, clean acc: 0.7046, eval anchor loss: 0.5866, backdoor acc: 0.0000
+2026-04-28 19:23:47,411 - => Stage 1 client 1 epoch 7/20, ce loss: 1.0809, train anchor loss: 0.4787, total loss: 1.2245, clean acc: 0.7085, eval anchor loss: 0.5877, backdoor acc: 0.0000
+2026-04-28 19:23:54,899 - => Stage 1 client 1 epoch 8/20, ce loss: 1.0710, train anchor loss: 0.4705, total loss: 1.2122, clean acc: 0.7088, eval anchor loss: 0.5924, backdoor acc: 0.0000
+2026-04-28 19:24:02,541 - => Stage 1 client 1 epoch 9/20, ce loss: 1.0618, train anchor loss: 0.4625, total loss: 1.2006, clean acc: 0.7097, eval anchor loss: 0.6047, backdoor acc: 0.0000
+2026-04-28 19:24:10,077 - => Stage 1 client 1 epoch 10/20, ce loss: 1.0545, train anchor loss: 0.4543, total loss: 1.1908, clean acc: 0.7106, eval anchor loss: 0.6128, backdoor acc: 0.0000
+2026-04-28 19:24:17,685 - => Stage 1 client 1 epoch 11/20, ce loss: 1.0470, train anchor loss: 0.4463, total loss: 1.1809, clean acc: 0.7072, eval anchor loss: 0.6215, backdoor acc: 0.0000
+2026-04-28 19:24:25,315 - => Stage 1 client 1 epoch 12/20, ce loss: 1.0418, train anchor loss: 0.4394, total loss: 1.1736, clean acc: 0.7091, eval anchor loss: 0.6182, backdoor acc: 0.0000
+2026-04-28 19:24:32,822 - => Stage 1 client 1 epoch 13/20, ce loss: 1.0328, train anchor loss: 0.4276, total loss: 1.1611, clean acc: 0.7088, eval anchor loss: 0.6246, backdoor acc: 0.0000
+2026-04-28 19:24:40,507 - => Stage 1 client 1 epoch 14/20, ce loss: 1.0280, train anchor loss: 0.4204, total loss: 1.1541, clean acc: 0.7033, eval anchor loss: 0.6460, backdoor acc: 0.0000
+2026-04-28 19:24:47,954 - => Stage 1 client 1 epoch 15/20, ce loss: 1.0238, train anchor loss: 0.4165, total loss: 1.1487, clean acc: 0.7052, eval anchor loss: 0.6466, backdoor acc: 0.0000
+2026-04-28 19:24:55,573 - => Stage 1 client 1 epoch 16/20, ce loss: 1.0200, train anchor loss: 0.4104, total loss: 1.1431, clean acc: 0.7074, eval anchor loss: 0.6419, backdoor acc: 0.0000
+2026-04-28 19:25:03,196 - => Stage 1 client 1 epoch 17/20, ce loss: 1.0157, train anchor loss: 0.4042, total loss: 1.1370, clean acc: 0.7055, eval anchor loss: 0.6468, backdoor acc: 0.0000
+2026-04-28 19:25:10,817 - => Stage 1 client 1 epoch 18/20, ce loss: 1.0142, train anchor loss: 0.4022, total loss: 1.1349, clean acc: 0.7066, eval anchor loss: 0.6504, backdoor acc: 0.0000
+2026-04-28 19:25:18,058 - => Stage 1 client 1 epoch 19/20, ce loss: 1.0070, train anchor loss: 0.3927, total loss: 1.1248, clean acc: 0.7057, eval anchor loss: 0.6495, backdoor acc: 0.0000
+2026-04-28 19:25:25,644 - => Stage 1 client 1 epoch 20/20, ce loss: 1.0061, train anchor loss: 0.3894, total loss: 1.1229, clean acc: 0.7056, eval anchor loss: 0.6531, backdoor acc: 0.0000
+2026-04-28 19:25:25,668 - => Stage 1 early stop triggered for passive client 1 at epoch 20/20; best clean acc: 0.7106 at epoch 10
+2026-04-28 19:25:25,686 - => Stage 1 final summary for passive client 1: best epoch: 10, clean acc: 0.7106, anchor loss: 0.6128, backdoor acc: 0.0000
+2026-04-28 19:25:25,688 - => Stage 1 start for passive client 2
+2026-04-28 19:25:25,688 - => Stage 1 early stop for passive client 2: patience=10, min_delta=0.000100
+2026-04-28 19:25:35,177 - => Stage 1 client 2 epoch 1/20, ce loss: 1.2406, train anchor loss: 0.7746, total loss: 1.4730, clean acc: 0.6581, eval anchor loss: 0.5763, backdoor acc: 0.9996
+2026-04-28 19:25:44,636 - => Stage 1 client 2 epoch 2/20, ce loss: 1.1597, train anchor loss: 0.4877, total loss: 1.3060, clean acc: 0.6834, eval anchor loss: 0.5557, backdoor acc: 0.9992
+2026-04-28 19:25:53,932 - => Stage 1 client 2 epoch 3/20, ce loss: 1.1325, train anchor loss: 0.4903, total loss: 1.2796, clean acc: 0.6879, eval anchor loss: 0.5752, backdoor acc: 0.9991
+2026-04-28 19:26:03,483 - => Stage 1 client 2 epoch 4/20, ce loss: 1.1115, train anchor loss: 0.4990, total loss: 1.2612, clean acc: 0.6960, eval anchor loss: 0.5922, backdoor acc: 0.9988
+2026-04-28 19:26:12,933 - => Stage 1 client 2 epoch 5/20, ce loss: 1.0975, train anchor loss: 0.5014, total loss: 1.2479, clean acc: 0.7011, eval anchor loss: 0.5859, backdoor acc: 0.9992
+2026-04-28 19:26:22,319 - => Stage 1 client 2 epoch 6/20, ce loss: 1.0896, train anchor loss: 0.4950, total loss: 1.2381, clean acc: 0.7022, eval anchor loss: 0.5929, backdoor acc: 0.9982
+2026-04-28 19:26:31,676 - => Stage 1 client 2 epoch 7/20, ce loss: 1.0827, train anchor loss: 0.4906, total loss: 1.2299, clean acc: 0.7093, eval anchor loss: 0.5896, backdoor acc: 0.9991
+2026-04-28 19:26:41,025 - => Stage 1 client 2 epoch 8/20, ce loss: 1.0772, train anchor loss: 0.4860, total loss: 1.2230, clean acc: 0.7038, eval anchor loss: 0.6027, backdoor acc: 0.9984
+2026-04-28 19:26:50,461 - => Stage 1 client 2 epoch 9/20, ce loss: 1.0737, train anchor loss: 0.4830, total loss: 1.2186, clean acc: 0.7098, eval anchor loss: 0.5905, backdoor acc: 0.9992
+2026-04-28 19:26:59,945 - => Stage 1 client 2 epoch 10/20, ce loss: 1.0699, train anchor loss: 0.4763, total loss: 1.2128, clean acc: 0.7105, eval anchor loss: 0.5952, backdoor acc: 0.9991
+2026-04-28 19:27:09,332 - => Stage 1 client 2 epoch 11/20, ce loss: 1.0659, train anchor loss: 0.4742, total loss: 1.2081, clean acc: 0.7137, eval anchor loss: 0.5893, backdoor acc: 0.9990
+2026-04-28 19:27:18,763 - => Stage 1 client 2 epoch 12/20, ce loss: 1.0631, train anchor loss: 0.4701, total loss: 1.2041, clean acc: 0.7123, eval anchor loss: 0.5972, backdoor acc: 0.9992
+2026-04-28 19:27:28,007 - => Stage 1 client 2 epoch 13/20, ce loss: 1.0588, train anchor loss: 0.4660, total loss: 1.1986, clean acc: 0.7110, eval anchor loss: 0.5986, backdoor acc: 0.9994
+2026-04-28 19:27:37,109 - => Stage 1 client 2 epoch 14/20, ce loss: 1.0553, train anchor loss: 0.4613, total loss: 1.1936, clean acc: 0.7096, eval anchor loss: 0.6029, backdoor acc: 0.9993
+2026-04-28 19:27:46,465 - => Stage 1 client 2 epoch 15/20, ce loss: 1.0539, train anchor loss: 0.4582, total loss: 1.1913, clean acc: 0.7147, eval anchor loss: 0.6035, backdoor acc: 0.9995
+2026-04-28 19:27:55,795 - => Stage 1 client 2 epoch 16/20, ce loss: 1.0540, train anchor loss: 0.4616, total loss: 1.1925, clean acc: 0.7108, eval anchor loss: 0.6076, backdoor acc: 0.9983
+2026-04-28 19:28:05,262 - => Stage 1 client 2 epoch 17/20, ce loss: 1.0487, train anchor loss: 0.4527, total loss: 1.1846, clean acc: 0.7130, eval anchor loss: 0.6061, backdoor acc: 0.9989
+2026-04-28 19:28:14,662 - => Stage 1 client 2 epoch 18/20, ce loss: 1.0459, train anchor loss: 0.4488, total loss: 1.1805, clean acc: 0.7155, eval anchor loss: 0.6051, backdoor acc: 0.9985
+2026-04-28 19:28:23,943 - => Stage 1 client 2 epoch 19/20, ce loss: 1.0443, train anchor loss: 0.4478, total loss: 1.1786, clean acc: 0.7137, eval anchor loss: 0.6054, backdoor acc: 0.9986
+2026-04-28 19:28:33,311 - => Stage 1 client 2 epoch 20/20, ce loss: 1.0435, train anchor loss: 0.4447, total loss: 1.1769, clean acc: 0.7153, eval anchor loss: 0.6060, backdoor acc: 0.9987
+2026-04-28 19:28:33,349 - => Stage 1 final summary for passive client 2: best epoch: 18, clean acc: 0.7155, anchor loss: 0.6051, backdoor acc: 0.9985
+2026-04-28 19:28:33,378 - => Stage 1 metrics were also saved to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1/anchor_stage1\stage1_metrics.json'
+2026-04-28 19:28:33,379 - => Saved stage1 passive-party local models and anchors to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1/anchor_stage1'
+2026-04-28 19:28:33,387 - => Saved anchor artifact to './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.20/NUSWIDE/stage1/anchor_bank.pt'
+2026-04-28 19:28:33,388 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.

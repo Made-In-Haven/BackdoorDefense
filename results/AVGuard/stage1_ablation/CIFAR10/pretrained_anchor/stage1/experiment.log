@@ -1,0 +1,49 @@
+2026-04-17 10:32:12,707 - Namespace(config='', data_dir='./dataset/data_raw/', dataset='CIFAR10', device=0, results_dir='./results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1', seed=100, epoch=100, batch_size=256, client_num=3, pretrained_checkpoint='./results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1\\latest_checkpoint.pth.tar', test_checkpoint=None, resume_latest=True, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.1, poison_dimensions=5, trigger_feature_clip=1.0, attack_client_num=2, feature_extractor='', select_rate=0.5, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=23470, pretrain_stage=0, mode='pretrain_anchor', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=True, enable_anchor_loss=True, lambda_anchor=0.1, lambda_stage1_anchor=0.5, anchor_pretrain_epochs=50, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=1.0, anchor_margin=0.0, anchor_bank_path='./results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1/anchor_bank.pt', anchor_stage1_dir='./results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, gamma=2.0, theta_supp=0.15, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='CIFAR10', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0.0)
+2026-04-17 10:32:12,709 - => Defense scheme: AVGuard
+2026-04-17 10:32:12,710 - => LFBA poison-set source: gradient
+2026-04-17 10:32:12,710 - => Python executable: D:\python3\generative-compression-master1\KAVF\python.exe
+2026-04-17 10:32:12,710 - => Torch version: 2.7.1+cu126, compiled CUDA: 12.6, cuda available: True, visible GPU count: 1
+2026-04-17 10:32:12,711 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4080)
+2026-04-17 10:32:12,711 - => Preparing data...
+2026-04-17 10:32:15,420 - => Resolved LFBA attack target label=6 from training anchor_idx=23470
+2026-04-17 10:32:16,910 - => No checkpoint found at './results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1\latest_checkpoint.pth.tar'
+2026-04-17 10:32:16,910 - => Enter Stage 1: passive local backbones are trained with active-party private two-layer MLP heads
+2026-04-17 10:32:16,910 - => Stage 1 latest checkpoint path: './results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1\latest_checkpoint.pth.tar'
+2026-04-17 10:32:17,218 - =>Add Trigger to Train Data
+2026-04-17 10:32:17,260 - Add Trigger to 5000 Poison Samples, 45000 Clean Samples (0.10)
+2026-04-17 10:32:17,283 - =>Add Trigger to Test Data
+2026-04-17 10:32:17,361 - Add Trigger to 10000 Poison Samples, 0 Clean Samples (1.00)
+2026-04-17 10:32:17,385 - => Stage 1 start for passive client 0
+2026-04-17 10:32:17,386 - => Stage 1 early stop for passive client 0: patience=5, min_delta=0.000100
+2026-04-17 10:33:18,277 - => Stage 1 client 0 epoch 1/50, ce loss: 2.1502, train anchor loss: 0.4914, total loss: 2.3959, clean acc: 0.2802, eval anchor loss: 0.2138, backdoor acc: 0.0000
+2026-04-17 10:34:18,034 - => Stage 1 client 0 epoch 2/50, ce loss: 2.1079, train anchor loss: 0.2143, total loss: 2.2150, clean acc: 0.2214, eval anchor loss: 0.2087, backdoor acc: 0.0000
+2026-04-17 10:35:17,225 - => Stage 1 client 0 epoch 3/50, ce loss: 2.0852, train anchor loss: 0.2166, total loss: 2.1935, clean acc: 0.1953, eval anchor loss: 0.1863, backdoor acc: 0.0000
+2026-04-17 10:36:16,925 - => Stage 1 client 0 epoch 4/50, ce loss: 2.0758, train anchor loss: 0.2135, total loss: 2.1825, clean acc: 0.1939, eval anchor loss: 0.1937, backdoor acc: 0.0000
+2026-04-17 10:37:16,908 - => Stage 1 client 0 epoch 5/50, ce loss: 2.0697, train anchor loss: 0.2086, total loss: 2.1740, clean acc: 0.2025, eval anchor loss: 0.1855, backdoor acc: 0.0000
+2026-04-17 10:38:16,483 - => Stage 1 client 0 epoch 6/50, ce loss: 2.0650, train anchor loss: 0.2056, total loss: 2.1678, clean acc: 0.1745, eval anchor loss: 0.2059, backdoor acc: 0.0000
+2026-04-17 10:38:16,867 - => Stage 1 early stop triggered for passive client 0 at epoch 6/50; best clean acc: 0.2802 at epoch 1
+2026-04-17 10:38:17,084 - => Stage 1 final summary for passive client 0: best epoch: 1, clean acc: 0.2802, anchor loss: 0.2138, backdoor acc: 0.0000
+2026-04-17 10:38:17,102 - => Stage 1 start for passive client 1
+2026-04-17 10:38:17,102 - => Stage 1 early stop for passive client 1: patience=5, min_delta=0.000100
+2026-04-17 10:39:17,716 - => Stage 1 client 1 epoch 1/50, ce loss: 2.1090, train anchor loss: 0.4689, total loss: 2.3434, clean acc: 0.3343, eval anchor loss: 0.2138, backdoor acc: 0.0000
+2026-04-17 10:40:17,699 - => Stage 1 client 1 epoch 2/50, ce loss: 2.0673, train anchor loss: 0.2171, total loss: 2.1758, clean acc: 0.2617, eval anchor loss: 0.1800, backdoor acc: 0.0000
+2026-04-17 10:41:18,149 - => Stage 1 client 1 epoch 3/50, ce loss: 2.0500, train anchor loss: 0.1991, total loss: 2.1495, clean acc: 0.2394, eval anchor loss: 0.1749, backdoor acc: 0.0000
+2026-04-17 10:42:17,855 - => Stage 1 client 1 epoch 4/50, ce loss: 2.0398, train anchor loss: 0.1881, total loss: 2.1338, clean acc: 0.2049, eval anchor loss: 0.1672, backdoor acc: 0.0000
+2026-04-17 10:43:17,170 - => Stage 1 client 1 epoch 5/50, ce loss: 2.0364, train anchor loss: 0.1864, total loss: 2.1296, clean acc: 0.2266, eval anchor loss: 0.1645, backdoor acc: 0.0000
+2026-04-17 10:44:16,782 - => Stage 1 client 1 epoch 6/50, ce loss: 2.0314, train anchor loss: 0.1796, total loss: 2.1212, clean acc: 0.1979, eval anchor loss: 0.1628, backdoor acc: 0.0000
+2026-04-17 10:44:17,167 - => Stage 1 early stop triggered for passive client 1 at epoch 6/50; best clean acc: 0.3343 at epoch 1
+2026-04-17 10:44:17,385 - => Stage 1 final summary for passive client 1: best epoch: 1, clean acc: 0.3343, anchor loss: 0.2138, backdoor acc: 0.0000
+2026-04-17 10:44:17,402 - => Stage 1 start for passive client 2
+2026-04-17 10:44:17,402 - => Stage 1 early stop for passive client 2: patience=5, min_delta=0.000100
+2026-04-17 10:45:23,600 - => Stage 1 client 2 epoch 1/50, ce loss: 2.1671, train anchor loss: 0.4765, total loss: 2.4053, clean acc: 0.2937, eval anchor loss: 0.2050, backdoor acc: 0.1719
+2026-04-17 10:46:29,153 - => Stage 1 client 2 epoch 2/50, ce loss: 2.1452, train anchor loss: 0.2076, total loss: 2.2490, clean acc: 0.1977, eval anchor loss: 0.1832, backdoor acc: 0.1520
+2026-04-17 10:47:34,780 - => Stage 1 client 2 epoch 3/50, ce loss: 2.1259, train anchor loss: 0.2179, total loss: 2.2349, clean acc: 0.2312, eval anchor loss: 0.1808, backdoor acc: 0.2001
+2026-04-17 10:48:40,583 - => Stage 1 client 2 epoch 4/50, ce loss: 2.1119, train anchor loss: 0.2202, total loss: 2.2221, clean acc: 0.2004, eval anchor loss: 0.1821, backdoor acc: 0.3254
+2026-04-17 10:49:45,978 - => Stage 1 client 2 epoch 5/50, ce loss: 2.1032, train anchor loss: 0.2237, total loss: 2.2151, clean acc: 0.1862, eval anchor loss: 0.1923, backdoor acc: 0.0217
+2026-04-17 10:50:51,401 - => Stage 1 client 2 epoch 6/50, ce loss: 2.0960, train anchor loss: 0.2214, total loss: 2.2067, clean acc: 0.2153, eval anchor loss: 0.1949, backdoor acc: 0.4876
+2026-04-17 10:50:51,831 - => Stage 1 early stop triggered for passive client 2 at epoch 6/50; best clean acc: 0.2937 at epoch 1
+2026-04-17 10:50:52,050 - => Stage 1 final summary for passive client 2: best epoch: 1, clean acc: 0.2937, anchor loss: 0.2050, backdoor acc: 0.1719
+2026-04-17 10:50:52,429 - => Stage 1 metrics were also saved to './results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1/anchor_stage1\stage1_metrics.json'
+2026-04-17 10:50:52,430 - => Saved stage1 passive-party local models and anchors to './results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1/anchor_stage1'
+2026-04-17 10:50:52,449 - => Saved anchor artifact to './results/AVGuard/stage1_ablation/CIFAR10/pretrained_anchor/stage1/anchor_bank.pt'
+2026-04-17 10:50:52,450 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.

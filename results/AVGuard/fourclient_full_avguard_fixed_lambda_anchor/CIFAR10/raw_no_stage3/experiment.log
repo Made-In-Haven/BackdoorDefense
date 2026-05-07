@@ -1,0 +1,20 @@
+2026-04-27 11:15:07,729 - Namespace(config='', data_dir='./dataset/data_raw/', dataset='CIFAR10', device=0, results_dir='result/fourclient_full_avguard_fixed_lambda_anchor/CIFAR10/raw_no_stage3', seed=100, epoch=100, batch_size=256, client_num=4, pretrained_checkpoint=None, test_checkpoint='result/fourclient_full_avguard_fixed_lambda_anchor/CIFAR10/stage2/best_checkpoint.pth.tar', resume_latest=True, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.05, poison_dimensions=5, trigger_feature_clip=1.0, attack_client_num=3, feature_extractor='', select_rate=0.5, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=23470, pretrain_stage=0, mode='test', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=False, enable_anchor_loss=True, lambda_anchor=0.5, lambda_stage1_anchor=0.5, anchor_pretrain_epochs=40, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=16.0, anchor_margin=0.0, anchor_bank_path='./results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/CIFAR10/stage1/anchor_bank.pt', anchor_stage1_dir='./results/AVGuard/fourclient_full_avguard_fixed_lambda_anchor/CIFAR10/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, disable_stage3_eval=True, gamma=2.0, theta_supp=0.15, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='CIFAR10', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0.0)
+2026-04-27 11:15:07,733 - => Defense scheme: AVGuard
+2026-04-27 11:15:07,733 - => LFBA poison-set source: gradient
+2026-04-27 11:15:07,734 - => Python executable: D:\Anaconda3\envs\pytorch\python.exe
+2026-04-27 11:15:07,734 - => Torch version: 2.5.1+cpu, compiled CUDA: None, cuda available: False, visible GPU count: 0
+2026-04-27 11:15:07,735 - => CUDA is unavailable, falling back to CPU
+2026-04-27 11:15:07,735 - => Preparing data...
+2026-04-27 11:15:11,339 - => Resolved LFBA attack target label=6 from training anchor_idx=23470
+2026-04-27 11:15:12,028 - => Loading checkpoint 'result/fourclient_full_avguard_fixed_lambda_anchor/CIFAR10/stage2/best_checkpoint.pth.tar'
+2026-04-27 11:15:19,095 - => checkpoint 'result/fourclient_full_avguard_fixed_lambda_anchor/CIFAR10/stage2/best_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-27 11:15:19,560 - => Loaded checkpoint 'result/fourclient_full_avguard_fixed_lambda_anchor/CIFAR10/stage2/best_checkpoint.pth.tar' (epoch 28, best clean accuracy: 0.5336)
+2026-04-27 11:15:19,561 - => Stage 3 evaluation is disabled; reporting raw VFL clean accuracy and raw ASR from the loaded checkpoint
+2026-04-27 11:15:19,572 - =>Add Trigger to Test Data
+2026-04-27 11:15:19,651 - Add Trigger to 9000 Poison Samples, 1000 Clean Samples (1.00)
+2026-04-27 11:15:19,660 - => Restored LFBA runtime state: cached_features=50000, poison_indexes=2500, anchor_label=6
+2026-04-27 11:15:19,661 - => Test ASR...
+2026-04-27 11:15:19,688 - =>Add Trigger to Test Data
+2026-04-27 11:15:19,766 - Add Trigger to 9000 Poison Samples, 1000 Clean Samples (1.00)
+2026-04-27 11:16:10,168 - => Test Epoch: 28, main task samples: 10000, attack samples: 10000, test loss: 0.5611, clean acc: 0.8192, Top-4: 0.9812, ASR: 0.9688, RAC: 0.1109, test target accuracy: 0.8320, stage3 final accuracy: 0.8192, stage3 final target accuracy: 0.8320, stage3 final asr: 0.9688, anchor loss: 0.0000
+2026-04-27 11:16:10,169 - => Stage 3 Detection Summary: recall: 0.0000, precision: 0.0000, f1: 0.0000, false positive rate: 0.0000, correction rate: 0.0000

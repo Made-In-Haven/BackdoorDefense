@@ -1,0 +1,28 @@
+2026-04-28 03:41:23,736 - Namespace(config='', data_dir='./dataset/', dataset='IEEE_CIS_FRAUD', device=0, results_dir='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/IEEE_CIS_FRAUD/stage3', seed=100, epoch=100, batch_size=256, client_num=3, pretrained_checkpoint=None, test_checkpoint='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/IEEE_CIS_FRAUD/stage2/best_checkpoint.pth.tar', resume_latest=False, lr=0.001, start_epoch=0, print_steps=10, early_stop=20, attack='LFBA', target_label=None, poison_rate=0.25, poison_dimensions=30, trigger_feature_clip=1.0, attack_client_num=2, feature_extractor='', select_rate=0.3, lfba_poison_source='gradient', random_select=False, poison_all=False, anchor_idx=1001, pretrain_stage=0, mode='test', defense='anchor', defense_scheme='AVGuard', enable_stage1=True, force_stage1_retrain=False, enable_anchor_loss=True, lambda_anchor=0.5, lambda_stage1_anchor=0.5, anchor_pretrain_epochs=5, anchor_pretrain_early_stop=5, anchor_pretrain_min_delta=0.0001, anchor_scale=1, anchor_margin=0, anchor_bank_path='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/IEEE_CIS_FRAUD/stage1/anchor_artifact.pt', anchor_stage1_dir='./results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/IEEE_CIS_FRAUD/stage1/anchor_stage1', anchor_ema_momentum=1.0, anchor_ema_update_freq=1, stage3_enable_joint_weighted_voting=True, stage3_enable_static_reliability=True, disable_stage3_eval=False, gamma=2.0, theta_supp=0.05, stage3_required_support_count=2, enable_conservative_correction=False, tau_corr=0.0, top_k=4, stage3_debug_batches=0, stage3_debug_max_samples=8, original_dataset='IEEE-CIS-FRAUD', attack_target_label=None, anchor_margin_auto_adjusted=False, requested_anchor_margin=0)
+2026-04-28 03:41:23,739 - => Canonicalized dataset name from 'IEEE-CIS-FRAUD' to 'IEEE_CIS_FRAUD'; legacy NUS-WIDE aliases now share the unified NUSWIDE entry
+2026-04-28 03:41:23,740 - => Defense scheme: AVGuard
+2026-04-28 03:41:23,741 - => LFBA poison-set source: gradient
+2026-04-28 03:41:23,742 - => Python executable: D:\python3\generative-compression-master1\KAVF\python.exe
+2026-04-28 03:41:23,742 - => Torch version: 2.7.1+cu126, compiled CUDA: 12.6, cuda available: True, visible GPU count: 1
+2026-04-28 03:41:23,743 - => Using GPU cuda:0 (NVIDIA GeForce RTX 4080)
+2026-04-28 03:41:23,743 - => Preparing data...
+2026-04-28 03:41:24,921 - => IEEE-CIS-Fraud directory: ./dataset/data_raw\processed\IEEE-CIS-Fraud
+2026-04-28 03:41:24,922 - => IEEE-CIS-Fraud feature dim: 432, train samples: 49591, test samples: 12398
+2026-04-28 03:41:24,934 - => Resolved LFBA attack target label=1 from training anchor_idx=1001
+2026-04-28 03:41:25,044 - => Loading checkpoint './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/IEEE_CIS_FRAUD/stage2/best_checkpoint.pth.tar'
+2026-04-28 03:41:25,129 - => checkpoint './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/IEEE_CIS_FRAUD/stage2/best_checkpoint.pth.tar' requires full pickle loading; falling back to weights_only=False
+2026-04-28 03:41:25,170 - => Loaded checkpoint './results/AVGuard/threeclient_full_avguard_fixed_lambda_anchor_theta_supp_sensitivity/theta_supp_0.05/IEEE_CIS_FRAUD/stage2/best_checkpoint.pth.tar' (epoch 9, best clean accuracy: 0.8306)
+2026-04-28 03:41:25,171 - => Loading anchor defense state from checkpoint
+2026-04-28 03:41:25,276 - => Stage 3 is ready; it will use Stage 1 client reliability from the loaded anchor state when available. Stage 2 client anchor-loss stats are optional diagnostics.
+2026-04-28 03:41:25,287 - =>Add Trigger to Test Data
+2026-04-28 03:41:26,287 - Add Trigger to 8265 Bad Samples, 4133 Clean Samples (1.00)
+2026-04-28 03:41:26,294 - => Restored LFBA runtime state: cached_features=49591, poison_indexes=12397, anchor_label=1
+2026-04-28 03:41:26,294 - => Test ASR...
+2026-04-28 03:41:26,316 - =>Add Trigger to Test Data
+2026-04-28 03:41:27,295 - Add Trigger to 8265 Bad Samples, 4133 Clean Samples (1.00)
+2026-04-28 03:41:30,221 - => Test Epoch: 9, main task samples: 12398, attack samples: 12398, test loss: 0.3591, clean acc: 0.8266, Top-2: 1.0000, ASR: 0.0923, RAC: 0.7875, test target accuracy: 0.6405, stage3 final accuracy: 0.8266, stage3 final target accuracy: 0.5471, stage3 final asr: 0.0923, anchor loss: 0.2428
+2026-04-28 03:41:30,222 - => Stage 3 Detection Summary: recall: 0.9073, precision: 0.8984, f1: 0.9029, false positive rate: 0.0682, correction rate: 1.0000
+2026-04-28 03:41:30,222 - => Stage 3 Debug (clean): suspicious=845/12398, correction_applied=845, prediction_changed=845, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=0
+2026-04-28 03:41:30,222 - => Stage 3 Debug (poison-valid): suspicious=7472/8265, correction_applied=7472, prediction_changed=7472, skipped_tied_vote=0, skipped_low_margin=0, skipped_other=0
+2026-04-28 03:41:30,223 - => Stage 3 Debug (attack-success): suspicious=7472/8235, correction_applied=7472, prediction_changed=7472, corrected_to_true=7472
+2026-04-28 03:41:30,223 - => Stage 3 Effective Support Avg: clean(all)=2.7187, clean_suspicious(false_positive)=0.9953, clean_correction_applied=0.9953, poison_valid(all)=1.1070, poison_valid_suspicious=1.0000, poison_valid_correction_applied=1.0000, attack_success(all)=1.1037, attack_success_suspicious=1.0000
